@@ -28,27 +28,15 @@ if(NOT TARGET utility)
     )
 endif()
 
+setup_project_library(
+    TARGET ariadne-utility
+    OBJECTS UTILITY_SRC
+    LINK_LIBRARIES utility
+)
+
+setup_project_tests()
+
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    add_library(ariadne-utility SHARED
-        $<TARGET_OBJECTS:UTILITY_SRC>
-    )
-    target_link_libraries(ariadne-utility PUBLIC utility)
-
-
-    setup_standalone_project_tests(
-        TARGET ariadne-utility
-        TEST_DIRECTORY test
-        TEST_TARGET tests
-        SOURCES
-            "${PROJECT_SOURCE_DIR}/include"
-            "${PROJECT_SOURCE_DIR}/src"
-    )
-
-    install(TARGETS ariadne-utility
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-    )
     install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/utility"
         DESTINATION include/ariadne-utility
     )
