@@ -21,12 +21,25 @@ include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/include)
 if(NOT TARGET utility)
     add_subdirectory(src)
 
-    add_library(utility ${LIBRARY_KIND} $<TARGET_OBJECTS:UTILITY_SRC>)
-    set_target_properties(utility PROPERTIES OUTPUT_NAME "ariadne-utility")
-    target_link_libraries(utility)
+    add_library(utility INTERFACE)
+    target_include_directories(utility INTERFACE
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/ariadne-utility>
+    )
+endif()
+
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    add_library(ariadne-utility SHARED
+        $<TARGET_OBJECTS:UTILITY_SRC>
+    )
+    target_link_libraries(ariadne-utility PUBLIC utility)
+
+    add_custom_target(distribution
+        DEPENDS ariadne-utility
+    )
 
     setup_standalone_project_tests(
-        TARGET utility
+        TARGET ariadne-utility
         TEST_DIRECTORY test
         TEST_TARGET tests
         SOURCES
@@ -34,4 +47,12 @@ if(NOT TARGET utility)
             "${PROJECT_SOURCE_DIR}/src"
     )
 
+    install(TARGETS ariadne-utility
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+    )
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/utility"
+        DESTINATION include/ariadne-utility
+    )
 endif()

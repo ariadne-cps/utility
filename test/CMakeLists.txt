@@ -12,12 +12,12 @@ set(UNIT_TESTS
 
 foreach(TEST ${UNIT_TESTS})
     add_executable(${TEST} ${TEST}.cpp)
-    target_link_libraries(${TEST} utility)
+    target_link_libraries(${TEST} ariadne-utility utility)
     add_test(NAME ${TEST} COMMAND $<TARGET_FILE:${TEST}>)
     if(WIN32)
         set_tests_properties(${TEST} PROPERTIES
             ENVIRONMENT_MODIFICATION
-                "PATH=path_list_prepend:$<TARGET_FILE_DIR:utility>"
+                "PATH=path_list_prepend:$<TARGET_FILE_DIR:ariadne-utility>"
         )
     endif()
 endforeach()
