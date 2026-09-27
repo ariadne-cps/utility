@@ -28,7 +28,7 @@
 
 #include "utility/test.hpp"
 
-using namespace Ariadne::Utility;
+using namespace Ariadne;
 using namespace std::chrono_literals;
 
 class TestStopwatch {

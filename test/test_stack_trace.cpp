@@ -28,7 +28,7 @@
 
 #include "utility/test.hpp"
 
-using namespace Ariadne::Utility;
+using namespace Ariadne;
 
 struct TestClass {
     void method() {

@@ -29,7 +29,7 @@
 
 #include "utility/test.hpp"
 
-using namespace Ariadne::Utility;
+using namespace Ariadne;
 
 using CacheType = LRUCache<String,int>;
 

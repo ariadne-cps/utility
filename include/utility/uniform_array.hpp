@@ -43,7 +43,7 @@
 #include "utility/macros.hpp"
 #include "utility/array.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::size_t;
 template<class T> using InitializerList=std::initializer_list<T>;
@@ -380,6 +380,6 @@ template<class T, class PR> std::ostream& operator<<(std::ostream& os, const Uni
 }
 
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

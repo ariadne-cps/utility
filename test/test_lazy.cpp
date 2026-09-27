@@ -27,7 +27,7 @@
 
 #include "utility/test.hpp"
 
-using namespace Ariadne::Utility;
+using namespace Ariadne;
 
 class TestClass {
   public:

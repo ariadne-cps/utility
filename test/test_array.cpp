@@ -29,7 +29,7 @@
 
 #include "utility/test.hpp"
 
-using namespace Ariadne::Utility;
+using namespace Ariadne;
 
 struct TestConvertibleTo {
     TestConvertibleTo(int a_) : a(a_) { }
