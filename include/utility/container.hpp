@@ -38,7 +38,7 @@
 #include "utility/array.hpp"
 #include "utility/macros.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::make_tuple;
 using std::make_pair;
@@ -150,7 +150,7 @@ template<class T> class LinkedList
 };
 template<class T> inline ostream&
 operator<< (ostream &os, const std::list<T>& l) {
-    return Ariadne::Utility::write_sequence(os,l.begin(),l.end());
+    return Ariadne::write_sequence(os,l.begin(),l.end());
 }
 
 
@@ -322,6 +322,6 @@ template<class T> inline List<T> make_list(const Set<T>& set) { return List<T>(s
 
 template<class T> inline Set<T> make_set(const std::vector<T>& lst) { return Set<T>(lst); }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

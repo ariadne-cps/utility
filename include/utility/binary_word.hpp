@@ -78,7 +78,7 @@
 #include "utility/macros.hpp"
 #include "utility/stlio.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::ostream;
 using std::istream;
@@ -233,6 +233,6 @@ inline ostream& operator<<(ostream& os, const BinaryWord& bw) {
     return os;
 }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_BINARY_WORD_HPP */

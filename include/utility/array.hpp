@@ -37,7 +37,7 @@
 #include <cassert>
 #include "utility/metaprogramming.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::size_t;
 
@@ -255,6 +255,6 @@ inline Array<size_t> complement(size_t nmax, Array<size_t> vars) {
     return cmpl;
 }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

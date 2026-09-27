@@ -34,7 +34,7 @@
 #include <cassert>
 
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 template<class T> using SharedPointer = std::shared_ptr<T>;
 using std::ostream;
@@ -202,6 +202,6 @@ class counted_pointer<const T>
     const T* operator->() const { return _ptr; }
 };
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif // ARIADNE_POINTER_HPP

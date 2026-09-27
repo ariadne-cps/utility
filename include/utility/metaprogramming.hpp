@@ -32,7 +32,7 @@
 #include <type_traits>
 #include <concepts>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::declval;
 using std::size_t;
@@ -196,23 +196,6 @@ template<class T> using CharacteristicsType = typename CharacteristicsTrait<T>::
 template<class T> requires HasCharacteristicsType<T> struct CharacteristicsTrait<T> { typedef typename T::CharacteristicsType Type; };
 template<class T> requires (not HasCharacteristicsType<T>) and HasMemberCharacteristics<T> struct CharacteristicsTrait<T> { typedef decltype(declval<T>().characteristics()) Type; };
 template<class T> requires (not HasCharacteristicsType<T>) and (not HasMemberCharacteristics<T>) and HasNonMemberCharacteristics<T> struct CharacteristicsTrait<T> { typedef decltype(characteristics(declval<T>())) Type; };
-
-} // namespace Ariadne::Utility
-
-namespace Ariadne {
-
-using Utility::SumType;
-using Utility::DifferenceType;
-using Utility::ProductType;
-using Utility::QuotientType;
-using Utility::ArithmeticType;
-using Utility::EqualityType;
-using Utility::InequalityType;
-using Utility::NegationType;
-using Utility::LogicalNegationType;
-using Utility::SameAs;
-using Utility::DerivedFrom;
-using Utility::DefaultConstructible;
 
 } // namespace Ariadne
 

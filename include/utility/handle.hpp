@@ -35,7 +35,7 @@
 #include "utility/metaprogramming.hpp"
 #include "utility/writable.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::shared_ptr;
 
@@ -176,6 +176,6 @@ template<class T, class I> shared_ptr<const T> dynamic_pointer_extract(const sha
 }
 
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

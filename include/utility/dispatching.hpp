@@ -32,7 +32,7 @@
 #define ARIADNE_UTILITY_DISPATCHING_HPP
 
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 
 template<class... YS> struct Aware;
@@ -155,8 +155,8 @@ template<class X, class RI, class OP, class I> struct UnaryOperationMixin : publ
 
 template<class X, class RI, class OP, class I> struct BinaryOperationMixin : public virtual I {
     static X const& _cast(BinaryOperationMixin<X,RI,OP,I> const& self) { return static_cast<MixinType<X,I> const&>(self); }
-    virtual RI* _apply(OP op, I const* other) const final { return Ariadne::Utility::_apply<RI*,X>(_cast(*this),op,static_cast<I const*>(this),other); }
-    virtual RI* _rapply(OP op, I const* other) const final { return Ariadne::Utility::_rapply<RI*,X>(_cast(*this),op,static_cast<I const*>(this),other); }
+    virtual RI* _apply(OP op, I const* other) const final { return Ariadne::_apply<RI*,X>(_cast(*this),op,static_cast<I const*>(this),other); }
+    virtual RI* _rapply(OP op, I const* other) const final { return Ariadne::_rapply<RI*,X>(_cast(*this),op,static_cast<I const*>(this),other); }
 };
 
 template<class X, class RI, class OP, class I, class N> struct GradedOperationMixin : public virtual I {
@@ -166,6 +166,6 @@ template<class X, class RI, class OP, class I, class N> struct GradedOperationMi
 };
 
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_DISPATCHING_HPP */

@@ -31,7 +31,7 @@
 
 #include <iterator>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::ostream;
 
@@ -140,6 +140,6 @@ template<class I1, class I2> inline auto PairIterator<I1,I2>::dereference() -> R
 template<class I1, class I2> ostream& operator<<(ostream& os, const PairIterator<I1,I2>& e) {
     return os << "{" << e._iter1 << "," << e._iter2 << "}"; }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_ITERATOR_HPP */
