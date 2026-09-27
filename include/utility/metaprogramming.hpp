@@ -199,4 +199,21 @@ template<class T> requires (not HasCharacteristicsType<T>) and (not HasMemberCha
 
 } // namespace Ariadne::Utility
 
+namespace Ariadne {
+
+using Utility::SumType;
+using Utility::DifferenceType;
+using Utility::ProductType;
+using Utility::QuotientType;
+using Utility::ArithmeticType;
+using Utility::EqualityType;
+using Utility::InequalityType;
+using Utility::NegationType;
+using Utility::LogicalNegationType;
+using Utility::SameAs;
+using Utility::DerivedFrom;
+using Utility::DefaultConstructible;
+
+} // namespace Ariadne
+
 #endif
