@@ -140,7 +140,7 @@
     } \
 
 #define ARIADNE_NOT_IMPLEMENTED                 \
-    throw std::runtime_error(Ariadne::Utility::StringType("Not implemented: ")+ARIADNE_PRETTY_FUNCTION);
+    throw std::runtime_error(Ariadne::StringType("Not implemented: ")+ARIADNE_PRETTY_FUNCTION);
 
 #define ARIADNE_DEPRECATED(fn,msg)          \
     static bool first_time=true; \
