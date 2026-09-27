@@ -35,7 +35,7 @@
 
 #include "utility/metaprogramming.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 //! Internal alias for standard variant.
 template<class... TS> using Variant = std::variant<TS...>;
@@ -50,6 +50,6 @@ template<class C, class... TS> class CodedVariant {
 };
 template<class T, class C, class... TS> bool holds_alternative(CodedVariant<C,TS...> const& var) { return var.code()==T::code(); }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

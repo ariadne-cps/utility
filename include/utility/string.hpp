@@ -32,7 +32,7 @@
 #include <string>
 #include <sstream>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 //! \brief A wrapper for the standard string class.
 class String : public std::string {
@@ -52,6 +52,6 @@ template<class T> inline String to_str(T const& t) {
 template<class T> String class_name();
 template<> inline String class_name<String>() { return "String"; }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_STRING_HPP */

@@ -31,7 +31,7 @@
 
 #include "utility/metaprogramming.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::ostream;
 
@@ -96,6 +96,6 @@ template<class T> WritableTemporary<T> Writer<T>::operator() (T const& t) const 
 
 template<class T> class RepresentationWriter;
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

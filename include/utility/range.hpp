@@ -31,7 +31,7 @@
 
 #include <cstddef>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 //! \ingroup LinearAlgebraModule
 //! \brief A range of integer values from a \em start value up to, but not including, a \em stop value.
@@ -59,6 +59,6 @@ struct RangeIterator {
 inline RangeIterator begin(Range rng) { return RangeIterator(rng.start()); }
 inline RangeIterator end(Range rng) { return RangeIterator(rng.stop()); }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif // ARIADNE_UTILITY_RANGE_HPP

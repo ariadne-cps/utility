@@ -31,7 +31,7 @@
 #ifndef ARIADNE_UTILITY_CLONABLE_HPP
 #define ARIADNE_UTILITY_CLONABLE_HPP
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 /************ ClonableInterface **********************************************/
 
@@ -43,6 +43,6 @@ class ClonableInterface {
     virtual ClonableInterface* _move() = 0;
 };
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

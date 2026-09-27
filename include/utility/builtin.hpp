@@ -33,7 +33,7 @@
 
 #include "utility/metaprogramming.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 class builtin_uint {
     long unsigned int _m;
@@ -72,7 +72,7 @@ class exact_double {
 
 exact_double cast_exact(double x) { return exact_double(x); }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif
 

@@ -36,7 +36,7 @@
 #include <functional>
 #include <memory>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::function;
 using std::shared_ptr;
@@ -51,6 +51,6 @@ class Lazy {
     mutable shared_ptr<O> _obj;
 };
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif // ARIADNE_UTILITY_LAZY_HPP

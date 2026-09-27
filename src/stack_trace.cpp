@@ -33,7 +33,7 @@
 #include <dlfcn.h>
 #include <cxxabi.h>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 void stack_trace() {
     static const unsigned int CALLSTACK_SIZE = 128;
@@ -59,11 +59,11 @@ void stack_trace() {
     free(symbols);
 }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #else /* ENABLE_STACK_TRACE */
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 void stack_trace() { }
 

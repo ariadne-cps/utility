@@ -32,7 +32,7 @@
 #include <utility>
 #include <tuple>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 template<class T1, class T2> using Pair = std::pair<T1,T2>;
 using std::make_pair;
@@ -50,6 +50,6 @@ template<class T> inline decltype(auto) get_fourth(T&& t) { return std::get<3>(s
 template<class T> inline decltype(auto) get_fifth(T&& t) { return std::get<4>(std::forward<T>(t)); }
 
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_TUPLE_HPP */
