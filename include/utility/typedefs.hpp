@@ -79,4 +79,13 @@ struct IndexZero { operator SizeType() const { return 0u; } };
 
 } // namespace Ariadne::Utility
 
+namespace Ariadne {
+
+using Utility::OutputStream;
+using Utility::InputStream;
+using Utility::StringStream;
+using Utility::StringType;
+
+} // namespace Ariadne
+
 #endif /* ARIADNE_UTILITY_TYPEDEFS_HPP */
