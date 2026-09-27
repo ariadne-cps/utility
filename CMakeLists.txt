@@ -34,9 +34,6 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     )
     target_link_libraries(ariadne-utility PUBLIC utility)
 
-    add_custom_target(distribution
-        DEPENDS ariadne-utility
-    )
 
     setup_standalone_project_tests(
         TARGET ariadne-utility
