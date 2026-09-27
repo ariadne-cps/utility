@@ -57,6 +57,16 @@ using StringType = std::string;
 using SizeType = std::size_t;
 using PointerDifferenceType = std::ptrdiff_t;
 using CounterType = std::uint32_t;
+using DegreeType = std::uint16_t;
+using DimensionType = SizeType;
+
+#if (defined __arm || defined __aarch64__)
+using ComparableEnumerationType = short;
+#else
+using ComparableEnumerationType = char;
+#endif
+
+template<class T> class Array;
 
 template<class T> using UniquePointer = std::unique_ptr<T>;
 template<class T> using SharedPointer = std::shared_ptr<T>;

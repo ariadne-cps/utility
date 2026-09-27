@@ -186,6 +186,11 @@ template<class T> concept HasMemberCharacteristics = requires (T const& t) { t.c
 template<class T> concept HasNonMemberCharacteristics = requires (T const& t) { characteristics(t); };
 template<class T> concept HasCharacteristics = HasMemberCharacteristics<T> or HasNonMemberCharacteristics<T>;
 
+template<class T> concept HasGenericType = requires { typename T::GenericType; };
+template<class T> struct GenericTrait;
+template<class T> using GenericType = typename GenericTrait<T>::Type;
+template<class T> requires HasGenericType<T> struct GenericTrait<T> { typedef typename T::GenericType Type; };
+
 template<class T> struct CharacteristicsTrait;
 template<class T> using CharacteristicsType = typename CharacteristicsTrait<T>::Type;
 template<class T> requires HasCharacteristicsType<T> struct CharacteristicsTrait<T> { typedef typename T::CharacteristicsType Type; };
