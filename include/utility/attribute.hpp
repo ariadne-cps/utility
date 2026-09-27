@@ -29,7 +29,7 @@
 #ifndef ARIADNE_UTILITY_ATTRIBUTE_HPP
 #define ARIADNE_UTILITY_ATTRIBUTE_HPP
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 template<class T> class Generator {
     using V = typename T::Type;
@@ -55,6 +55,6 @@ inline T Generator<T>::operator=(typename T::Type const& v) const {
     return static_cast<T const&>(attr);
 }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_ATTRIBUTE_HPP */

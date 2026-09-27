@@ -34,7 +34,7 @@
 
 #include "utility/metaprogramming.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 template<class T> class List;
 
@@ -53,6 +53,6 @@ template<class F, class T1, class T2> List<ResultOf<F(T1,T2)>> elementwise(F con
     return r;
 }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

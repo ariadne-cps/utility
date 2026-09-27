@@ -31,7 +31,7 @@
 
 #include <utility>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 template<class T> class Prototype {
     T _prototype;
@@ -42,6 +42,6 @@ template<class T> class Prototype {
 template<class T> inline Prototype<T> make_prototype(T const& t) {
     return Prototype<T>(t); }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

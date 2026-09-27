@@ -31,7 +31,7 @@
 
 #include <chrono>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using Seconds = std::chrono::seconds;
 using Milliseconds = std::chrono::milliseconds;
@@ -59,6 +59,6 @@ private:
     TimePointType _clicked;
 };
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_STOPWATCH_HPP */

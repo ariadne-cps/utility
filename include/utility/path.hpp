@@ -38,7 +38,7 @@
 #include <cstdint>
 #include <ostream>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using HeightType = std::int32_t;
 typedef HeightType DepthType;
@@ -232,6 +232,6 @@ template<class T> std::ostream& operator<<(std::ostream& os, const Path<T>& pth)
     return os;
 }
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_PATH_HPP */

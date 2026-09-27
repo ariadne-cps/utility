@@ -35,7 +35,7 @@
 
 #include "utility/uniform_array.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 template<class T> class UniformList;
 
@@ -90,6 +90,6 @@ template<class T> requires HasCharacteristics<T> class UniformList<T>
 };
 
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UNIFORM_LIST_HPP */

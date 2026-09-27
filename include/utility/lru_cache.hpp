@@ -32,7 +32,7 @@
 #include <map>
 #include "utility/macros.hpp"
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 using std::size_t;
 
@@ -104,6 +104,6 @@ template<class L, class V> class LRUCache {
 };
 
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif // ARIADNE_UTILITY_LRU_CACHE_HPP

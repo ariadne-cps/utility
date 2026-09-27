@@ -34,7 +34,7 @@
 #include <exception>
 #include <stdexcept>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 class Exception {
     String _what;
@@ -87,6 +87,6 @@ class OuterChainOverspill : public std::runtime_error {
     OuterChainOverspill(const String& str) : std::runtime_error(str) { }
 };
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

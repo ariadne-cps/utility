@@ -25,10 +25,10 @@
 #ifndef ARIADNE_UTILITY_STACK_TRACE
 #define ARIADNE_UTILITY_STACK_TRACE
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 void stack_trace();
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif

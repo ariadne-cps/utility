@@ -33,7 +33,7 @@
 #include <random>
 #include <chrono>
 
-namespace Ariadne::Utility {
+namespace Ariadne {
 
 class RandomGenerator {
   public:
@@ -77,6 +77,6 @@ template<class T> struct UniformIntRandomiser : public RandomiserBase<T,std::uni
     UniformIntRandomiser(T min, T max) : RandomiserBase<T,std::uniform_int_distribution<T>>(min,max) { }
 };
 
-} // namespace Ariadne::Utility
+} // namespace Ariadne
 
 #endif /* ARIADNE_UTILITY_RANDOMISER_HPP */
