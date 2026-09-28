@@ -33,6 +33,7 @@
 #include <initializer_list>
 #include <vector>
 
+#include "utility/container.hpp"
 #include "utility/uniform_array.hpp"
 
 namespace Ariadne {

@@ -83,9 +83,9 @@ public:
     //! \brief Converts an initializer list to an Array.
     Array(InitializerList<T> lst) : _size(lst.size()), _ptr(uninitialized_new(_size)) {
         this->_uninitialized_fill(lst.begin()); }
-    //! \brief Constructs an Array from an initializer list of doubles and a precision parameter.
-    template<class PR> requires Constructible<T,double,PR>
-    Array(InitializerList<double> lst, PR pr) : _size(lst.size()), _ptr(uninitialized_new(_size)) {
+    //! \brief Constructs an Array from an initializer list and a precision parameter.
+    template<class TT, class PR> requires Constructible<T,TT,PR>
+    Array(InitializerList<TT> lst, PR pr) : _size(lst.size()), _ptr(uninitialized_new(_size)) {
         this->_uninitialized_fill(lst.begin(),pr); }
     //! \brief Generate from a function (object) \a g of type \a G mapping an index to a value.
     template<class G> requires InvocableReturning<ValueType,G,size_t>

@@ -29,6 +29,7 @@
 #ifndef ARIADNE_UTILITY_WRITABLE_HPP
 #define ARIADNE_UTILITY_WRITABLE_HPP
 
+#include "utility/typedefs.hpp"
 #include "utility/metaprogramming.hpp"
 
 namespace Ariadne {
@@ -49,7 +50,7 @@ class WritableInterface {
 };
 inline ostream& operator<<(ostream& os, const WritableInterface& w) { w._write(os); return os; }
 
-template<class T, class = decltype(declval<T>()._write(declval<ostream>()))> True has_write(int);
+template<class T, class = decltype(declval<T>()._write(declval<ostream&>()))> True has_write(int);
 template<class T> False has_write(...);
 template<class T, class = Fallback> struct IsWritable : decltype(has_write<T>(1)) { };
 
@@ -71,10 +72,23 @@ template<class T> class WriterInterface {
 };
 
 template<class T> class Handle;
+
+template<class W, class T> concept AWriter = requires (W const& w, ostream& os, T const& t) {
+    w._write(os,t);
+};
+
+template<class T, AWriter<T> W> class WriterMixin : public WriterInterface<T> {
+    W _w;
+  public:
+    WriterMixin(W w) : _w(w) { }
+    virtual ostream& _write(ostream& os, T const& t) const override { return this->_w._write(os,t); }
+};
+
 template<class T> class Writer : public Handle<WriterInterface<T>> {
   public:
     using Handle<WriterInterface<T>>::Handle;
     Writer(Handle<WriterInterface<T> > wh) : Handle<WriterInterface<T> >(wh) { }
+    template<AWriter<T> W> Writer(W w) : Writer(new WriterMixin<T,W>(w)) { }
     inline WritableTemporary<T> operator() (T const& t) const;
 };
 

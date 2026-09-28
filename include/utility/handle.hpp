@@ -32,6 +32,7 @@
 #include <memory>
 
 #include "utility/stdlib.hpp"
+#include "utility/typedefs.hpp"
 #include "utility/metaprogramming.hpp"
 #include "utility/writable.hpp"
 

@@ -29,6 +29,8 @@
 #ifndef ARIADNE_UTILITY_ATTRIBUTE_HPP
 #define ARIADNE_UTILITY_ATTRIBUTE_HPP
 
+#include "utility/typedefs.hpp"
+
 namespace Ariadne {
 
 template<class T> class Generator {
@@ -54,6 +56,17 @@ inline T Generator<T>::operator=(typename T::Type const& v) const {
     Attribute<typename T::Type> attr(v);
     return static_cast<T const&>(attr);
 }
+
+struct Capacity : Attribute<SizeType> { };
+static const Generator<Capacity> capacity = Generator<Capacity>();
+struct Size : Attribute<SizeType> { };
+static const Generator<Size> size = Generator<Size>();
+struct ResultSize : Attribute<SizeType> { };
+static const Generator<ResultSize> result_size = Generator<ResultSize>();
+struct ArgumentSize : Attribute<SizeType> { };
+static const Generator<ArgumentSize> argument_size = Generator<ArgumentSize>();
+struct Degree : Attribute<DegreeType> { };
+static const Generator<Degree> degree = Generator<Degree>();
 
 } // namespace Ariadne
 
