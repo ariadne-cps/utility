@@ -31,7 +31,7 @@
 namespace Ariadne {
 
 template<class V, class C>
-decltype(auto) coded_visit(V& v, C code) {
+decltype(auto) coded_visit(V&, C code) {
     switch (code) {
         default: abort(); } }
 
