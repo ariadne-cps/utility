@@ -49,7 +49,7 @@ class NotImplemented : public std::logic_error {
 
 class BadCast : public std::bad_cast {
   public:
-    BadCast(const String& str) : std::bad_cast() { }
+    BadCast(const String&) : std::bad_cast() { }
 };
 
 class DivideByZeroException : public std::runtime_error {
