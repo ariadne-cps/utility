@@ -103,7 +103,7 @@ template<class T> requires (not HasMemberCharacteristics<T>) and HasNonMemberCha
 decltype(auto) get_characteristics(T const& t) {
     return characteristics(t); }
 template<class T> requires (not HasCharacteristics<T>) and DefaultConstructible<T>
-decltype(auto) get_characteristics(T const& t) {
+decltype(auto) get_characteristics(T const&) {
     return Tuple<>(); }
 
 template<class T, class PR>
@@ -163,7 +163,7 @@ class UniformArray
 
     template<class CNFG> requires Constructible<T,CNFG> static ValueType _make_default(CNFG const& cnfg) { return T(cnfg); }
     template<class... CNFGS> requires Constructible<T,CNFGS...> static ValueType _make_default(Tuple<CNFGS...> const& cnfgs) { return _make_default_from_tuple(cnfgs); }
-    template<class CNFG> requires Same<Tuple<>,CNFG> static ValueType _make_default(CNFG const& cnfg) { return T(); }
+    template<class CNFG> requires Same<Tuple<>,CNFG> static ValueType _make_default(CNFG const&) { return T(); }
     ValueType _make_default() const { return _make_default(this->element_characteristics()); }
   public:
     //! \brief Destructor
