@@ -117,6 +117,15 @@ int test_case_counter = 0;
     }                                                                   \
 
 
+/*! \brief Report a test error and count it as a failure. */
+#define ARIADNE_TEST_ERROR( message )                                   \
+    {                                                                   \
+        ++ARIADNE_TEST_FAILURES;                                        \
+        std::cout << "ERROR: " << message << "" << std::endl;           \
+        std::cerr << "ERROR: " << message << "" << std::endl;           \
+    }                                                                   \
+
+
 /*! \brief Provide a warning message */
 #define ARIADNE_TEST_WARN( message )                                    \
     {                                                                   \
