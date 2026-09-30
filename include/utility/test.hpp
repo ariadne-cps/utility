@@ -30,6 +30,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 #include <iostream>
 #include <exception>
 #include "utility/macros.hpp"
@@ -38,12 +39,52 @@ int ARIADNE_TEST_FAILURES = 0;
 int ARIADNE_TEST_SKIPPED = 0;
 std::string ARIADNE_CURRENT_TESTING_CLASS = "???";
 
+namespace AriadneTesting {
+
+enum class Truth {
+    False,
+    True,
+    Indeterminate
+};
+
+template<class T>
+Truth truth(T const& value) {
+    if constexpr (requires(T const& v) { definitely(v); possibly(v); }) {
+        if (static_cast<bool>(definitely(value))) { return Truth::True; }
+        if (static_cast<bool>(possibly(value))) { return Truth::Indeterminate; }
+        return Truth::False;
+    } else {
+        return static_cast<bool>(value) ? Truth::True : Truth::False;
+    }
+}
+
+template<class T>
+bool decision(T const& value) {
+    if constexpr (requires(T const& v) { decide(v); }) {
+        return static_cast<bool>(decide(value));
+    } else {
+        return static_cast<bool>(value);
+    }
+}
+
+template<class T>
+decltype(auto) magnitude(T const& value) {
+    if constexpr (requires(T const& v) { mag(v); }) {
+        return mag(value);
+    } else {
+        using std::abs;
+        return abs(value);
+    }
+}
+
+} // namespace AriadneTesting
+
 // This needs to be a function since we do not want to evaluate the result twice,
 // and can't store it in a variable since we don't know it's type.
 template<class R, class ER>
 bool
 testing_check(std::ostream& os, const R& r, const ER& er) {
-    os << r << std::flush; return (r==er);
+    os << r << std::flush; return AriadneTesting::decision(r==er);
 }
 
 
@@ -181,12 +222,16 @@ int test_case_counter = 0;
     {                                                                   \
         std::cout << #expression << ": " << std::flush;                 \
         auto result = (expression);                                     \
-        if(result) {                                                    \
+        auto truth = AriadneTesting::truth(result);                     \
+        if(truth == AriadneTesting::Truth::True) {                       \
             std::cout << "true\n" << std::endl;                         \
+        } else if(truth == AriadneTesting::Truth::Indeterminate) {      \
+            std::cout << "\nWARNING: indeterminate" << std::endl;       \
+            std::cerr << "WARNING: " << __FILE__ << ":" << __LINE__ << ": " << ARIADNE_PRETTY_FUNCTION << ": Assertion `" << #expression << "' is indeterminate." << std::endl; \
         } else {                                                        \
             ++ARIADNE_TEST_FAILURES;                                    \
             std::cout << "\nERROR: false" << std::endl;                 \
-            std::cerr << "ERROR: " << __FILE__ << ":" << __LINE__ << ": " << __FUNCTION__ << ": Assertion `" << #expression << "' failed." << std::endl; \
+            std::cerr << "ERROR: " << __FILE__ << ":" << __LINE__ << ": " << ARIADNE_PRETTY_FUNCTION << ": Assertion `" << #expression << "' failed." << std::endl; \
         }                                                               \
     }                                                                   \
 
@@ -224,7 +269,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_SAME(expression1,expression2)                         \
     {                                                                   \
         std::cout << "same(" << #expression1 << "," << #expression2 << "): " << std::flush; \
-        bool ok = same((expression1), (expression2));                       \
+        bool ok = AriadneTesting::decision(same((expression1), (expression2)));                       \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -239,7 +284,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_SAME_AS(expression,expected)                         \
     {                                                                   \
         std::cout << #expression << " == " << #expected << ": " << std::flush; \
-        bool ok = same((expression), (expected));                       \
+        bool ok = AriadneTesting::decision(same((expression), (expected)));                       \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -256,7 +301,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_EQUAL(expression1,expression2)                         \
     {                                                                   \
         std::cout << #expression1 << " == " << #expression2 << ": " << std::flush; \
-        bool ok = (expression1) == (expression2);                       \
+        bool ok = AriadneTesting::decision((expression1) == (expression2));                       \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -271,7 +316,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_NOT_EQUAL(expression1,expression2)                 \
     {                                                                   \
         std::cout << #expression1 << " != " << #expression2 << ": " << std::flush; \
-        bool ok = (expression1) == (expression2);               \
+        bool ok = AriadneTesting::decision((expression1) == (expression2));               \
         if(ok) {                                                        \
             ++ARIADNE_TEST_FAILURES;                                    \
             std::cout << "\nERROR: " << #expression1 << ":\n           " << (expression1) \
@@ -286,7 +331,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_EQUALS(expression,expected)                         \
     {                                                                   \
         std::cout << #expression << " == " << #expected << ": " << std::flush; \
-        bool ok = (expression) == (expected);                       \
+        bool ok = AriadneTesting::decision((expression) == (expected));                       \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -302,8 +347,8 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_WITHIN(expression,expected,tolerance)                         \
     {                                                                   \
         std::cout << #expression << " ~ " << #expected << ": " << std::flush; \
-        auto error=abs(expression-expected); \
-        bool ok = (error <= tolerance);                       \
+        auto error=AriadneTesting::magnitude((expression)-(expected)); \
+        bool ok = AriadneTesting::decision(error <= tolerance);                       \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -322,7 +367,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_LESS(expression,expected)                         \
     {                                                                   \
         std::cout << #expression << " < " << #expected << ": " << std::flush; \
-        bool ok = (expression) < (expected);                       \
+        bool ok = AriadneTesting::decision((expression) < (expected));                       \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -337,7 +382,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_UNARY_PREDICATE(predicate,argument)    \
     {                                                                   \
         std::cout << #predicate << "(" << #argument << ") with " << #argument << "=" << (argument) << ": " << std::flush; \
-        bool ok = (predicate((argument)));                  \
+        bool ok = AriadneTesting::decision(predicate((argument)));                  \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -352,7 +397,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_BINARY_PREDICATE(predicate,argument1,argument2)    \
     {                                                                   \
         std::cout << #predicate << "(" << (#argument1) << "," << (#argument2) << ") with " << #argument1 << "=" << (argument1) << ", " << #argument2 << "=" << (argument2) << ": " << std::flush; \
-        bool ok = predicate((argument1),(argument2));                  \
+        bool ok = AriadneTesting::decision(predicate((argument1),(argument2)));                  \
         if(ok) {                                                        \
             std::cout << "true\n" << std::endl;                         \
         } else {                                                        \
@@ -367,7 +412,7 @@ int test_case_counter = 0;
 #define ARIADNE_TEST_COMPARE(expression,comparison,expected)           \
     {                                                                   \
         std::cout << #expression << ": " << (expression) << std::flush; \
-        bool ok = ((expression) comparison (expected));               \
+        bool ok = AriadneTesting::decision((expression) comparison (expected));               \
         if(ok) {                                                        \
             std::cout << " " << #comparison << " " << (expected) << ": true\n" << std::endl; \
         } else {                                                        \
@@ -383,7 +428,7 @@ int test_case_counter = 0;
     {                                                                   \
         Type result=(expression);                                       \
         std::cout << #expression << ": " << result << std::flush; \
-        bool ok = result comparison (expected);               \
+        bool ok = AriadneTesting::decision(result comparison (expected));               \
         if(ok) {                                                        \
             std::cout << " " << #comparison << " " << (expected) << "\n" << std::endl; \
         } else {                                                        \
