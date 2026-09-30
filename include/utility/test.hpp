@@ -533,7 +533,7 @@ int test_case_counter = 0;
             std::cout << "\nERROR: expected " << #error << "; no exception thrown\n"; \
             std::cerr << "ERROR: " << __FILE__ << ":" << __LINE__ << ": " << ARIADNE_PRETTY_FUNCTION << ": expected " << #error << "; no exception thrown." << std::endl; \
         }                                                               \
-        catch(const error& err) {                                         \
+        catch(const error&) {                                             \
             std::cout << "caught " << #error << " as expected\n" << std::endl; \
         }                                                               \
         catch(const std::exception& except) {                                \
