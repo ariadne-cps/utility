@@ -78,3 +78,7 @@ jobs:
     - name: Test
       working-directory: ${{runner.workspace}}/build
       run: ctest -j $($NPROC) --output-on-failure
+
+    - name: Install Ariadne Utility
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --install . --prefix ${{runner.workspace}}/install

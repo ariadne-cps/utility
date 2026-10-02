@@ -39,3 +39,7 @@ jobs:
     - name: Test
       working-directory: ${{runner.workspace}}/build
       run: ctest -C ${{matrix.config.build-type}} --output-on-failure
+
+    - name: Install Ariadne Utility
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --install . --config ${{matrix.config.build-type}} --prefix "${{runner.workspace}}/install"
