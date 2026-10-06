@@ -23,6 +23,7 @@
  */
 
 #include <iostream>
+#include <utility>
 
 #include "utility/array.hpp"
 #include "utility/container.hpp"
@@ -67,10 +68,20 @@ class TestArray {
         ARIADNE_TEST_EQUALS(cmpl[2],4);
     }
 
+    void test_move() {
+        Array<size_t> source = {1, 3};
+        Array<size_t> moved(std::move(source));
+        ARIADNE_TEST_EQUALS(moved.size(),2);
+        ARIADNE_TEST_EQUALS(moved[0],1);
+        ARIADNE_TEST_EQUALS(moved[1],3);
+        ARIADNE_TEST_ASSERT(source.empty());
+    }
+
     void test() {
         ARIADNE_TEST_CALL(test_convert());
         ARIADNE_TEST_CALL(test_print());
         ARIADNE_TEST_CALL(test_complement());
+        ARIADNE_TEST_CALL(test_move());
     }
 
 };
