@@ -60,9 +60,19 @@ class TestContainer {
         ARIADNE_TEST_ASSERT(l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5);
     }
 
-    void test_print_empty_vector() {
-        std::vector<int> v;
-        ARIADNE_TEST_PRINT(v);
+    void test_print_vector() {
+        std::vector<int> empty_int;
+        std::vector<int> nonempty_int = {1};
+        std::vector<unsigned int> empty_unsigned;
+        std::vector<unsigned int> nonempty_unsigned = {1u};
+        std::vector<double> empty_double;
+        std::vector<double> nonempty_double = {1.0};
+        ARIADNE_TEST_PRINT(empty_int);
+        ARIADNE_TEST_PRINT(nonempty_int);
+        ARIADNE_TEST_PRINT(empty_unsigned);
+        ARIADNE_TEST_PRINT(nonempty_unsigned);
+        ARIADNE_TEST_PRINT(empty_double);
+        ARIADNE_TEST_PRINT(nonempty_double);
     }
 
     void test() {
@@ -70,7 +80,7 @@ class TestContainer {
         ARIADNE_TEST_CALL(test_map_convert());
         ARIADNE_TEST_CALL(test_map_restrict_keys());
         ARIADNE_TEST_CALL(test_make_list_of_set());
-        ARIADNE_TEST_CALL(test_print_empty_vector());
+        ARIADNE_TEST_CALL(test_print_vector());
     }
 
 };
