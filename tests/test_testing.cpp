@@ -65,6 +65,7 @@ int main() {
     ARIADNE_TEST_ASSERT(true);
     ARIADNE_TEST_ASSERT(Truth::True);
     ARIADNE_TEST_ASSERT(Truth::Indeterminate);
+    ARIADNE_TEST_ASSERT(AriadneTesting::truth(Truth::False) == AriadneTesting::Truth::False);
 
     Value one{1};
     Value two{2};

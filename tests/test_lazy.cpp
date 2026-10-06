@@ -47,11 +47,15 @@ class TestLazy {
 
     void test_creation() {
         double arg = 2.0;
-        Lazy<TestClass> lazy([arg]{ return new TestClass(arg); });
+        int creations = 0;
+        Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
 
         ARIADNE_TEST_PRINT("Lazy created")
-        TestClass obj = lazy();
+        TestClass const& obj = lazy();
         ARIADNE_TEST_EQUAL(obj.value(),4.0)
+        TestClass const& same_obj = lazy();
+        ARIADNE_TEST_EQUAL(same_obj.value(),4.0)
+        ARIADNE_TEST_EQUAL(creations,1)
     }
 
     void test() {

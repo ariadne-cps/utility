@@ -51,6 +51,16 @@ class TestLRUCache {
     void test_get_failure() {
         CacheType cache(2);
         ARIADNE_TEST_FAIL(cache.get("something"));
+        ARIADNE_TEST_FAIL(cache.age("something"));
+    }
+
+    void test_string() {
+        std::string std_string = "text";
+        String string(std_string);
+        ARIADNE_TEST_ASSERT(std::string(c_str(string)) == "text");
+        ARIADNE_TEST_ASSERT(to_string(42) == "42");
+        ARIADNE_TEST_ASSERT(to_str(43) == "43");
+        ARIADNE_TEST_ASSERT(class_name<String>() == "String");
     }
 
     void test_put_single() {
@@ -65,6 +75,7 @@ class TestLRUCache {
     void test_put_multiple() {
         CacheType cache(2);
         cache.put("first",42);
+        ARIADNE_TEST_FAIL(cache.put("first",10));
         cache.put("second",10);
         ARIADNE_TEST_EQUALS(cache.current_size(),2);
         ARIADNE_TEST_EQUALS(cache.age("first"),1);
@@ -101,6 +112,7 @@ class TestLRUCache {
         ARIADNE_TEST_CALL(test_construct());
         ARIADNE_TEST_CALL(test_find());
         ARIADNE_TEST_CALL(test_get_failure());
+        ARIADNE_TEST_CALL(test_string());
         ARIADNE_TEST_CALL(test_put_single());
         ARIADNE_TEST_CALL(test_put_multiple());
         ARIADNE_TEST_CALL(test_put_multiple_over());

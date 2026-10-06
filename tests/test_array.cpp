@@ -58,9 +58,19 @@ class TestArray {
         ARIADNE_TEST_PRINT(a2);
     }
 
+    void test_complement() {
+        Array<size_t> vars = {1, 3};
+        auto cmpl = complement(5, vars);
+        ARIADNE_TEST_EQUALS(cmpl.size(),3);
+        ARIADNE_TEST_EQUALS(cmpl[0],0);
+        ARIADNE_TEST_EQUALS(cmpl[1],2);
+        ARIADNE_TEST_EQUALS(cmpl[2],4);
+    }
+
     void test() {
         ARIADNE_TEST_CALL(test_convert());
         ARIADNE_TEST_CALL(test_print());
+        ARIADNE_TEST_CALL(test_complement());
     }
 
 };
