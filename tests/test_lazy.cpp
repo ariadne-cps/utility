@@ -51,9 +51,9 @@ class TestLazy {
         Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
 
         ARIADNE_TEST_PRINT("Lazy created")
-        TestClass const& obj = lazy();
+        TestClass obj = lazy();
         ARIADNE_TEST_EQUAL(obj.value(),4.0)
-        TestClass const& same_obj = lazy();
+        TestClass same_obj = lazy();
         ARIADNE_TEST_EQUAL(same_obj.value(),4.0)
         ARIADNE_TEST_EQUAL(creations,1)
     }
