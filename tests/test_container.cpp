@@ -50,6 +50,7 @@ class TestContainer {
         auto restricted = restrict_keys(m,s);
         ARIADNE_TEST_EQUALS(restricted.size(),2);
         ARIADNE_TEST_ASSERT(restricted.has_key(1) and restricted.has_key(2));
+        ARIADNE_TEST_ASSERT(not restricted.has_key(3));
     }
 
     void test_make_list_of_set() {
