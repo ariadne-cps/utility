@@ -59,17 +59,6 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       run: cmake --build . --parallel $($NPROC) --target coverage
 
-    - name: Show LLVM Branch Detail
-      if: runner.os == 'macOS'
-      working-directory: ${{runner.workspace}}/build
-      run: |
-        echo "=== container.hpp branch detail ==="
-        awk '
-          /include\/utility\/container\.hpp:/ { printing=1 }
-          printing { print }
-          printing && /include\/utility\/lazy\.hpp:/ { exit }
-        ' coverage/branches.txt
-
     - name: Check Codecov Token
       if: runner.os == 'macOS'
       env:
