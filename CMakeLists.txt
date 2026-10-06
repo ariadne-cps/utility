@@ -16,7 +16,7 @@ require_initialized_submodules()
 
 setup_project()
 
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 if(NOT TARGET utility)
     add_subdirectory(src)
