@@ -108,6 +108,15 @@ class TestLRUCache {
         ARIADNE_TEST_EQUALS(cache.age("fourth"),1);
     }
 
+    void test_single_slot() {
+        CacheType cache(1);
+        cache.put("first",42);
+        ARIADNE_TEST_EQUALS(cache.get("first"),42);
+        cache.put("second",10);
+        ARIADNE_TEST_ASSERT(not cache.has_label("first"));
+        ARIADNE_TEST_EQUALS(cache.get("second"),10);
+    }
+
     void test() {
         ARIADNE_TEST_CALL(test_construct());
         ARIADNE_TEST_CALL(test_find());
@@ -117,6 +126,7 @@ class TestLRUCache {
         ARIADNE_TEST_CALL(test_put_multiple());
         ARIADNE_TEST_CALL(test_put_multiple_over());
         ARIADNE_TEST_CALL(test_get());
+        ARIADNE_TEST_CALL(test_single_slot());
     }
 
 };
