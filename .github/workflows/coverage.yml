@@ -40,7 +40,7 @@ jobs:
 
     - name: Set Up macOS Dependencies
       if: runner.os == 'macOS'
-      run: brew install ninja pkg-config gnupg lcov
+      run: brew install ninja pkg-config gnupg
 
     - name: Set Up Linux Dependencies
       if: runner.os == 'Linux'
