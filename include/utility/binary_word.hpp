@@ -124,11 +124,9 @@ class BinaryWord : public std::vector<bool> {
 };
 
 inline void BinaryWord::erase_prefix(const int prefix_size) {
-    const int total_size = size();
-    //Erase prefix elements until the word is empry or we erased prefix_size elements
-    for( int i = 0; ( i < total_size ) && ( i < prefix_size ) ; i++ ) {
-        erase( begin() );
-    }
+    if(prefix_size <= 0) { return; }
+    const size_t erase_size = std::min(size(),static_cast<size_t>(prefix_size));
+    erase(begin(),begin()+static_cast<difference_type>(erase_size));
 }
 
 inline bool BinaryWord::operator<(const BinaryWord& w) const {
