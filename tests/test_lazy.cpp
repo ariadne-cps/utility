@@ -25,7 +25,7 @@
 #include <iostream>
 #include "utility/lazy.hpp"
 
-#include "utility/test.hpp"
+#include "macro/testing.hpp"
 
 using namespace Ariadne;
 

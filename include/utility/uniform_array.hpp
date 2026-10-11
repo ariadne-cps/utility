@@ -40,7 +40,7 @@
 #include <ostream>
 
 #include "utility/metaprogramming.hpp"
-#include "utility/macros.hpp"
+#include "macro/general.hpp"
 #include "utility/array.hpp"
 
 namespace Ariadne {

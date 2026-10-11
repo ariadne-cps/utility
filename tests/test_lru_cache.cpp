@@ -27,7 +27,7 @@
 #include "utility/string.hpp"
 #include "utility/lru_cache.hpp"
 
-#include "utility/test.hpp"
+#include "macro/testing.hpp"
 
 using namespace Ariadne;
 

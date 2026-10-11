@@ -26,7 +26,7 @@
 #include <thread>
 #include "utility/stopwatch.hpp"
 
-#include "utility/test.hpp"
+#include "macro/testing.hpp"
 
 using namespace Ariadne;
 using namespace std::chrono_literals;

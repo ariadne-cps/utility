@@ -6,7 +6,7 @@
 
 #include <ostream>
 
-#include "utility/test.hpp"
+#include "macro/testing.hpp"
 
 namespace TestLogic {
 

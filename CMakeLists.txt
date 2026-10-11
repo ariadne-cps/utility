@@ -14,11 +14,20 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/submodules/configuration/cmake/ProjectOptio
 
 require_initialized_submodules()
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    require_same_dependency_commit(Configuration
+        REFERENCES
+            "${PROJECT_SOURCE_DIR}|submodules/configuration"
+            "${PROJECT_SOURCE_DIR}/submodules/macro|submodules/configuration"
+    )
+endif()
+
 setup_project()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 if(NOT TARGET utility)
+    add_subdirectory(submodules/macro)
     add_subdirectory(src)
 
     add_library(utility INTERFACE)
@@ -26,6 +35,7 @@ if(NOT TARGET utility)
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include/ariadne-utility>
     )
+    target_link_libraries(utility INTERFACE macro)
 endif()
 
 ariadne_register_public_headers(
