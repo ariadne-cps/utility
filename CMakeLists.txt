@@ -4,21 +4,21 @@ project(Utility VERSION 1.0)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/submodules/configuration/cmake/ProjectOptions.cmake")
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ss/configuration/cmake/ProjectOptions.cmake")
     message(FATAL_ERROR
         "Git submodules are not initialized. "
         "Run 'git submodule update --init --recursive' before configuring the project.")
 endif()
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/submodules/configuration/cmake/ProjectOptions.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/ss/configuration/cmake/ProjectOptions.cmake")
 
 require_initialized_submodules()
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     require_same_dependency_commit(Configuration
         REFERENCES
-            "${PROJECT_SOURCE_DIR}|submodules/configuration"
-            "${PROJECT_SOURCE_DIR}/submodules/macro|submodules/configuration"
+            "${PROJECT_SOURCE_DIR}|ss/configuration"
+            "${PROJECT_SOURCE_DIR}/ss/macro|ss/configuration"
     )
 endif()
 
@@ -27,7 +27,7 @@ setup_project()
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 if(NOT TARGET utility)
-    add_subdirectory(submodules/macro)
+    add_subdirectory(ss/macro)
     add_subdirectory(src)
 
     add_library(utility INTERFACE)
