@@ -26,8 +26,9 @@ setup_project()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+add_subdirectory(ss)
+
 if(NOT TARGET utility)
-    add_subdirectory(ss/macro)
     add_subdirectory(src)
 
     add_library(utility INTERFACE)
