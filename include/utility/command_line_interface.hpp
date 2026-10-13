@@ -33,8 +33,10 @@
 #include <memory>
 #include <queue>
 #include <stdexcept>
+#include <utility>
 
 #include "macro/general.hpp"
+#include "utility/typedefs.hpp"
 #include "utility/container.hpp"
 #include "utility/string.hpp"
 
@@ -99,7 +101,7 @@ class ArgumentParserInterface {
 class ArgumentParser {
   public:
     template<class P>
-    explicit ArgumentParser(P parser)
+    ArgumentParser(P parser)
         : _ptr(std::make_shared<P>(std::move(parser))) { }
 
     String const& short_id() const { return _ptr->short_id(); }
