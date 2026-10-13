@@ -63,9 +63,11 @@ class TestCommandLineInterface {
         ArgumentStream short_stream({"-v","1"});
         ArgumentStream long_stream({"--value","1"});
         ArgumentStream other_stream({"--other"});
+        ArgumentStream long_only_stream({"--flag"});
         ARIADNE_TEST_ASSERT(valued.is_consumable(short_stream))
         ARIADNE_TEST_ASSERT(valued.is_consumable(long_stream))
         ARIADNE_TEST_ASSERT(not valued.is_consumable(other_stream))
+        ARIADNE_TEST_ASSERT(flag.is_consumable(long_only_stream))
     }
 
     Void test_base_interface() {
