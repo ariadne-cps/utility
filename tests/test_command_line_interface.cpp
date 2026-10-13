@@ -164,6 +164,13 @@ class TestCommandLineInterface {
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("a","second","second",[]{})
             })))
+
+        CommandLineInterface long_only;
+        ARIADNE_TEST_EXECUTE(long_only.add(
+            CommandLineContribution("long-only",{
+                make_unvalued_argument_parser("x","first","first",[]{}),
+                make_unvalued_argument_parser("","second","second",[]{})
+            })))
     }
 
     Void test_priority_and_transactionality() {

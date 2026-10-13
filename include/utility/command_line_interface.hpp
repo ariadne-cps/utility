@@ -30,11 +30,11 @@
 #define ARIADNE_UTILITY_COMMAND_LINE_INTERFACE_HPP
 
 #include <functional>
+#include <memory>
 #include <queue>
 #include <stdexcept>
 
 #include "macro/general.hpp"
-#include "utility/handle.hpp"
 #include "utility/container.hpp"
 #include "utility/string.hpp"
 
@@ -96,16 +96,21 @@ class ArgumentParserInterface {
     virtual ~ArgumentParserInterface() = default;
 };
 
-class ArgumentParser : public Handle<const ArgumentParserInterface> {
+class ArgumentParser {
   public:
-    using Handle<const ArgumentParserInterface>::Handle;
+    template<class P>
+    explicit ArgumentParser(P parser)
+        : _ptr(std::make_shared<P>(std::move(parser))) { }
 
-    String const& short_id() const { return this->_ptr->short_id(); }
-    String const& long_id() const { return this->_ptr->long_id(); }
-    Bool is_consumable(ArgumentStream const& stream) const { return this->_ptr->is_consumable(stream); }
-    ArgumentPack consume(ArgumentStream& stream) const { return this->_ptr->consume(stream); }
-    SizeType help_description_header_size() const { return this->_ptr->help_description_header_size(); }
-    String help_description(SizeType n) const { return this->_ptr->help_description(n); }
+    String const& short_id() const { return _ptr->short_id(); }
+    String const& long_id() const { return _ptr->long_id(); }
+    Bool is_consumable(ArgumentStream const& stream) const { return _ptr->is_consumable(stream); }
+    ArgumentPack consume(ArgumentStream& stream) const { return _ptr->consume(stream); }
+    SizeType help_description_header_size() const { return _ptr->help_description_header_size(); }
+    String help_description(SizeType n) const { return _ptr->help_description(n); }
+
+  private:
+    std::shared_ptr<const ArgumentParserInterface> _ptr;
 };
 
 ArgumentParser make_valued_argument_parser(

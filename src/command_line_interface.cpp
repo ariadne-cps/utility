@@ -334,6 +334,7 @@ Bool CommandLineInterface::acquire(List<String> const& args) const {
                 try {
                     ArgumentPack pack=parser.consume(stream);
                     if (pack.id() == "help") {
+                        pack.process();
                         _print_help();
                         return false;
                     }
