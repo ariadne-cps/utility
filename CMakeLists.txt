@@ -29,14 +29,15 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(ss)
 
 if(NOT TARGET utility)
-    add_subdirectory(src)
-
     add_library(utility INTERFACE)
     target_include_directories(utility INTERFACE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include/ariadne-utility>
     )
     target_link_libraries(utility INTERFACE macro)
+
+    add_subdirectory(src)
+    target_link_libraries(UTILITY_SRC PRIVATE utility)
 endif()
 
 ariadne_register_public_headers(
