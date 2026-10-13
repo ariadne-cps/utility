@@ -26,8 +26,6 @@
  *  \brief
  */
 
-
-
 #ifndef ARIADNE_UTILITY_MODULE_HPP
 #define ARIADNE_UTILITY_MODULE_HPP
 
@@ -43,5 +41,6 @@
 
 #include "utility/handle.hpp"
 #include "utility/container.hpp"
+#include "utility/command_line_interface.hpp"
 
 #endif

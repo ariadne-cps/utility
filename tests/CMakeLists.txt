@@ -2,6 +2,7 @@ include(CTest)
 
 set(UNIT_TESTS
     test_array
+    test_command_line_interface
     test_container
     test_lazy
     test_lru_cache
