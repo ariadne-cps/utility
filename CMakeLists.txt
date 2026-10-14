@@ -4,22 +4,14 @@ project(Utility VERSION 1.0)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
-find_package(Git REQUIRED)
-
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ss/configuration/cmake/ProjectOptions.cmake")
-    execute_process(
-        COMMAND "${GIT_EXECUTABLE}" -C "${CMAKE_CURRENT_SOURCE_DIR}"
-                submodule update --init -- ss/configuration
-        ERROR_VARIABLE _configuration_error
-        RESULT_VARIABLE _configuration_result
-    )
-    if(NOT _configuration_result EQUAL 0)
-        message(FATAL_ERROR
-            "Cannot initialize configuration submodule: ${_configuration_error}")
-    endif()
+if(NOT TARGET ariadne-configuration)
+    find_package(Git REQUIRED)
+    execute_process(COMMAND "${GIT_EXECUTABLE}" -C "${CMAKE_CURRENT_SOURCE_DIR}"
+                    submodule update --init -- ss/configuration
+                    COMMAND_ERROR_IS_FATAL ANY)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/ss/configuration/cmake/ProjectOptions.cmake")
 endif()
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/ss/configuration/cmake/ProjectOptions.cmake")
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     require_same_dependency_commit(Configuration
