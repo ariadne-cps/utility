@@ -68,3 +68,8 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
         DESTINATION include/ariadne-utility
     )
 endif()
+
+# Documentation targets are standalone-only to avoid conflicts in parent builds.
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+  include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/UseDoxygen.cmake")
+endif()
