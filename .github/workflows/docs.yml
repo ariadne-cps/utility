@@ -24,6 +24,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y doxygen graphviz
           npm install --global moxygen@2.1.19
+      - name: Test public XML filtering
+        run: python3 -m unittest discover -s tests -p 'test_doc_markdown.py'
       - name: Configure documentation
         run: cmake -S . -B build-docs -DDOXYFILE_LATEX=OFF
       - name: Generate HTML and Markdown
@@ -37,6 +39,7 @@ jobs:
           pages = list(Path('build-docs/docs/markdown').rglob('*.md'))
           print(f"Generated {len(pages)} Markdown pages")
           assert len(pages) >= 2, "Expected API index and API detail pages"
+          assert not any("agevaluepair" in p.name.lower() or "call_impl" in p.name.lower() for p in pages), "Private nested types leaked into public Markdown"
           PY
       - uses: actions/upload-artifact@v4
         with:
