@@ -51,31 +51,3 @@ cmake --build . --parallel --target coverage
 ```
 
 On Ubuntu coverage is generated with GCC/lcov. On macOS it is generated with AppleClang/LLVM coverage tools.
-
-## Documentation prototype (Doxygen to Markdown)
-
-The experimental `docs-doxygen-markdown` branch uses the Doxygen configuration
-and `doc` target adapted from [Ariadne](https://github.com/ariadne-cps/ariadne).
-The input is Utility's `include/` and `src/` source code; no manual API
-pages or generated outputs are committed.
-
-Requirements: Doxygen, Python 3, Node.js 20+ and Moxygen 2.1.19.
-Generate the documentation with:
-
-```sh
-npm install --global moxygen@2.1.19
-cmake -S . -B build-docs
-cmake --build build-docs --target doc-markdown
-```
-
-The `doc` target produces Doxygen HTML (`build-docs/docs/html/`), XML
-(`build-docs/docs/xml/`) and, by default, LaTeX sources
-(`build-docs/docs/latex/`). The `doc-markdown` target additionally
-generates Hugo-ready Markdown with YAML front matter in
-`build-docs/docs/markdown/`. It cleans obsolete Markdown on each run.
-Use `-DDOXYFILE_LATEX=OFF` for HTML/XML/Markdown-only builds, or build
-`doc-pdf` to compile the LaTeX PDF when TeX and make are available.
-
-The generated Markdown is an experimental API output; Hugo-specific URLs,
-navigation and cross-repository links must be validated before website
-publication. This branch does not alter the website or other repositories.
