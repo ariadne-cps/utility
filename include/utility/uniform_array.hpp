@@ -174,7 +174,7 @@ class UniformArray
     //! \brief Constructs a UniformArray of size \a n with default-initialised elements.
     explicit UniformArray(const std::size_t n) : UniformArray(n,_default_characteristics()) { }
     //! \brief Constructs a UniformArray of size \a n with default-initialised elements.
-    explicit UniformArray(const std::size_t n, CharacteristicsType pr) : PR(pr), _size(n), _ptr(uninitialized_new(n)) { for(std::size_t i=0; i!=n; ++i) { new (_ptr+i) T(_make_default()); } }
+    explicit UniformArray(const std::size_t n, CharacteristicsType pr) : PR(pr), _size(n), _ptr(uninitialized_new(n)) { this->_uninitialized_default_fill(); }
     //! \brief Constructs a UniformArray of size \a n with uninitialised elements. The elements should be initialised using placement new.
     explicit UniformArray(const std::size_t n, CharacteristicsType pr, Uninitialised) : PR(pr), _size(n), _ptr(uninitialized_new(n)) { }
     //! \brief Constructs a UniformArray of size \a n with elements initialised to \a x.
@@ -256,13 +256,16 @@ class UniformArray
         a._size=0u; a._ptr=nullptr; }
     //! \brief Copy assignment.
     UniformArray<T>& operator=(const UniformArray<T>& a) {
-        this->_set_characteristics(a.element_characteristics());
-        if(this->size()==a.size()) { fill(a.begin()); }
-        else { this->_destroy_elements(); uninitialized_delete(_ptr); _size=a.size(); _ptr=uninitialized_new(_size); this->_uninitialized_fill(a.begin()); }
+        if(this!=&a) { UniformArray<T> tmp(a); *this=std::move(tmp); }
         return *this; }
     //! \brief Move assignment.
     UniformArray<T>& operator=(UniformArray<T>&& a) {
-        if(this!=&a) { this->_set_characteristics(a.element_characteristics()); this->_size=a._size; this->_ptr=a._ptr; a._size=0u; a._ptr=nullptr; } return *this; }
+        if(this!=&a) {
+            this->_set_characteristics(a.element_characteristics());
+            this->_destroy_elements(); uninitialized_delete(_ptr);
+            this->_size=a._size; this->_ptr=a._ptr; a._size=0u; a._ptr=nullptr;
+        }
+        return *this; }
 
     //! \brief The common characteristics of the array's elements.
     CharacteristicsType element_characteristics() const { return static_cast<PR const&>(*this); }
@@ -277,18 +280,23 @@ class UniformArray
     //! \brief Resizes the UniformArray to hold \a n elements. If \a n is larger than the current size, the extra elements are default initialised.
     void resize(std::size_t n) {
         if(size()!=n) {
-            pointer _new_ptr=uninitialized_new(n);
-            for(std::size_t i=0; i!=n; ++i) { if(i<_size) { new (_new_ptr+i) T(_ptr[i]); } else { new (_new_ptr+i) T(_make_default()); } }
-            this->_destroy_elements(); uninitialized_delete(_ptr); _size=n; _ptr=_new_ptr; } }
+            pointer new_ptr=uninitialized_new(n); pointer curr=new_ptr;
+            try {
+                for(std::size_t i=0; i!=n; ++i,++curr) { if(i<_size) { new (curr) T(_ptr[i]); } else { new (curr) T(_make_default()); } }
+            } catch(...) { _destroy_range(new_ptr,curr); uninitialized_delete(new_ptr); throw; }
+            this->_destroy_elements(); uninitialized_delete(_ptr); _size=n; _ptr=new_ptr;
+        } }
     //! \brief Resizes the UniformArray to hold \a n elements. If \a n is larger than the current size, the extra elements are initialised with value \a t.
     void resize(std::size_t n, const T& t) {
         if(size()!=n) {
-            pointer _new_ptr=uninitialized_new(n);
-            for(std::size_t i=0; i!=n; ++i) { if(i<_size) { new (_new_ptr+i) T(_ptr[i]); } else { new (_new_ptr+i) T(t); } }
-            this->_destroy_elements(); uninitialized_delete(_ptr); _size=n; _ptr=_new_ptr; } }
+            pointer new_ptr=uninitialized_new(n); pointer curr=new_ptr;
+            try {
+                for(std::size_t i=0; i!=n; ++i,++curr) { if(i<_size) { new (curr) T(_ptr[i]); } else { new (curr) T(t); } }
+            } catch(...) { _destroy_range(new_ptr,curr); uninitialized_delete(new_ptr); throw; }
+            this->_destroy_elements(); uninitialized_delete(_ptr); _size=n; _ptr=new_ptr;
+        } }
     //! \brief Reallocates the UniformArray to hold \a n elements. The new elements are zero-constructed.
-    void reallocate(std::size_t n) { if(size()!=n) { this->_destroy_elements(); uninitialized_delete(_ptr);
-        _size=n; _ptr=uninitialized_new(_size); for(std::size_t i=0; i!=_size; ++i) { new (_ptr+i) T(_make_default()); } } }
+    void reallocate(std::size_t n) { if(size()!=n) { UniformArray<T> tmp(n,this->element_characteristics()); this->swap(tmp); } }
     //! \brief Efficiently swap two arrays.
     void swap(UniformArray<T>& a) { std::swap(_size,a._size); std::swap(_ptr,a._ptr); }
 
@@ -351,18 +359,32 @@ class UniformArray
     template<class ForwardIterator> void assign(ForwardIterator fst, ForwardIterator lst) {
         resize(std::distance(fst,lst)); fill(fst); }
   private:
-    void _destroy_elements() { pointer curr=_ptr+_size; while(curr!=_ptr) { --curr; curr->~T(); } }
+    static void _destroy_range(pointer first, pointer last) { while(last!=first) { --last; last->~T(); } }
+    void _destroy_elements() { _destroy_range(_ptr,_ptr+_size); }
+    void _rollback_uninitialized(pointer curr) {
+        _destroy_range(_ptr,curr); uninitialized_delete(_ptr); _ptr=nullptr; _size=0u; }
+    void _uninitialized_default_fill() {
+        pointer curr=_ptr; pointer end=_ptr+_size;
+        try { while(curr!=end) { new (curr) T(_make_default()); ++curr; } }
+        catch(...) { this->_rollback_uninitialized(curr); throw; } }
     void _uninitialized_fill(const ValueType& x) {
-        pointer curr=_ptr; pointer end=_ptr+_size; while(curr!=end) { new (curr) T(x); ++curr; } }
+        pointer curr=_ptr; pointer end=_ptr+_size;
+        try { while(curr!=end) { new (curr) T(x); ++curr; } }
+        catch(...) { this->_rollback_uninitialized(curr); throw; } }
     template<class InputIterator> void _uninitialized_fill(InputIterator fst) {
         pointer curr=_ptr; pointer end=_ptr+_size;
-        while(curr!=end) { new (curr) T(*fst); ++curr; ++fst; } }
+        try { while(curr!=end) { new (curr) T(*fst); ++curr; ++fst; } }
+        catch(...) { this->_rollback_uninitialized(curr); throw; } }
     template<class InputIterator, class Parameters> void _uninitialized_fill(InputIterator fst, Parameters parameters) {
         pointer curr=_ptr; pointer end=_ptr+_size;
-        while(curr!=end) { new (curr) T(*fst,parameters); ++curr; ++fst; } }
+        try { while(curr!=end) { new (curr) T(*fst,parameters); ++curr; ++fst; } }
+        catch(...) { this->_rollback_uninitialized(curr); throw; } }
     template<class G> void _uninitialized_generate(G g) {
-        for(std::size_t i=0u; i!=this->size(); ++i) {
-            new (_ptr+i) T(g(i)); assert(get_characteristics(_ptr[i])==element_characteristics()); } }
+        pointer curr=_ptr;
+        try {
+            for(std::size_t i=0u; i!=this->size(); ++i,++curr) {
+                new (curr) T(g(i)); assert(get_characteristics(*curr)==element_characteristics()); }
+        } catch(...) { this->_rollback_uninitialized(curr); throw; } }
   private:
     std::size_t _size;
     pointer _ptr;

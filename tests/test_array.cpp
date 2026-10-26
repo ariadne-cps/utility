@@ -26,6 +26,7 @@
 #include <utility>
 
 #include "utility/array.hpp"
+#include "utility/uniform_array.hpp"
 #include "utility/container.hpp"
 
 #include "macro/testing.hpp"
@@ -42,6 +43,26 @@ struct TestClass {
     explicit TestClass(TestConvertibleTo const& c) : TestClass(c.a) { }
     int a;
 };
+
+struct Tracked {
+    static int live;
+    static int copies_until_throw;
+    int value;
+
+    Tracked(int value_=0) : value(value_) { ++live; }
+    Tracked(Tracked const& other) : value(other.value) {
+        if(copies_until_throw==0) { throw std::runtime_error("tracked copy failure"); }
+        if(copies_until_throw>0) { --copies_until_throw; }
+        ++live;
+    }
+    Tracked(Tracked&& other) noexcept : value(other.value) { ++live; }
+    Tracked& operator=(Tracked const&)=default;
+    Tracked& operator=(Tracked&&)=default;
+    ~Tracked() { --live; }
+};
+
+int Tracked::live=0;
+int Tracked::copies_until_throw=-1;
 
 class TestArray {
   public:
@@ -77,11 +98,53 @@ class TestArray {
         ARIADNE_TEST_ASSERT(source.empty());
     }
 
+    void test_move_assignment_ownership() {
+        {
+            Array<Tracked> target(3u,Tracked(1));
+            Array<Tracked> source(2u,Tracked(2));
+            ARIADNE_TEST_EQUALS(Tracked::live,5);
+            target=std::move(source);
+            ARIADNE_TEST_EQUALS(Tracked::live,2);
+            ARIADNE_TEST_EQUALS(target.size(),2u);
+            ARIADNE_TEST_ASSERT(source.empty());
+        }
+        ARIADNE_TEST_EQUALS(Tracked::live,0);
+
+        {
+            UniformArray<Tracked> target(3u,Tracked(1));
+            UniformArray<Tracked> source(2u,Tracked(2));
+            ARIADNE_TEST_EQUALS(Tracked::live,5);
+            target=std::move(source);
+            ARIADNE_TEST_EQUALS(Tracked::live,2);
+            ARIADNE_TEST_EQUALS(target.size(),2u);
+            ARIADNE_TEST_ASSERT(source.empty());
+        }
+        ARIADNE_TEST_EQUALS(Tracked::live,0);
+    }
+
+    void test_exception_safe_construction() {
+        Array<Tracked> array_source(3u,Tracked(1));
+        int baseline=Tracked::live;
+        Tracked::copies_until_throw=1;
+        ARIADNE_TEST_THROWS((void)Array<Tracked>(array_source),std::runtime_error);
+        Tracked::copies_until_throw=-1;
+        ARIADNE_TEST_EQUALS(Tracked::live,baseline);
+
+        UniformArray<Tracked> uniform_source(3u,Tracked(1));
+        baseline=Tracked::live;
+        Tracked::copies_until_throw=1;
+        ARIADNE_TEST_THROWS((void)UniformArray<Tracked>(uniform_source),std::runtime_error);
+        Tracked::copies_until_throw=-1;
+        ARIADNE_TEST_EQUALS(Tracked::live,baseline);
+    }
+
     void test() {
         ARIADNE_TEST_CALL(test_convert());
         ARIADNE_TEST_CALL(test_print());
         ARIADNE_TEST_CALL(test_complement());
         ARIADNE_TEST_CALL(test_move());
+        ARIADNE_TEST_CALL(test_move_assignment_ownership());
+        ARIADNE_TEST_CALL(test_exception_safe_construction());
     }
 
 };
