@@ -1,4 +1,4 @@
-name: Unix
+name: macOS
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   build-test:
-    name: ${{ matrix.config.name }} [${{ matrix.build_type == 'Release' && 'Release Build' || 'Debug Tests' }}]
+    name: ${{ matrix.config.name }} [${{ matrix.build_type }}]
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -20,11 +20,9 @@ jobs:
         build_type: [Release, Debug]
         config:
           - { name: "macOS 14 AppleClang", os: macos-14, cxx: "clang++" }
-          - { name: "Ubuntu 24.04 Clang 16", os: ubuntu-24.04, cxx: "clang++-16", pkg: "clang-16" }
-          - { name: "Ubuntu 24.04 GCC 13", os: ubuntu-24.04, cxx: "g++-13", pkg: "g++-13", libstdcxx_debug: true }
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Set up sccache
         uses: mozilla-actions/sccache-action@v0.0.11
@@ -35,23 +33,11 @@ jobs:
         if: runner.os == 'macOS'
         run: echo "NPROC=$(sysctl -n hw.ncpu)" >> "$GITHUB_ENV"
 
-      - name: Get Linux concurrency
-        if: runner.os == 'Linux'
-        run: echo "NPROC=$(nproc)" >> "$GITHUB_ENV"
-
       - name: Set up macOS dependencies
         if: runner.os == 'macOS'
         run: brew install ninja
 
-      - name: Set up Linux dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake ninja-build pkg-config ${{ matrix.config.pkg }}
-
       - name: Configure CMake
-        env:
-          CXXFLAGS: ${{ matrix.build_type == 'Debug' && matrix.config.libstdcxx_debug && '-D_GLIBCXX_DEBUG' || '' }}
         run: |
           cmake -S . -B "${{ runner.workspace }}/build" -G Ninja \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
