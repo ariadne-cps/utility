@@ -19,8 +19,8 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         config:
-          - { name: "Windows 2025 MSVC", os: windows-2025, arch: x64 }
-          - { name: "Windows 11 ARM64 MSVC", os: windows-11-arm, arch: arm64 }
+          - { name: "Windows 2025 x86 MSVC", os: windows-2025, arch: x64 }
+          - { name: "Windows 11 arm MSVC", os: windows-11-arm, arch: arm64 }
 
     steps:
       - uses: actions/checkout@v7

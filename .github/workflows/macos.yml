@@ -19,7 +19,7 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         config:
-          - { name: "macOS 14 AppleClang", os: macos-14, cxx: "clang++" }
+          - { name: "macOS 26 arm AppleClang", os: macos-26, cxx: "clang++" }
 
     steps:
       - uses: actions/checkout@v7

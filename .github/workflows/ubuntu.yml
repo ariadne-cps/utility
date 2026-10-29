@@ -19,10 +19,10 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         config:
-          - { name: "Ubuntu 24.04 x64 Clang 16", os: ubuntu-24.04, cxx: "clang++-16", pkg: "clang-16" }
-          - { name: "Ubuntu 24.04 x64 GCC 13", os: ubuntu-24.04, cxx: "g++-13", pkg: "g++-13", libstdcxx_debug: true }
-          - { name: "Ubuntu 24.04 ARM64 Clang 16", os: ubuntu-24.04-arm, cxx: "clang++-16", pkg: "clang-16" }
-          - { name: "Ubuntu 24.04 ARM64 GCC 13", os: ubuntu-24.04-arm, cxx: "g++-13", pkg: "g++-13", libstdcxx_debug: true }
+          - { name: "Ubuntu 24.04 x86 Clang 16", os: ubuntu-24.04, cxx: "clang++-16", pkg: "clang-16" }
+          - { name: "Ubuntu 24.04 x86 GCC 13", os: ubuntu-24.04, cxx: "g++-13", pkg: "g++-13", libstdcxx_debug: true }
+          - { name: "Ubuntu 24.04 arm Clang 16", os: ubuntu-24.04-arm, cxx: "clang++-16", pkg: "clang-16" }
+          - { name: "Ubuntu 24.04 arm GCC 13", os: ubuntu-24.04-arm, cxx: "g++-13", pkg: "g++-13", libstdcxx_debug: true }
 
     steps:
       - uses: actions/checkout@v7
