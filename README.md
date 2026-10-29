@@ -1,6 +1,5 @@
 # Ariadne Utility
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![macOS Status](https://github.com/ariadne-cps/utility/actions/workflows/macos.yml/badge.svg)](https://github.com/ariadne-cps/utility/actions/workflows/macos.yml)
 [![Ubuntu Status](https://github.com/ariadne-cps/utility/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/ariadne-cps/utility/actions/workflows/ubuntu.yml)
 [![Windows Status](https://github.com/ariadne-cps/utility/actions/workflows/win.yml/badge.svg)](https://github.com/ariadne-cps/utility/actions/workflows/win.yml)
