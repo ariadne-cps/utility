@@ -75,7 +75,7 @@
 #include <iosfwd>
 #include <stdexcept>
 
-#include "macro/general.hpp"
+#include "utility/macros.hpp"
 #include "utility/stlio.hpp"
 
 namespace Ariadne {

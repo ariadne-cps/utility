@@ -1,3 +1,1 @@
-if(NOT TARGET macro)
-    ariadne_add_submodule(macro)
-endif()
+# No runtime submodules. Testing is configured in tests/ only.

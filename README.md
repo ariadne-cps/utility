@@ -51,3 +51,9 @@ cmake --build . --parallel --target coverage
 ```
 
 On Ubuntu coverage is generated with GCC/lcov. On macOS it is generated with AppleClang/LLVM coverage tools.
+
+## Testing experiment
+
+The `testing` branch moves the general production macros to `utility/macros.hpp`
+and drops the `macro` dependency. The new `testing` submodule is **test-only**;
+the `utility` library interface and installed library do not link to it.
