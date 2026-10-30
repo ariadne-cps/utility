@@ -38,7 +38,7 @@
 #include <cmath>
 #include <cstdint>
 
-#include "macro/general.hpp"
+#include "utility/macros.hpp"
 #include "utility/metaprogramming.hpp"
 
 #endif /* ARIADNE_UTILITY_STANDARD_HPP */

@@ -16,13 +16,6 @@ if(NOT TARGET ariadne-configuration)
 endif()
 
 
-if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    require_same_dependency_commit(Configuration
-        CHAINS
-            "configuration"
-            "macro|configuration"
-    )
-endif()
 
 setup_project()
 
@@ -36,7 +29,6 @@ if(NOT TARGET utility)
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include/ariadne-utility>
     )
-    target_link_libraries(utility INTERFACE macro)
 
     add_subdirectory(src)
     target_link_libraries(UTILITY_SRC PRIVATE utility)

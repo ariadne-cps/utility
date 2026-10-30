@@ -35,7 +35,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "macro/general.hpp"
+#include "utility/macros.hpp"
 #include "utility/typedefs.hpp"
 #include "utility/container.hpp"
 #include "utility/string.hpp"

@@ -51,3 +51,10 @@ cmake --build . --parallel --target coverage
 ```
 
 On Ubuntu coverage is generated with GCC/lcov. On macOS it is generated with AppleClang/LLVM coverage tools.
+
+## Macros
+
+General-purpose Ariadne production macros are now provided in
+`utility/macros.hpp`, with their original interface preserved for existing
+users. Utility no longer depends on the `macro` repository. Bootstrap tests
+are independent of the legacy testing macros.

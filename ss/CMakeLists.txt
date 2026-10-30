@@ -1,3 +1,1 @@
-if(NOT TARGET macro)
-    ariadne_add_submodule(macro)
-endif()
+# Utility has no runtime dependencies beyond shared configuration.
