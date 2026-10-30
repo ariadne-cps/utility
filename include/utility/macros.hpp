@@ -1,33 +1,27 @@
 /***************************************************************************
- *            general.hpp
+ *            macros.hpp
  *
- *  Copyright  2023  Luca Geretti
+ *  Copyright  2026  Luca Geretti
+ *  Author     Luca Geretti
  *
  ****************************************************************************/
 
 /*
- *  This file is part of Ariadne Macro.
+ *  This file is part of Ariadne Utility.
  *
- *  Ariadne Macro is free software: you can redistribute it and/or modify
+ *  Ariadne Utility is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Ariadne Macro is distributed in the hope that it will be useful,
+ *  Ariadne Utility is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Ariadne Macro.  If not, see <https://www.gnu.org/licenses/>.
+ *  along with Ariadne Utility. If not, see <https://www.gnu.org/licenses/>.
  */
-
-
-/*! \file general.hpp
- *  \brief
- */
-
-
 
 #ifndef ARIADNE_UTILITY_MACROS_HPP
 #define ARIADNE_UTILITY_MACROS_HPP

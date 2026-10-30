@@ -108,3 +108,7 @@ execution before this branch is promoted.
 All 33 test-function registrations across eight test executables now use `ARIADNE_ADD_TEST(suite, Fixture, test_method)` or `ARIADNE_ADD_TEST_NO_THROW` for demonstration-only methods. The method name is written once. The C++20 helper in the Testing repository validates member function pointers, constructs a fresh fixture from Context&, and preserves case/check numbering and errors. The macro only stringifies a token.
 
 Fixtures now derive from `ContextFixture` and inherit its constructor instead of storing a nullable `_ctx` pointer. TestRandomiser preserves ten attempts through its context constructor. No test-method body was removed. The pinned Testing gitlink includes the new helper. CI confirmation is required.
+
+## 2026-10-30 — Source headers
+
+Added the standard filename/copyright/author and GPLv3-or-later notices to new sources lacking them. Corrected the copied `utility/macros.hpp` header that incorrectly mentioned the old Macro repository and filename. Existing authorship headers for the other Utility files are preserved. Changes are comments only.
