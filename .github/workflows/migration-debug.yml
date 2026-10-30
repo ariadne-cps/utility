@@ -1,0 +1,51 @@
+name: Migration Diagnostics
+on:
+  push:
+    branches: [testing]
+permissions:
+  contents: read
+  statuses: write
+jobs:
+  compiler:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-16
+      - name: Configure and build
+        id: diagnose
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release -DWARNINGS_AS_ERRORS=ON > compile.log 2>&1
+          c=$?
+          if [ "$c" -eq 0 ]; then
+            cmake --build build --target ariadne-utility --parallel 2 >> compile.log 2>&1
+            c=$?
+          fi
+          echo "build_exit=$c" >> "$GITHUB_OUTPUT"
+          tail -n 90 compile.log
+      - name: Publish first compiler diagnostics to commit statuses
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+          BUILD_EXIT: ${{ steps.diagnose.outputs.build_exit }}
+        run: |
+          python3 - <<'PY'
+          import os,re,json,urllib.request
+          s=open('compile.log',errors='replace').read().splitlines() if os.path.isfile('compile.log') else ['no compile.log']
+          keys=[line.strip() for line in s if re.search(r'(^|\s)(error:|fatal error:|FAILED:|CMake Error|undefined reference|ninja: error|No rule to make target)',line)]
+          if not keys: keys=s[-10:]
+          keys=keys[:5]
+          for i,line in enumerate(keys):
+              msg=line[:130]
+              data=json.dumps(dict(state='failure' if os.environ.get('BUILD_EXIT','1')!='0' else 'success',
+                  context=f'migration-diag/{i+1}',description=msg))
+              req=urllib.request.Request(
+                  f'https://api.github.com/repos/ariadne-cps/utility/statuses/{os.environ["SHA"]}',
+                  data=data.encode(),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                  'Accept':'application/vnd.github+json','Content-Type':'application/json'},method='POST')
+              urllib.request.urlopen(req).read()
+          PY
