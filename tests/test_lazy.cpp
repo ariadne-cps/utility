@@ -43,7 +43,7 @@ class TestClass {
     double _value;
 };
 
-class TestLazy : public Ariadne::ContextFixture {
+class TestLazy : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 

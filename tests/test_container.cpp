@@ -28,7 +28,7 @@
 
 using namespace Ariadne;
 
-class TestContainer : public Ariadne::ContextFixture {
+class TestContainer : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 

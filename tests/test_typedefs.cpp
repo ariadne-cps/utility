@@ -31,7 +31,7 @@ using namespace Ariadne;
 
 int main() {
     ARIADNE_TEST_SUITE("typedefs");
-    ariadne_test_suite.add("typedef conversions", [&](Ariadne::Context& ctx) {
+    ariadne_test_suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
         ARIADNE_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
         ARIADNE_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
     });

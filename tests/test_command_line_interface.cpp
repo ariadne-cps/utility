@@ -11,7 +11,7 @@
 
 using namespace Ariadne;
 
-class TestCommandLineInterface : public Ariadne::ContextFixture {
+class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 
