@@ -224,3 +224,12 @@ library rather than the redundant `utility_testing_runtime` archive.
 Testing remains excluded from Utility's production interface, build and
 install bundle. Test sources, case registrations, check expressions,
 expected outcomes and CTest inventory are unchanged.
+
+## 2026-10-30 — Automatic Testing submodule discovery
+
+The `ss/cfg` gitlink now pins Configuration `d57304ec9d37ba27f99a9f28e23b9e0272d15b0a`.
+Removed redundant `USE_ARIADNE_TESTING` from the root
+`setup_standalone_project_tests` invocation. Configuration discovers the
+pinned `ss/tst` submodule automatically when standalone tests are configured;
+no changes to test bodies or the nine CTest executables. Production linking
+and installation remain independent of Testing.

@@ -49,7 +49,6 @@ setup_standalone_project_tests(
     TARGET ariadne-utility
     TEST_DIRECTORY tests
     TEST_TARGET tests
-    USE_ARIADNE_TESTING
     SOURCES
         "${PROJECT_SOURCE_DIR}/include"
         "${PROJECT_SOURCE_DIR}/src"
