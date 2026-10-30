@@ -1,0 +1,41 @@
+name: Testing migration diagnostics
+
+on:
+  push:
+    branches:
+      - testing
+
+jobs:
+  isolated-test-build:
+    name: ${{ matrix.test }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - test_array
+          - test_command_line_interface
+          - test_container
+          - test_lazy
+          - test_lru_cache
+          - test_randomiser
+          - test_stack_trace
+          - test_stopwatch
+          - test_testing
+          - test_typedefs
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++-13
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_CXX_COMPILER=g++-13
+          -DWARNINGS_AS_ERRORS=ON
+      - name: Build isolated test
+        run: cmake --build build --target ${{ matrix.test }} --parallel 2
+      - name: Run isolated test
+        run: ctest --test-dir build -R "^${{ matrix.test }}$" --output-on-failure
