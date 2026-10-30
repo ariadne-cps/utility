@@ -54,7 +54,7 @@ jobs:
 
       - name: Build Debug tests
         if: matrix.build_type == 'Debug'
-        run: cmake --build build --parallel --target tests
+        run: cmake --build build --parallel 2 --target tests
 
       - name: Run Debug tests
         if: matrix.build_type == 'Debug'
