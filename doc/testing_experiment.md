@@ -65,3 +65,28 @@ Future iterations should prefer direct `Context&` injection and named suite
 cases over the temporary fixture-pointer bridge, and add parameterized tests
 only when their execution semantics are established. Do not weaken tests to
 make CI green.
+
+
+## 2026-10-30 — Individual function cases and numbered checks
+
+Each original `test_*` function is now registered as its own named
+`Suite::add` case in declaration order (33 functions across eight existing
+test source files, plus the existing dedicated semantics and typedef suites).
+The old `legacy scenarios` wrapper and redundant exception-catching
+dispatch have been removed. Cases normally invoke the function directly;
+demonstration-only functions (printing, stack tracing, creation) use a single
+`expect_no_throw` checker to record a real operational observation rather than
+silently being classified as skipped.
+
+Progress is tracked by the Testing framework, not by extra print statements.
+The console reporter emits and flushes `[RUN i/N] suite / function` before
+the function and `[CHECK i.j] description` for each checker; j resets to
+1 at the next function. There is no third hierarchy level. The Testing gitlink
+is pinned to the implementation and its regression tests.
+
+**Limitation:** C++ evaluates checker arguments before entering eager
+checkers such as `expect_equal`. Their CHECK event cannot precede hangs
+inside argument evaluation. For expensive expressions use deferred
+`Context::check([&] { return expression; }, "description")`.
+Exception checkers are already deferred. Separate CTest executables each
+have their own suite and numbering; no global cross-process index exists.
