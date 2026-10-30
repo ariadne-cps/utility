@@ -112,3 +112,21 @@ Fixtures now derive from `ContextFixture` and inherit its constructor instead of
 ## 2026-10-30 — Source headers
 
 Added the standard filename/copyright/author and GPLv3-or-later notices to new sources lacking them. Corrected the copied `utility/macros.hpp` header that incorrectly mentioned the old Macro repository and filename. Existing authorship headers for the other Utility files are preserved. Changes are comments only.
+
+## 2026-10-30 — Update Testing submodule to D01–D04 and remove duplicate test
+
+The test-only `ss/tst` gitlink now targets Testing main at `87dc260218298998e404c98bf541a470472c0dd5`,
+including the expression/predicate/evidence checks, parameterized fixture
+variants and nested diagnostic contexts. Existing Utility test bodies and
+assertion calls were deliberately not rewritten during this dependency
+update; this ensures that any CI difference measures compatibility with
+the newer Testing API rather than a simultaneous semantic migration.
+
+Per request, removed `tests/test_testing.cpp`, which independently tested
+the Testing framework's validated truth/identity/tolerance semantics;
+Testing's own CTest self-tests cover these framework concerns. Removed
+`test_testing` from `tests/CMakeLists.txt` and its `tests` aggregate
+via `UNIT_TESTS`. The Utility-specific test executables remain untouched;
+there are now nine standalone CTest executables in Utility's test directory.
+No changes to Utility's production library or the `main` branch.
+This operation requires validation in Utility's CI after the submodule bump.
