@@ -24,40 +24,43 @@
 
 #include "utility/container.hpp"
 
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 
 class TestContainer {
   public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
+
 
     void test_map_get() {
         Map<int,int> im = {{1,10},{2,20}};
-        ARIADNE_TEST_FAIL(im.get(3));
-        ARIADNE_TEST_EQUALS(im.get(2),20);
+        ctx().expect_exception([&] { im.get(3); }, "im.get(3)");
+        ctx().expect_equal((im.get(2)), (20), "im.get(2),20");
     }
 
     void test_map_convert() {
         Map<int,int> im = {{1,10},{2,20}};
 
         Map<int,double> dm(im);
-        ARIADNE_TEST_ASSERT(dm.at(1) == im.at(1) and dm.at(2) == im.at(2));
+        ctx().prove((dm.at(1) == im.at(1) and dm.at(2) == im.at(2)), "dm.at(1) == im.at(1) and dm.at(2) == im.at(2)");
     }
 
     void test_map_restrict_keys() {
         Set<int> s = {1,2};
         Map<int,double> m = {{1,1.2},{2,1.5},{3,1.0},{5,0.1}};
         auto restricted = restrict_keys(m,s);
-        ARIADNE_TEST_EQUALS(restricted.size(),2);
-        ARIADNE_TEST_ASSERT(restricted.has_key(1) and restricted.has_key(2));
-        ARIADNE_TEST_ASSERT(not restricted.has_key(3));
+        ctx().expect_equal((restricted.size()), (2), "restricted.size(),2");
+        ctx().prove((restricted.has_key(1) and restricted.has_key(2)), "restricted.has_key(1) and restricted.has_key(2)");
+        ctx().prove((not restricted.has_key(3)), "not restricted.has_key(3)");
     }
 
     void test_make_list_of_set() {
         Set<int> s = {1, 5, 3};
         auto l = make_list(s);
-        ARIADNE_TEST_EQUALS(l.size(),3);
-        ARIADNE_TEST_ASSERT(l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5);
+        ctx().expect_equal((l.size()), (3), "l.size(),3");
+        ctx().prove((l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5), "l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5");
     }
 
     void test_print_vector() {
@@ -67,25 +70,31 @@ class TestContainer {
         std::vector<unsigned int> nonempty_unsigned = {1u};
         std::vector<double> empty_double;
         std::vector<double> nonempty_double = {1.0};
-        ARIADNE_TEST_PRINT(empty_int);
-        ARIADNE_TEST_PRINT(nonempty_int);
-        ARIADNE_TEST_PRINT(empty_unsigned);
-        ARIADNE_TEST_PRINT(nonempty_unsigned);
-        ARIADNE_TEST_PRINT(empty_double);
-        ARIADNE_TEST_PRINT(nonempty_double);
+        std::cout << "empty_int" << " = " << (empty_int) << '\n';
+        std::cout << "nonempty_int" << " = " << (nonempty_int) << '\n';
+        std::cout << "empty_unsigned" << " = " << (empty_unsigned) << '\n';
+        std::cout << "nonempty_unsigned" << " = " << (nonempty_unsigned) << '\n';
+        std::cout << "empty_double" << " = " << (empty_double) << '\n';
+        std::cout << "nonempty_double" << " = " << (nonempty_double) << '\n';
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_map_get());
-        ARIADNE_TEST_CALL(test_map_convert());
-        ARIADNE_TEST_CALL(test_map_restrict_keys());
-        ARIADNE_TEST_CALL(test_make_list_of_set());
-        ARIADNE_TEST_CALL(test_print_vector());
+        ctx().expect_no_throw([&] { test_map_get(); }, "test_map_get()");
+        ctx().expect_no_throw([&] { test_map_convert(); }, "test_map_convert()");
+        ctx().expect_no_throw([&] { test_map_restrict_keys(); }, "test_map_restrict_keys()");
+        ctx().expect_no_throw([&] { test_make_list_of_set(); }, "test_make_list_of_set()");
+        ctx().expect_no_throw([&] { test_print_vector(); }, "test_print_vector()");
     }
 
 };
 
 int main() {
-    TestContainer().test();
-    return ARIADNE_TEST_FAILURES;
+    Ariadne::Testing::Suite suite("container");
+    TestContainer fixture ;
+    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+        fixture._ctx = &t;
+        fixture.test();
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }

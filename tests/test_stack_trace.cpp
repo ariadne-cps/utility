@@ -26,7 +26,7 @@
 
 #include "utility/stack_trace.hpp"
 
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 
@@ -38,6 +38,9 @@ struct TestClass {
 
 class TestLRUCache {
   public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
+
 
     void test_free_function() {
         stack_trace();
@@ -48,13 +51,19 @@ class TestLRUCache {
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_free_function());
-        ARIADNE_TEST_CALL(test_class_method());
+        ctx().expect_no_throw([&] { test_free_function(); }, "test_free_function()");
+        ctx().expect_no_throw([&] { test_class_method(); }, "test_class_method()");
     }
 
 };
 
 int main() {
-    TestLRUCache().test();
-    return ARIADNE_TEST_FAILURES;
+    Ariadne::Testing::Suite suite("stack_trace");
+    TestLRUCache fixture ;
+    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+        fixture._ctx = &t;
+        fixture.test();
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }

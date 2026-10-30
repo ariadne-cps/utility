@@ -6,12 +6,16 @@
  ****************************************************************************/
 
 #include "utility/typedefs.hpp"
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 
-Int main() {
-    ARIADNE_TEST_EQUALS(static_cast<SizeType>(SizeOne()),1u)
-    ARIADNE_TEST_EQUALS(static_cast<SizeType>(IndexZero()),0u)
-    return ARIADNE_TEST_FAILURES;
+int main() {
+    Ariadne::Testing::Suite suite("typedefs");
+    suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
+        ctx.expect_equal(static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
+        ctx.expect_equal(static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }

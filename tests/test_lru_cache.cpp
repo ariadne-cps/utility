@@ -27,7 +27,7 @@
 #include "utility/string.hpp"
 #include "utility/lru_cache.hpp"
 
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 
@@ -35,51 +35,54 @@ using CacheType = LRUCache<String,int>;
 
 class TestLRUCache {
   public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
+
 
     void test_construct() {
-        ARIADNE_TEST_FAIL(CacheType(0));
+        ctx().expect_exception([&] { CacheType(0); }, "CacheType(0)");
         CacheType cache(1);
-        ARIADNE_TEST_EQUALS(cache.current_size(),0);
-        ARIADNE_TEST_EQUALS(cache.maximum_size(),1);
+        ctx().expect_equal((cache.current_size()), (0), "cache.current_size(),0");
+        ctx().expect_equal((cache.maximum_size()), (1), "cache.maximum_size(),1");
     }
 
     void test_find() {
         CacheType cache(2);
-        ARIADNE_TEST_ASSERT(not cache.has_label("something"));
+        ctx().prove((not cache.has_label("something")), "not cache.has_label(\"something\")");
     }
 
     void test_get_failure() {
         CacheType cache(2);
-        ARIADNE_TEST_FAIL(cache.get("something"));
-        ARIADNE_TEST_FAIL(cache.age("something"));
+        ctx().expect_exception([&] { cache.get("something"); }, "cache.get(\"something\")");
+        ctx().expect_exception([&] { cache.age("something"); }, "cache.age(\"something\")");
     }
 
     void test_string() {
         std::string std_string = "text";
         String string(std_string);
-        ARIADNE_TEST_ASSERT(std::string(c_str(string)) == "text");
-        ARIADNE_TEST_ASSERT(to_string(42) == "42");
-        ARIADNE_TEST_ASSERT(to_str(43) == "43");
-        ARIADNE_TEST_ASSERT(class_name<String>() == "String");
+        ctx().prove((std::string(c_str(string)) == "text"), "std::string(c_str(string)) == \"text\"");
+        ctx().prove((to_string(42) == "42"), "to_string(42) == \"42\"");
+        ctx().prove((to_str(43) == "43"), "to_str(43) == \"43\"");
+        ctx().prove((class_name<String>() == "String"), "class_name<String>() == \"String\"");
     }
 
     void test_put_single() {
         CacheType cache(2);
         cache.put("first",42);
-        ARIADNE_TEST_EQUALS(cache.current_size(),1);
-        ARIADNE_TEST_EQUALS(cache.age("first"),0);
+        ctx().expect_equal((cache.current_size()), (1), "cache.current_size(),1");
+        ctx().expect_equal((cache.age("first")), (0), "cache.age(\"first\"),0");
         auto val = cache.get("first");
-        ARIADNE_TEST_EQUALS(val,42);
+        ctx().expect_equal((val), (42), "val,42");
     }
 
     void test_put_multiple() {
         CacheType cache(2);
         cache.put("first",42);
-        ARIADNE_TEST_FAIL(cache.put("first",10));
+        ctx().expect_exception([&] { cache.put("first",10); }, "cache.put(\"first\",10)");
         cache.put("second",10);
-        ARIADNE_TEST_EQUALS(cache.current_size(),2);
-        ARIADNE_TEST_EQUALS(cache.age("first"),1);
-        ARIADNE_TEST_EQUALS(cache.age("second"),0);
+        ctx().expect_equal((cache.current_size()), (2), "cache.current_size(),2");
+        ctx().expect_equal((cache.age("first")), (1), "cache.age(\"first\"),1");
+        ctx().expect_equal((cache.age("second")), (0), "cache.age(\"second\"),0");
     }
 
     void test_put_multiple_over() {
@@ -88,11 +91,11 @@ class TestLRUCache {
         cache.put("second",10);
         cache.put("third",5);
         cache.put("fourth",12);
-        ARIADNE_TEST_EQUALS(cache.current_size(),3);
-        ARIADNE_TEST_ASSERT(not cache.has_label("first"));
-        ARIADNE_TEST_EQUALS(cache.age("second"),2);
-        ARIADNE_TEST_EQUALS(cache.age("third"),1);
-        ARIADNE_TEST_EQUALS(cache.age("fourth"),0);
+        ctx().expect_equal((cache.current_size()), (3), "cache.current_size(),3");
+        ctx().prove((not cache.has_label("first")), "not cache.has_label(\"first\")");
+        ctx().expect_equal((cache.age("second")), (2), "cache.age(\"second\"),2");
+        ctx().expect_equal((cache.age("third")), (1), "cache.age(\"third\"),1");
+        ctx().expect_equal((cache.age("fourth")), (0), "cache.age(\"fourth\"),0");
     }
 
     void test_get() {
@@ -102,26 +105,32 @@ class TestLRUCache {
         cache.put("third",5);
         cache.put("fourth",12);
         cache.get("second");
-        ARIADNE_TEST_EQUALS(cache.age("second"),0);
-        ARIADNE_TEST_EQUALS(cache.age("first"),3);
-        ARIADNE_TEST_EQUALS(cache.age("third"),2);
-        ARIADNE_TEST_EQUALS(cache.age("fourth"),1);
+        ctx().expect_equal((cache.age("second")), (0), "cache.age(\"second\"),0");
+        ctx().expect_equal((cache.age("first")), (3), "cache.age(\"first\"),3");
+        ctx().expect_equal((cache.age("third")), (2), "cache.age(\"third\"),2");
+        ctx().expect_equal((cache.age("fourth")), (1), "cache.age(\"fourth\"),1");
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_construct());
-        ARIADNE_TEST_CALL(test_find());
-        ARIADNE_TEST_CALL(test_get_failure());
-        ARIADNE_TEST_CALL(test_string());
-        ARIADNE_TEST_CALL(test_put_single());
-        ARIADNE_TEST_CALL(test_put_multiple());
-        ARIADNE_TEST_CALL(test_put_multiple_over());
-        ARIADNE_TEST_CALL(test_get());
+        ctx().expect_no_throw([&] { test_construct(); }, "test_construct()");
+        ctx().expect_no_throw([&] { test_find(); }, "test_find()");
+        ctx().expect_no_throw([&] { test_get_failure(); }, "test_get_failure()");
+        ctx().expect_no_throw([&] { test_string(); }, "test_string()");
+        ctx().expect_no_throw([&] { test_put_single(); }, "test_put_single()");
+        ctx().expect_no_throw([&] { test_put_multiple(); }, "test_put_multiple()");
+        ctx().expect_no_throw([&] { test_put_multiple_over(); }, "test_put_multiple_over()");
+        ctx().expect_no_throw([&] { test_get(); }, "test_get()");
     }
 
 };
 
 int main() {
-    TestLRUCache().test();
-    return ARIADNE_TEST_FAILURES;
+    Ariadne::Testing::Suite suite("lru_cache");
+    TestLRUCache fixture ;
+    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+        fixture._ctx = &t;
+        fixture.test();
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }

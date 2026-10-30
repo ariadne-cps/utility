@@ -27,7 +27,7 @@
 #include "utility/randomiser.hpp"
 #include "utility/container.hpp"
 
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 using namespace std;
@@ -48,7 +48,7 @@ class TestRandomiser {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        ARIADNE_TEST_PRINT(values)
+        std::cout << "values" << " = " << (values) << '\n';
     }
 
     void test_real() {
@@ -60,17 +60,22 @@ class TestRandomiser {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        ARIADNE_TEST_PRINT(values)
+        std::cout << "values" << " = " << (values) << '\n';
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_int());
-        ARIADNE_TEST_CALL(test_real());
+        ctx.expect_no_throw([&] { test_int(); }, "test_int()");
+        ctx.expect_no_throw([&] { test_real(); }, "test_real()");
     }
 
 };
 
 int main() {
-    TestRandomiser(10).test();
-    return ARIADNE_TEST_FAILURES;
+    Ariadne::Testing::Suite suite("randomiser");
+    suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
+        ctx.expect_equal(static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
+        ctx.expect_equal(static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }

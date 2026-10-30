@@ -25,15 +25,18 @@
 #include <iostream>
 #include "utility/lazy.hpp"
 
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 
 class TestClass {
   public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
+
     TestClass(double a) {
         _value = a*a;
-        ARIADNE_TEST_PRINT("TestClass object created")
+        std::cout << "\"TestClass object created\"" << " = " << ("TestClass object created") << '\n';
     }
 
     double value() { return _value; }
@@ -50,21 +53,27 @@ class TestLazy {
         int creations = 0;
         Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
 
-        ARIADNE_TEST_PRINT("Lazy created")
+        std::cout << "\"Lazy created\"" << " = " << ("Lazy created") << '\n';
         TestClass obj = lazy();
-        ARIADNE_TEST_EQUAL(obj.value(),4.0)
+        ctx().expect_equal((obj.value()), (4.0), "obj.value(),4.0");
         TestClass same_obj = lazy();
-        ARIADNE_TEST_EQUAL(same_obj.value(),4.0)
-        ARIADNE_TEST_EQUAL(creations,1)
+        ctx().expect_equal((same_obj.value()), (4.0), "same_obj.value(),4.0");
+        ctx().expect_equal((creations), (1), "creations,1");
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_creation());
+        ctx().expect_no_throw([&] { test_creation(); }, "test_creation()");
     }
 
 };
 
 int main() {
-    TestLazy().test();
-    return ARIADNE_TEST_FAILURES;
+    Ariadne::Testing::Suite suite("lazy");
+    TestClass fixture ;
+    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+        fixture._ctx = &t;
+        fixture.test();
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }

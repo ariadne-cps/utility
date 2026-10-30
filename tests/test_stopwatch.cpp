@@ -26,13 +26,16 @@
 #include <thread>
 #include "utility/stopwatch.hpp"
 
-#include "macro/testing.hpp"
+#include "testing/testing.hpp"
 
 using namespace Ariadne;
 using namespace std::chrono_literals;
 
 class TestStopwatch {
   public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
+
 
     void test_create() {
         Stopwatch<Milliseconds> sw;
@@ -42,18 +45,24 @@ class TestStopwatch {
         Stopwatch<Microseconds> sw;
         std::this_thread::sleep_for(10ms);
         auto duration = sw.click().duration();
-        ARIADNE_TEST_ASSERT(duration.count()>10000);
-        ARIADNE_TEST_ASSERT(sw.elapsed_seconds() > 0.01);
+        ctx().prove((duration.count()>10000), "duration.count()>10000");
+        ctx().prove((sw.elapsed_seconds() > 0.01), "sw.elapsed_seconds() > 0.01");
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_create());
-        ARIADNE_TEST_CALL(test_duration());
+        ctx().expect_no_throw([&] { test_create(); }, "test_create()");
+        ctx().expect_no_throw([&] { test_duration(); }, "test_duration()");
     }
 
 };
 
 int main() {
-    TestStopwatch().test();
-    return ARIADNE_TEST_FAILURES;
+    Ariadne::Testing::Suite suite("stopwatch");
+    TestStopwatch fixture ;
+    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+        fixture._ctx = &t;
+        fixture.test();
+    });
+    Ariadne::Testing::ConsoleReporter reporter(std::cout);
+    return suite.run(reporter).successful() ? 0 : 1;
 }
