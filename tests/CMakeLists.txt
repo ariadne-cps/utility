@@ -1,6 +1,9 @@
 include(CTest)
-if(NOT TARGET testing)
+if(NOT TARGET ariadne-testing)
     ariadne_add_submodule(testing)
+endif()
+if(NOT TARGET ariadne-testing)
+    message(FATAL_ERROR "Testing submodule did not create the ariadne-testing target")
 endif()
 
 set(UNIT_TESTS
