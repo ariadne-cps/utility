@@ -124,6 +124,34 @@ class TestArray : public Ariadne::Testing::ContextFixture {
         ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
     }
 
+    void test_self_move_assignment_preserves_storage() {
+        {
+            Array<Tracked> array(2u,Tracked(7));
+            Tracked* storage=array.begin();
+            Array<Tracked>& self=array;
+            array=std::move(self);
+            ARIADNE_EXPECT_EQUAL(array.size(), 2u);
+            ARIADNE_EXPECT_EQUAL(array.begin(), storage);
+            ARIADNE_EXPECT_EQUAL(array[0].value, 7);
+            ARIADNE_EXPECT_EQUAL(array[1].value, 7);
+            ARIADNE_EXPECT_EQUAL(Tracked::live, 2);
+        }
+        ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
+
+        {
+            UniformArray<Tracked> array(2u,Tracked(9));
+            Tracked* storage=array.begin();
+            UniformArray<Tracked>& self=array;
+            array=std::move(self);
+            ARIADNE_EXPECT_EQUAL(array.size(), 2u);
+            ARIADNE_EXPECT_EQUAL(array.begin(), storage);
+            ARIADNE_EXPECT_EQUAL(array.begin()[0].value, 9);
+            ARIADNE_EXPECT_EQUAL(array.begin()[1].value, 9);
+            ARIADNE_EXPECT_EQUAL(Tracked::live, 2);
+        }
+        ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
+    }
+
     void test_exception_safe_construction() {
         Array<Tracked> array_source(3u,Tracked(1));
         int baseline=Tracked::live;
@@ -149,6 +177,7 @@ int main() {
     ARIADNE_ADD_TEST(TestArray, test_complement);
     ARIADNE_ADD_TEST(TestArray, test_move);
     ARIADNE_ADD_TEST(TestArray, test_move_assignment_ownership);
+    ARIADNE_ADD_TEST(TestArray, test_self_move_assignment_preserves_storage);
     ARIADNE_ADD_TEST(TestArray, test_exception_safe_construction);
     return ARIADNE_RUN_TESTS();
 }
