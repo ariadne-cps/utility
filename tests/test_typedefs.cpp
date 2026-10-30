@@ -6,12 +6,12 @@
  ****************************************************************************/
 
 #include "utility/typedefs.hpp"
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 
 Int main() {
-    ARIADNE_TEST_EQUALS(static_cast<SizeType>(SizeOne()),1u)
-    ARIADNE_TEST_EQUALS(static_cast<SizeType>(IndexZero()),0u)
-    return ARIADNE_TEST_FAILURES;
+    bootstrap::equal((static_cast<SizeType>(SizeOne())), (1u), "static_cast<SizeType>(SizeOne()),1u")
+    bootstrap::equal((static_cast<SizeType>(IndexZero())), (0u), "static_cast<SizeType>(IndexZero()),0u")
+    return bootstrap::failures;
 }

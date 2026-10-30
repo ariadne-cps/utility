@@ -6,43 +6,43 @@
  ****************************************************************************/
 
 #include "utility/command_line_interface.hpp"
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 
 class TestCommandLineInterface {
   public:
     Void test() {
-        ARIADNE_TEST_CALL(test_argument_stream())
-        ARIADNE_TEST_CALL(test_argument_pack())
-        ARIADNE_TEST_CALL(test_parser_metadata_and_help())
-        ARIADNE_TEST_CALL(test_base_interface())
-        ARIADNE_TEST_CALL(test_composition())
-        ARIADNE_TEST_CALL(test_validation())
-        ARIADNE_TEST_CALL(test_priority_and_transactionality())
+        bootstrap::call([&] { test_argument_stream(); }, "test_argument_stream()")
+        bootstrap::call([&] { test_argument_pack(); }, "test_argument_pack()")
+        bootstrap::call([&] { test_parser_metadata_and_help(); }, "test_parser_metadata_and_help()")
+        bootstrap::call([&] { test_base_interface(); }, "test_base_interface()")
+        bootstrap::call([&] { test_composition(); }, "test_composition()")
+        bootstrap::call([&] { test_validation(); }, "test_validation()")
+        bootstrap::call([&] { test_priority_and_transactionality(); }, "test_priority_and_transactionality()")
     }
 
     Void test_argument_stream() {
-        ARIADNE_TEST_FAIL(ArgumentStream({}))
+        bootstrap::throws([&] { ArgumentStream({}); }, "ArgumentStream({})")
 
         ArgumentStream stream({"program","first"});
-        ARIADNE_TEST_ASSERT(not stream.empty())
-        ARIADNE_TEST_EQUALS(stream.size(),2u)
-        ARIADNE_TEST_EQUALS(stream.peek(),"program")
-        ARIADNE_TEST_EQUALS(stream.pop(),"program")
-        ARIADNE_TEST_EQUALS(stream.pop(),"first")
-        ARIADNE_TEST_ASSERT(stream.empty())
-        ARIADNE_TEST_FAIL(stream.peek())
-        ARIADNE_TEST_FAIL(stream.pop())
+        bootstrap::require((not stream.empty()), "not stream.empty()")
+        bootstrap::equal((stream.size()), (2u), "stream.size(),2u")
+        bootstrap::equal((stream.peek()), ("program"), "stream.peek(),\"program\"")
+        bootstrap::equal((stream.pop()), ("program"), "stream.pop(),\"program\"")
+        bootstrap::equal((stream.pop()), ("first"), "stream.pop(),\"first\"")
+        bootstrap::require((stream.empty()), "stream.empty()")
+        bootstrap::throws([&] { stream.peek(); }, "stream.peek()")
+        bootstrap::throws([&] { stream.pop(); }, "stream.pop()")
     }
 
     Void test_argument_pack() {
         Bool processed=false;
         ArgumentPack pack("test",[&processed]{ processed=true; },-3);
-        ARIADNE_TEST_EQUALS(pack.id(),"test")
-        ARIADNE_TEST_EQUALS(pack.priority(),-3)
+        bootstrap::equal((pack.id()), ("test"), "pack.id(),\"test\"")
+        bootstrap::equal((pack.priority()), (-3), "pack.priority(),-3")
         pack.process();
-        ARIADNE_TEST_ASSERT(processed)
+        bootstrap::require((processed), "processed")
     }
 
     Void test_parser_metadata_and_help() {
@@ -52,33 +52,33 @@ class TestCommandLineInterface {
         ArgumentParser flag=make_unvalued_argument_parser(
             "","flag","Enable a flag",[]{});
 
-        ARIADNE_TEST_EQUALS(valued.short_id(),"v")
-        ARIADNE_TEST_EQUALS(valued.long_id(),"value")
-        ARIADNE_TEST_EQUALS(flag.short_id(),"")
-        ARIADNE_TEST_EQUALS(flag.long_id(),"flag")
-        ARIADNE_TEST_ASSERT(valued.help_description_header_size() > flag.help_description_header_size())
-        ARIADNE_TEST_ASSERT(valued.help_description(2).find("<value>") != String::npos)
-        ARIADNE_TEST_ASSERT(flag.help_description(2).find("[--flag]") != String::npos)
+        bootstrap::equal((valued.short_id()), ("v"), "valued.short_id(),\"v\"")
+        bootstrap::equal((valued.long_id()), ("value"), "valued.long_id(),\"value\"")
+        bootstrap::equal((flag.short_id()), (""), "flag.short_id(),\"\"")
+        bootstrap::equal((flag.long_id()), ("flag"), "flag.long_id(),\"flag\"")
+        bootstrap::require((valued.help_description_header_size() > flag.help_description_header_size()), "valued.help_description_header_size() > flag.help_description_header_size()")
+        bootstrap::require((valued.help_description(2).find("<value>") != String::npos), "valued.help_description(2).find(\"<value>\") != String::npos")
+        bootstrap::require((flag.help_description(2).find("[--flag]") != String::npos), "flag.help_description(2).find(\"[--flag]\") != String::npos")
 
         ArgumentStream short_stream({"-v","1"});
         ArgumentStream long_stream({"--value","1"});
         ArgumentStream other_stream({"--other"});
         ArgumentStream long_only_stream({"--flag"});
-        ARIADNE_TEST_ASSERT(valued.is_consumable(short_stream))
-        ARIADNE_TEST_ASSERT(valued.is_consumable(long_stream))
-        ARIADNE_TEST_ASSERT(not valued.is_consumable(other_stream))
-        ARIADNE_TEST_ASSERT(flag.is_consumable(long_only_stream))
+        bootstrap::require((valued.is_consumable(short_stream)), "valued.is_consumable(short_stream)")
+        bootstrap::require((valued.is_consumable(long_stream)), "valued.is_consumable(long_stream)")
+        bootstrap::require((not valued.is_consumable(other_stream)), "not valued.is_consumable(other_stream)")
+        bootstrap::require((flag.is_consumable(long_only_stream)), "flag.is_consumable(long_only_stream)")
     }
 
     Void test_base_interface() {
         CommandLineInterface cli;
-        ARIADNE_TEST_ASSERT(cli.acquire({""}))
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--unknown"}))
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","-h"}))
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--help"}))
+        bootstrap::require((cli.acquire({""})), "cli.acquire({\"\"})")
+        bootstrap::require((not cli.acquire({"","--unknown"})), "not cli.acquire({\"\",\"--unknown\"})")
+        bootstrap::require((not cli.acquire({"","-h"})), "not cli.acquire({\"\",\"-h\"})")
+        bootstrap::require((not cli.acquire({"","--help"})), "not cli.acquire({\"\",\"--help\"})")
 
         const char* argv[]={"program"};
-        ARIADNE_TEST_ASSERT(cli.acquire(1,argv))
+        bootstrap::require((cli.acquire(1,argv)), "cli.acquire(1,argv)")
     }
 
     Void test_composition() {
@@ -104,75 +104,75 @@ class TestCommandLineInterface {
                     [&flag]{ flag=true; })
             });
 
-        ARIADNE_TEST_EQUALS(contribution.name(),"test")
-        ARIADNE_TEST_EQUALS(contribution.parsers().size(),2u)
+        bootstrap::equal((contribution.name()), ("test"), "contribution.name(),\"test\"")
+        bootstrap::equal((contribution.parsers().size()), (2u), "contribution.parsers().size(),2u")
 
         CommandLineInterface cli;
         cli.add(contribution).add(contribution);
 
-        ARIADNE_TEST_ASSERT(cli.acquire({"","-v","3","--flag"}))
-        ARIADNE_TEST_EQUALS(value,3u)
-        ARIADNE_TEST_ASSERT(flag)
+        bootstrap::require((cli.acquire({"","-v","3","--flag"})), "cli.acquire({\"\",\"-v\",\"3\",\"--flag\"})")
+        bootstrap::equal((value), (3u), "value,3u")
+        bootstrap::require((flag), "flag")
 
         value=0u;
-        ARIADNE_TEST_ASSERT(cli.acquire({"","--value","4"}))
-        ARIADNE_TEST_EQUALS(value,4u)
+        bootstrap::require((cli.acquire({"","--value","4"})), "cli.acquire({\"\",\"--value\",\"4\"})")
+        bootstrap::equal((value), (4u), "value,4u")
 
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--value"}))
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--value","-1"}))
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--value","x"}))
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--value","1","-v","2"}))
+        bootstrap::require((not cli.acquire({"","--value"})), "not cli.acquire({\"\",\"--value\"})")
+        bootstrap::require((not cli.acquire({"","--value","-1"})), "not cli.acquire({\"\",\"--value\",\"-1\"})")
+        bootstrap::require((not cli.acquire({"","--value","x"})), "not cli.acquire({\"\",\"--value\",\"x\"})")
+        bootstrap::require((not cli.acquire({"","--value","1","-v","2"})), "not cli.acquire({\"\",\"--value\",\"1\",\"-v\",\"2\"})")
     }
 
     Void test_validation() {
         CommandLineInterface help_collision;
-        ARIADNE_TEST_FAIL(help_collision.add(
+        bootstrap::throws([&] { help_collision.add(
             CommandLineContribution("help-long",{
                 make_unvalued_argument_parser("x","help","collision",[]{})
-            })))
-        ARIADNE_TEST_FAIL(help_collision.add(
+            })); }, "help_collision.add( CommandLineContribution(\"help-long\",{ make_unvalued_argument_parser(\"x\",\"help\",\"collision\",[]{}) }))")
+        bootstrap::throws([&] { help_collision.add(
             CommandLineContribution("help-short",{
                 make_unvalued_argument_parser("h","other","collision",[]{})
-            })))
+            })); }, "help_collision.add( CommandLineContribution(\"help-short\",{ make_unvalued_argument_parser(\"h\",\"other\",\"collision\",[]{}) }))")
 
         CommandLineInterface internal_long_collision;
-        ARIADNE_TEST_FAIL(internal_long_collision.add(
+        bootstrap::throws([&] { internal_long_collision.add(
             CommandLineContribution("long-collision",{
                 make_unvalued_argument_parser("a","same","first",[]{}),
                 make_unvalued_argument_parser("b","same","second",[]{})
-            })))
+            })); }, "internal_long_collision.add( CommandLineContribution(\"long-collision\",{ make_unvalued_argument_parser(\"a\",\"same\",\"first\",[]{}), make_unvalued_argument_parser(\"b")
 
         CommandLineInterface internal_short_collision;
-        ARIADNE_TEST_FAIL(internal_short_collision.add(
+        bootstrap::throws([&] { internal_short_collision.add(
             CommandLineContribution("short-collision",{
                 make_unvalued_argument_parser("a","first","first",[]{}),
                 make_unvalued_argument_parser("a","second","second",[]{})
-            })))
+            })); }, "internal_short_collision.add( CommandLineContribution(\"short-collision\",{ make_unvalued_argument_parser(\"a\",\"first\",\"first\",[]{}), make_unvalued_argument_parser")
 
         CommandLineInterface existing_long_collision;
         existing_long_collision.add(CommandLineContribution("first",{
             make_unvalued_argument_parser("a","first","first",[]{})
         }));
-        ARIADNE_TEST_FAIL(existing_long_collision.add(
+        bootstrap::throws([&] { existing_long_collision.add(
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("b","first","second",[]{})
-            })))
+            })); }, "existing_long_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"b\",\"first\",\"second\",[]{}) }))")
 
         CommandLineInterface existing_short_collision;
         existing_short_collision.add(CommandLineContribution("first",{
             make_unvalued_argument_parser("a","first","first",[]{})
         }));
-        ARIADNE_TEST_FAIL(existing_short_collision.add(
+        bootstrap::throws([&] { existing_short_collision.add(
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("a","second","second",[]{})
-            })))
+            })); }, "existing_short_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))")
 
         CommandLineInterface long_only;
-        ARIADNE_TEST_EXECUTE(long_only.add(
+        bootstrap::call([&] { long_only.add(
             CommandLineContribution("long-only",{
                 make_unvalued_argument_parser("x","first","first",[]{}),
                 make_unvalued_argument_parser("","second","second",[]{})
-            })))
+            })); }, "long_only.add( CommandLineContribution(\"long-only\",{ make_unvalued_argument_parser(\"x\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"\",\"second\",\"second\"")
     }
 
     Void test_priority_and_transactionality() {
@@ -205,19 +205,19 @@ class TestCommandLineInterface {
                 })
         }));
 
-        ARIADNE_TEST_ASSERT(cli.acquire({"","--late","--zeta","--early","--alpha"}))
-        ARIADNE_TEST_EQUALS(order.size(),4u)
-        ARIADNE_TEST_EQUALS(order[0],"early")
-        ARIADNE_TEST_EQUALS(order[1],"alpha")
-        ARIADNE_TEST_EQUALS(order[2],"zeta")
-        ARIADNE_TEST_EQUALS(order[3],"late")
+        bootstrap::require((cli.acquire({"","--late","--zeta","--early","--alpha"})), "cli.acquire({\"\",\"--late\",\"--zeta\",\"--early\",\"--alpha\"})")
+        bootstrap::equal((order.size()), (4u), "order.size(),4u")
+        bootstrap::equal((order[0]), ("early"), "order[0],\"early\"")
+        bootstrap::equal((order[1]), ("alpha"), "order[1],\"alpha\"")
+        bootstrap::equal((order[2]), ("zeta"), "order[2],\"zeta\"")
+        bootstrap::equal((order[3]), ("late"), "order[3],\"late\"")
 
-        ARIADNE_TEST_ASSERT(not cli.acquire({"","--value","7","--unknown"}))
-        ARIADNE_TEST_EQUALS(value,0u)
+        bootstrap::require((not cli.acquire({"","--value","7","--unknown"})), "not cli.acquire({\"\",\"--value\",\"7\",\"--unknown\"})")
+        bootstrap::equal((value), (0u), "value,0u")
     }
 };
 
 Int main() {
     TestCommandLineInterface().test();
-    return ARIADNE_TEST_FAILURES;
+    return bootstrap::failures;
 }

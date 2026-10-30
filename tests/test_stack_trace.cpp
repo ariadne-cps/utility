@@ -26,7 +26,7 @@
 
 #include "utility/stack_trace.hpp"
 
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 
@@ -48,13 +48,13 @@ class TestLRUCache {
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_free_function());
-        ARIADNE_TEST_CALL(test_class_method());
+        bootstrap::call([&] { test_free_function(); }, "test_free_function()");
+        bootstrap::call([&] { test_class_method(); }, "test_class_method()");
     }
 
 };
 
 int main() {
     TestLRUCache().test();
-    return ARIADNE_TEST_FAILURES;
+    return bootstrap::failures;
 }

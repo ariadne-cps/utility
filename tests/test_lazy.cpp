@@ -25,7 +25,7 @@
 #include <iostream>
 #include "utility/lazy.hpp"
 
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 
@@ -33,7 +33,7 @@ class TestClass {
   public:
     TestClass(double a) {
         _value = a*a;
-        ARIADNE_TEST_PRINT("TestClass object created")
+        bootstrap::print(("TestClass object created"), "\"TestClass object created\"")
     }
 
     double value() { return _value; }
@@ -50,21 +50,21 @@ class TestLazy {
         int creations = 0;
         Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
 
-        ARIADNE_TEST_PRINT("Lazy created")
+        bootstrap::print(("Lazy created"), "\"Lazy created\"")
         TestClass obj = lazy();
-        ARIADNE_TEST_EQUAL(obj.value(),4.0)
+        bootstrap::equal((obj.value()), (4.0), "obj.value(),4.0")
         TestClass same_obj = lazy();
-        ARIADNE_TEST_EQUAL(same_obj.value(),4.0)
-        ARIADNE_TEST_EQUAL(creations,1)
+        bootstrap::equal((same_obj.value()), (4.0), "same_obj.value(),4.0")
+        bootstrap::equal((creations), (1), "creations,1")
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_creation());
+        bootstrap::call([&] { test_creation(); }, "test_creation()");
     }
 
 };
 
 int main() {
     TestLazy().test();
-    return ARIADNE_TEST_FAILURES;
+    return bootstrap::failures;
 }

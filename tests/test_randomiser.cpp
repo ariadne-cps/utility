@@ -27,7 +27,7 @@
 #include "utility/randomiser.hpp"
 #include "utility/container.hpp"
 
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 using namespace std;
@@ -48,7 +48,7 @@ class TestRandomiser {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        ARIADNE_TEST_PRINT(values)
+        bootstrap::print((values), "values")
     }
 
     void test_real() {
@@ -60,17 +60,17 @@ class TestRandomiser {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        ARIADNE_TEST_PRINT(values)
+        bootstrap::print((values), "values")
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_int());
-        ARIADNE_TEST_CALL(test_real());
+        bootstrap::call([&] { test_int(); }, "test_int()");
+        bootstrap::call([&] { test_real(); }, "test_real()");
     }
 
 };
 
 int main() {
     TestRandomiser(10).test();
-    return ARIADNE_TEST_FAILURES;
+    return bootstrap::failures;
 }

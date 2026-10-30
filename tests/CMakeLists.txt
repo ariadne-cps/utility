@@ -9,7 +9,6 @@ set(UNIT_TESTS
     test_stack_trace
     test_randomiser
     test_stopwatch
-    test_testing
     test_typedefs
 )
 

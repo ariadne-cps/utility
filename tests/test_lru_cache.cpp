@@ -27,7 +27,7 @@
 #include "utility/string.hpp"
 #include "utility/lru_cache.hpp"
 
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 
@@ -37,49 +37,49 @@ class TestLRUCache {
   public:
 
     void test_construct() {
-        ARIADNE_TEST_FAIL(CacheType(0));
+        bootstrap::throws([&] { CacheType(0); }, "CacheType(0)");
         CacheType cache(1);
-        ARIADNE_TEST_EQUALS(cache.current_size(),0);
-        ARIADNE_TEST_EQUALS(cache.maximum_size(),1);
+        bootstrap::equal((cache.current_size()), (0), "cache.current_size(),0");
+        bootstrap::equal((cache.maximum_size()), (1), "cache.maximum_size(),1");
     }
 
     void test_find() {
         CacheType cache(2);
-        ARIADNE_TEST_ASSERT(not cache.has_label("something"));
+        bootstrap::require((not cache.has_label("something")), "not cache.has_label(\"something\")");
     }
 
     void test_get_failure() {
         CacheType cache(2);
-        ARIADNE_TEST_FAIL(cache.get("something"));
-        ARIADNE_TEST_FAIL(cache.age("something"));
+        bootstrap::throws([&] { cache.get("something"); }, "cache.get(\"something\")");
+        bootstrap::throws([&] { cache.age("something"); }, "cache.age(\"something\")");
     }
 
     void test_string() {
         std::string std_string = "text";
         String string(std_string);
-        ARIADNE_TEST_ASSERT(std::string(c_str(string)) == "text");
-        ARIADNE_TEST_ASSERT(to_string(42) == "42");
-        ARIADNE_TEST_ASSERT(to_str(43) == "43");
-        ARIADNE_TEST_ASSERT(class_name<String>() == "String");
+        bootstrap::require((std::string(c_str(string)) == "text"), "std::string(c_str(string)) == \"text\"");
+        bootstrap::require((to_string(42) == "42"), "to_string(42) == \"42\"");
+        bootstrap::require((to_str(43) == "43"), "to_str(43) == \"43\"");
+        bootstrap::require((class_name<String>() == "String"), "class_name<String>() == \"String\"");
     }
 
     void test_put_single() {
         CacheType cache(2);
         cache.put("first",42);
-        ARIADNE_TEST_EQUALS(cache.current_size(),1);
-        ARIADNE_TEST_EQUALS(cache.age("first"),0);
+        bootstrap::equal((cache.current_size()), (1), "cache.current_size(),1");
+        bootstrap::equal((cache.age("first")), (0), "cache.age(\"first\"),0");
         auto val = cache.get("first");
-        ARIADNE_TEST_EQUALS(val,42);
+        bootstrap::equal((val), (42), "val,42");
     }
 
     void test_put_multiple() {
         CacheType cache(2);
         cache.put("first",42);
-        ARIADNE_TEST_FAIL(cache.put("first",10));
+        bootstrap::throws([&] { cache.put("first",10); }, "cache.put(\"first\",10)");
         cache.put("second",10);
-        ARIADNE_TEST_EQUALS(cache.current_size(),2);
-        ARIADNE_TEST_EQUALS(cache.age("first"),1);
-        ARIADNE_TEST_EQUALS(cache.age("second"),0);
+        bootstrap::equal((cache.current_size()), (2), "cache.current_size(),2");
+        bootstrap::equal((cache.age("first")), (1), "cache.age(\"first\"),1");
+        bootstrap::equal((cache.age("second")), (0), "cache.age(\"second\"),0");
     }
 
     void test_put_multiple_over() {
@@ -88,11 +88,11 @@ class TestLRUCache {
         cache.put("second",10);
         cache.put("third",5);
         cache.put("fourth",12);
-        ARIADNE_TEST_EQUALS(cache.current_size(),3);
-        ARIADNE_TEST_ASSERT(not cache.has_label("first"));
-        ARIADNE_TEST_EQUALS(cache.age("second"),2);
-        ARIADNE_TEST_EQUALS(cache.age("third"),1);
-        ARIADNE_TEST_EQUALS(cache.age("fourth"),0);
+        bootstrap::equal((cache.current_size()), (3), "cache.current_size(),3");
+        bootstrap::require((not cache.has_label("first")), "not cache.has_label(\"first\")");
+        bootstrap::equal((cache.age("second")), (2), "cache.age(\"second\"),2");
+        bootstrap::equal((cache.age("third")), (1), "cache.age(\"third\"),1");
+        bootstrap::equal((cache.age("fourth")), (0), "cache.age(\"fourth\"),0");
     }
 
     void test_get() {
@@ -102,26 +102,26 @@ class TestLRUCache {
         cache.put("third",5);
         cache.put("fourth",12);
         cache.get("second");
-        ARIADNE_TEST_EQUALS(cache.age("second"),0);
-        ARIADNE_TEST_EQUALS(cache.age("first"),3);
-        ARIADNE_TEST_EQUALS(cache.age("third"),2);
-        ARIADNE_TEST_EQUALS(cache.age("fourth"),1);
+        bootstrap::equal((cache.age("second")), (0), "cache.age(\"second\"),0");
+        bootstrap::equal((cache.age("first")), (3), "cache.age(\"first\"),3");
+        bootstrap::equal((cache.age("third")), (2), "cache.age(\"third\"),2");
+        bootstrap::equal((cache.age("fourth")), (1), "cache.age(\"fourth\"),1");
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_construct());
-        ARIADNE_TEST_CALL(test_find());
-        ARIADNE_TEST_CALL(test_get_failure());
-        ARIADNE_TEST_CALL(test_string());
-        ARIADNE_TEST_CALL(test_put_single());
-        ARIADNE_TEST_CALL(test_put_multiple());
-        ARIADNE_TEST_CALL(test_put_multiple_over());
-        ARIADNE_TEST_CALL(test_get());
+        bootstrap::call([&] { test_construct(); }, "test_construct()");
+        bootstrap::call([&] { test_find(); }, "test_find()");
+        bootstrap::call([&] { test_get_failure(); }, "test_get_failure()");
+        bootstrap::call([&] { test_string(); }, "test_string()");
+        bootstrap::call([&] { test_put_single(); }, "test_put_single()");
+        bootstrap::call([&] { test_put_multiple(); }, "test_put_multiple()");
+        bootstrap::call([&] { test_put_multiple_over(); }, "test_put_multiple_over()");
+        bootstrap::call([&] { test_get(); }, "test_get()");
     }
 
 };
 
 int main() {
     TestLRUCache().test();
-    return ARIADNE_TEST_FAILURES;
+    return bootstrap::failures;
 }

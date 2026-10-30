@@ -24,7 +24,7 @@
 
 #include "utility/container.hpp"
 
-#include "macro/testing.hpp"
+#include "bootstrap.hpp"
 
 using namespace Ariadne;
 
@@ -33,31 +33,31 @@ class TestContainer {
 
     void test_map_get() {
         Map<int,int> im = {{1,10},{2,20}};
-        ARIADNE_TEST_FAIL(im.get(3));
-        ARIADNE_TEST_EQUALS(im.get(2),20);
+        bootstrap::throws([&] { im.get(3); }, "im.get(3)");
+        bootstrap::equal((im.get(2)), (20), "im.get(2),20");
     }
 
     void test_map_convert() {
         Map<int,int> im = {{1,10},{2,20}};
 
         Map<int,double> dm(im);
-        ARIADNE_TEST_ASSERT(dm.at(1) == im.at(1) and dm.at(2) == im.at(2));
+        bootstrap::require((dm.at(1) == im.at(1) and dm.at(2) == im.at(2)), "dm.at(1) == im.at(1) and dm.at(2) == im.at(2)");
     }
 
     void test_map_restrict_keys() {
         Set<int> s = {1,2};
         Map<int,double> m = {{1,1.2},{2,1.5},{3,1.0},{5,0.1}};
         auto restricted = restrict_keys(m,s);
-        ARIADNE_TEST_EQUALS(restricted.size(),2);
-        ARIADNE_TEST_ASSERT(restricted.has_key(1) and restricted.has_key(2));
-        ARIADNE_TEST_ASSERT(not restricted.has_key(3));
+        bootstrap::equal((restricted.size()), (2), "restricted.size(),2");
+        bootstrap::require((restricted.has_key(1) and restricted.has_key(2)), "restricted.has_key(1) and restricted.has_key(2)");
+        bootstrap::require((not restricted.has_key(3)), "not restricted.has_key(3)");
     }
 
     void test_make_list_of_set() {
         Set<int> s = {1, 5, 3};
         auto l = make_list(s);
-        ARIADNE_TEST_EQUALS(l.size(),3);
-        ARIADNE_TEST_ASSERT(l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5);
+        bootstrap::equal((l.size()), (3), "l.size(),3");
+        bootstrap::require((l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5), "l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5");
     }
 
     void test_print_vector() {
@@ -67,25 +67,25 @@ class TestContainer {
         std::vector<unsigned int> nonempty_unsigned = {1u};
         std::vector<double> empty_double;
         std::vector<double> nonempty_double = {1.0};
-        ARIADNE_TEST_PRINT(empty_int);
-        ARIADNE_TEST_PRINT(nonempty_int);
-        ARIADNE_TEST_PRINT(empty_unsigned);
-        ARIADNE_TEST_PRINT(nonempty_unsigned);
-        ARIADNE_TEST_PRINT(empty_double);
-        ARIADNE_TEST_PRINT(nonempty_double);
+        bootstrap::print((empty_int), "empty_int");
+        bootstrap::print((nonempty_int), "nonempty_int");
+        bootstrap::print((empty_unsigned), "empty_unsigned");
+        bootstrap::print((nonempty_unsigned), "nonempty_unsigned");
+        bootstrap::print((empty_double), "empty_double");
+        bootstrap::print((nonempty_double), "nonempty_double");
     }
 
     void test() {
-        ARIADNE_TEST_CALL(test_map_get());
-        ARIADNE_TEST_CALL(test_map_convert());
-        ARIADNE_TEST_CALL(test_map_restrict_keys());
-        ARIADNE_TEST_CALL(test_make_list_of_set());
-        ARIADNE_TEST_CALL(test_print_vector());
+        bootstrap::call([&] { test_map_get(); }, "test_map_get()");
+        bootstrap::call([&] { test_map_convert(); }, "test_map_convert()");
+        bootstrap::call([&] { test_map_restrict_keys(); }, "test_map_restrict_keys()");
+        bootstrap::call([&] { test_make_list_of_set(); }, "test_make_list_of_set()");
+        bootstrap::call([&] { test_print_vector(); }, "test_print_vector()");
     }
 
 };
 
 int main() {
     TestContainer().test();
-    return ARIADNE_TEST_FAILURES;
+    return bootstrap::failures;
 }
