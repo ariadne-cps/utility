@@ -7,6 +7,7 @@
 
 #include "utility/command_line_interface.hpp"
 #include "testing/fixture.hpp"
+#include "testing/checks.hpp"
 #include <iostream>
 
 using namespace Ariadne;
@@ -16,26 +17,26 @@ class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
     using ContextFixture::ContextFixture;
 
     Void test_argument_stream() {
-        ctx().expect_exception([&] { ArgumentStream({}); }, "ArgumentStream({})");
+        ARIADNE_EXPECT_EXCEPTION(ctx(), ArgumentStream({}));
 
         ArgumentStream stream({"program","first"});
-        ctx().prove((not stream.empty()), "not stream.empty()");
-        ctx().expect_equal((stream.size()), (2u), "stream.size(),2u");
-        ctx().expect_equal((stream.peek()), ("program"), "stream.peek(),\"program\"");
-        ctx().expect_equal((stream.pop()), ("program"), "stream.pop(),\"program\"");
-        ctx().expect_equal((stream.pop()), ("first"), "stream.pop(),\"first\"");
-        ctx().prove((stream.empty()), "stream.empty()");
-        ctx().expect_exception([&] { stream.peek(); }, "stream.peek()");
-        ctx().expect_exception([&] { stream.pop(); }, "stream.pop()");
+        ARIADNE_PROVE(ctx(), not stream.empty());
+        ARIADNE_EXPECT_EQUAL(ctx(), stream.size(), 2u);
+        ARIADNE_EXPECT_EQUAL(ctx(), stream.peek(), "program");
+        ARIADNE_EXPECT_EQUAL(ctx(), stream.pop(), "program");
+        ARIADNE_EXPECT_EQUAL(ctx(), stream.pop(), "first");
+        ARIADNE_PROVE(ctx(), stream.empty());
+        ARIADNE_EXPECT_EXCEPTION(ctx(), stream.peek());
+        ARIADNE_EXPECT_EXCEPTION(ctx(), stream.pop());
     }
 
     Void test_argument_pack() {
         Bool processed=false;
         ArgumentPack pack("test",[&processed]{ processed=true; },-3);
-        ctx().expect_equal((pack.id()), ("test"), "pack.id(),\"test\"");
-        ctx().expect_equal((pack.priority()), (-3), "pack.priority(),-3");
+        ARIADNE_EXPECT_EQUAL(ctx(), pack.id(), "test");
+        ARIADNE_EXPECT_EQUAL(ctx(), pack.priority(), -3);
         pack.process();
-        ctx().prove((processed), "processed");
+        ARIADNE_PROVE(ctx(), processed);
     }
 
     Void test_parser_metadata_and_help() {
@@ -45,33 +46,33 @@ class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
         ArgumentParser flag=make_unvalued_argument_parser(
             "","flag","Enable a flag",[]{});
 
-        ctx().expect_equal((valued.short_id()), ("v"), "valued.short_id(),\"v\"");
-        ctx().expect_equal((valued.long_id()), ("value"), "valued.long_id(),\"value\"");
-        ctx().expect_equal((flag.short_id()), (""), "flag.short_id(),\"\"");
-        ctx().expect_equal((flag.long_id()), ("flag"), "flag.long_id(),\"flag\"");
-        ctx().prove((valued.help_description_header_size() > flag.help_description_header_size()), "valued.help_description_header_size() > flag.help_description_header_size()");
-        ctx().prove((valued.help_description(2).find("<value>") != String::npos), "valued.help_description(2).find(\"<value>\") != String::npos");
-        ctx().prove((flag.help_description(2).find("[--flag]") != String::npos), "flag.help_description(2).find(\"[--flag]\") != String::npos");
+        ARIADNE_EXPECT_EQUAL(ctx(), valued.short_id(), "v");
+        ARIADNE_EXPECT_EQUAL(ctx(), valued.long_id(), "value");
+        ARIADNE_EXPECT_EQUAL(ctx(), flag.short_id(), "");
+        ARIADNE_EXPECT_EQUAL(ctx(), flag.long_id(), "flag");
+        ARIADNE_PROVE(ctx(), valued.help_description_header_size() > flag.help_description_header_size());
+        ARIADNE_PROVE(ctx(), valued.help_description(2).find("<value>") != String::npos);
+        ARIADNE_PROVE(ctx(), flag.help_description(2).find("[--flag]") != String::npos);
 
         ArgumentStream short_stream({"-v","1"});
         ArgumentStream long_stream({"--value","1"});
         ArgumentStream other_stream({"--other"});
         ArgumentStream long_only_stream({"--flag"});
-        ctx().prove((valued.is_consumable(short_stream)), "valued.is_consumable(short_stream)");
-        ctx().prove((valued.is_consumable(long_stream)), "valued.is_consumable(long_stream)");
-        ctx().prove((not valued.is_consumable(other_stream)), "not valued.is_consumable(other_stream)");
-        ctx().prove((flag.is_consumable(long_only_stream)), "flag.is_consumable(long_only_stream)");
+        ARIADNE_PROVE(ctx(), valued.is_consumable(short_stream));
+        ARIADNE_PROVE(ctx(), valued.is_consumable(long_stream));
+        ARIADNE_PROVE(ctx(), not valued.is_consumable(other_stream));
+        ARIADNE_PROVE(ctx(), flag.is_consumable(long_only_stream));
     }
 
     Void test_base_interface() {
         CommandLineInterface cli;
-        ctx().prove((cli.acquire({""})), "cli.acquire({\"\"})");
-        ctx().prove((not cli.acquire({"","--unknown"})), "not cli.acquire({\"\",\"--unknown\"})");
-        ctx().prove((not cli.acquire({"","-h"})), "not cli.acquire({\"\",\"-h\"})");
-        ctx().prove((not cli.acquire({"","--help"})), "not cli.acquire({\"\",\"--help\"})");
+        ARIADNE_PROVE(ctx(), cli.acquire({""}));
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--unknown"}));
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","-h"}));
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--help"}));
 
         const char* argv[]={"program"};
-        ctx().prove((cli.acquire(1,argv)), "cli.acquire(1,argv)");
+        ARIADNE_PROVE(ctx(), cli.acquire(1,argv));
     }
 
     Void test_composition() {
@@ -97,75 +98,75 @@ class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
                     [&flag]{ flag=true; })
             });
 
-        ctx().expect_equal((contribution.name()), ("test"), "contribution.name(),\"test\"");
-        ctx().expect_equal((contribution.parsers().size()), (2u), "contribution.parsers().size(),2u");
+        ARIADNE_EXPECT_EQUAL(ctx(), contribution.name(), "test");
+        ARIADNE_EXPECT_EQUAL(ctx(), contribution.parsers().size(), 2u);
 
         CommandLineInterface cli;
         cli.add(contribution).add(contribution);
 
-        ctx().prove((cli.acquire({"","-v","3","--flag"})), "cli.acquire({\"\",\"-v\",\"3\",\"--flag\"})");
-        ctx().expect_equal((value), (3u), "value,3u");
-        ctx().prove((flag), "flag");
+        ARIADNE_PROVE(ctx(), cli.acquire({"","-v","3","--flag"}));
+        ARIADNE_EXPECT_EQUAL(ctx(), value, 3u);
+        ARIADNE_PROVE(ctx(), flag);
 
         value=0u;
-        ctx().prove((cli.acquire({"","--value","4"})), "cli.acquire({\"\",\"--value\",\"4\"})");
-        ctx().expect_equal((value), (4u), "value,4u");
+        ARIADNE_PROVE(ctx(), cli.acquire({"","--value","4"}));
+        ARIADNE_EXPECT_EQUAL(ctx(), value, 4u);
 
-        ctx().prove((not cli.acquire({"","--value"})), "not cli.acquire({\"\",\"--value\"})");
-        ctx().prove((not cli.acquire({"","--value","-1"})), "not cli.acquire({\"\",\"--value\",\"-1\"})");
-        ctx().prove((not cli.acquire({"","--value","x"})), "not cli.acquire({\"\",\"--value\",\"x\"})");
-        ctx().prove((not cli.acquire({"","--value","1","-v","2"})), "not cli.acquire({\"\",\"--value\",\"1\",\"-v\",\"2\"})");
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--value"}));
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--value","-1"}));
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--value","x"}));
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--value","1","-v","2"}));
     }
 
     Void test_validation() {
         CommandLineInterface help_collision;
-        ctx().expect_exception([&] { help_collision.add(
+        ARIADNE_EXPECT_EXCEPTION(ctx(), help_collision.add(
             CommandLineContribution("help-long",{
                 make_unvalued_argument_parser("x","help","collision",[]{})
-            })); }, "help_collision.add( CommandLineContribution(\"help-long\",{ make_unvalued_argument_parser(\"x\",\"help\",\"collision\",[]{}) }))");
-        ctx().expect_exception([&] { help_collision.add(
+            })));
+        ARIADNE_EXPECT_EXCEPTION(ctx(), help_collision.add(
             CommandLineContribution("help-short",{
                 make_unvalued_argument_parser("h","other","collision",[]{})
-            })); }, "help_collision.add( CommandLineContribution(\"help-short\",{ make_unvalued_argument_parser(\"h\",\"other\",\"collision\",[]{}) }))");
+            })));
 
         CommandLineInterface internal_long_collision;
-        ctx().expect_exception([&] { internal_long_collision.add(
+        ARIADNE_EXPECT_EXCEPTION(ctx(), internal_long_collision.add(
             CommandLineContribution("long-collision",{
                 make_unvalued_argument_parser("a","same","first",[]{}),
                 make_unvalued_argument_parser("b","same","second",[]{})
-            })); }, "internal_long_collision.add( CommandLineContribution(\"long-collision\",{ make_unvalued_argument_parser(\"a\",\"same\",\"first\",[]{}), make_unvalued_argument_parser(\"b\",\"same\",\"second\",[]{}) }))");
+            })));
 
         CommandLineInterface internal_short_collision;
-        ctx().expect_exception([&] { internal_short_collision.add(
+        ARIADNE_EXPECT_EXCEPTION(ctx(), internal_short_collision.add(
             CommandLineContribution("short-collision",{
                 make_unvalued_argument_parser("a","first","first",[]{}),
                 make_unvalued_argument_parser("a","second","second",[]{})
-            })); }, "internal_short_collision.add( CommandLineContribution(\"short-collision\",{ make_unvalued_argument_parser(\"a\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))");
+            })));
 
         CommandLineInterface existing_long_collision;
         existing_long_collision.add(CommandLineContribution("first",{
             make_unvalued_argument_parser("a","first","first",[]{})
         }));
-        ctx().expect_exception([&] { existing_long_collision.add(
+        ARIADNE_EXPECT_EXCEPTION(ctx(), existing_long_collision.add(
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("b","first","second",[]{})
-            })); }, "existing_long_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"b\",\"first\",\"second\",[]{}) }))");
+            })));
 
         CommandLineInterface existing_short_collision;
         existing_short_collision.add(CommandLineContribution("first",{
             make_unvalued_argument_parser("a","first","first",[]{})
         }));
-        ctx().expect_exception([&] { existing_short_collision.add(
+        ARIADNE_EXPECT_EXCEPTION(ctx(), existing_short_collision.add(
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("a","second","second",[]{})
-            })); }, "existing_short_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))");
+            })));
 
         CommandLineInterface long_only;
-        ctx().expect_no_throw([&] { long_only.add(
+        ARIADNE_EXPECT_NO_THROW(ctx(), long_only.add(
             CommandLineContribution("long-only",{
                 make_unvalued_argument_parser("x","first","first",[]{}),
                 make_unvalued_argument_parser("","second","second",[]{})
-            })); }, "long_only.add( CommandLineContribution(\"long-only\",{ make_unvalued_argument_parser(\"x\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"\",\"second\",\"second\",[]{}) }))");
+            })));
     }
 
     Void test_priority_and_transactionality() {
@@ -198,15 +199,15 @@ class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
                 })
         }));
 
-        ctx().prove((cli.acquire({"","--late","--zeta","--early","--alpha"})), "cli.acquire({\"\",\"--late\",\"--zeta\",\"--early\",\"--alpha\"})");
-        ctx().expect_equal((order.size()), (4u), "order.size(),4u");
-        ctx().expect_equal((order[0]), ("early"), "order[0],\"early\"");
-        ctx().expect_equal((order[1]), ("alpha"), "order[1],\"alpha\"");
-        ctx().expect_equal((order[2]), ("zeta"), "order[2],\"zeta\"");
-        ctx().expect_equal((order[3]), ("late"), "order[3],\"late\"");
+        ARIADNE_PROVE(ctx(), cli.acquire({"","--late","--zeta","--early","--alpha"}));
+        ARIADNE_EXPECT_EQUAL(ctx(), order.size(), 4u);
+        ARIADNE_EXPECT_EQUAL(ctx(), order[0], "early");
+        ARIADNE_EXPECT_EQUAL(ctx(), order[1], "alpha");
+        ARIADNE_EXPECT_EQUAL(ctx(), order[2], "zeta");
+        ARIADNE_EXPECT_EQUAL(ctx(), order[3], "late");
 
-        ctx().prove((not cli.acquire({"","--value","7","--unknown"})), "not cli.acquire({\"\",\"--value\",\"7\",\"--unknown\"})");
-        ctx().expect_equal((value), (0u), "value,0u");
+        ARIADNE_PROVE(ctx(), not cli.acquire({"","--value","7","--unknown"}));
+        ARIADNE_EXPECT_EQUAL(ctx(), value, 0u);
     }
 };
 

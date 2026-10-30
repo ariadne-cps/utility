@@ -141,3 +141,31 @@ passed on that commit with the same `ss/tst` gitlink. Therefore no code or
 expectation change was justified by the evidence. The temporary workflow
 is removed. The original failures were not conclusively diagnosed, so
 repeated CI failures should be investigated independently if they recur.
+
+## 2026-10-30 — Replace repetitive Context assertion calls with expression macros
+
+The existing test suites on branch `testing` now use the optional assertion
+macros in `testing/checks.hpp`: `ARIADNE_PROVE`,
+`ARIADNE_EXPECT_EQUAL`, `ARIADNE_EXPECT_EXCEPTION`,
+`ARIADNE_EXPECT_THROWS` and `ARIADNE_EXPECT_NO_THROW`.
+The original method bodies were migrated by replacing only the assertion
+call sites and including the macro header; no test case was removed, no
+operation or input was altered, and the 33 fixture-method registrations
+remain unchanged. The standalone `test_typedefs.cpp` is migrated too.
+The method/lambda factory registration in `testing/fixture.hpp` remains
+unchanged, and demonstration-only tests still use `ARIADNE_ADD_TEST_NO_THROW`.
+
+In the new form, expression descriptions come from preprocessor source
+stringification, not manually duplicated string arguments. Comparison
+and proof operands are evaluated once *after* the numbered CHECK event,
+which improves hang diagnostics; exception operations remain deferred.
+Only the displayed check descriptions and the evaluation point relative
+to CHECK events change. Do not mechanically substitute richer
+semantics such as `SAME` or `WITHIN` into equality: these tests retained
+their original checker operations. The production Utility library and
+the `main` branch are unchanged.
+
+Source-level migration check: 118 check calls converted
+across 7 test files;
+each source retains the original number of `test_*` methods.
+CI must verify compilation/execution on all target platforms.

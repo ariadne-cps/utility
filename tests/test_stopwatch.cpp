@@ -27,6 +27,7 @@
 #include "utility/stopwatch.hpp"
 
 #include "testing/fixture.hpp"
+#include "testing/checks.hpp"
 
 using namespace Ariadne;
 using namespace std::chrono_literals;
@@ -44,8 +45,8 @@ class TestStopwatch : public Ariadne::Testing::ContextFixture {
         Stopwatch<Microseconds> sw;
         std::this_thread::sleep_for(10ms);
         auto duration = sw.click().duration();
-        ctx().prove((duration.count()>10000), "duration.count()>10000");
-        ctx().prove((sw.elapsed_seconds() > 0.01), "sw.elapsed_seconds() > 0.01");
+        ARIADNE_PROVE(ctx(), duration.count()>10000);
+        ARIADNE_PROVE(ctx(), sw.elapsed_seconds() > 0.01);
     }
 
 };

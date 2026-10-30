@@ -26,6 +26,7 @@
 #include "utility/lazy.hpp"
 
 #include "testing/fixture.hpp"
+#include "testing/checks.hpp"
 
 using namespace Ariadne;
 
@@ -54,10 +55,10 @@ class TestLazy : public Ariadne::Testing::ContextFixture {
 
         std::cout << "\"Lazy created\"" << " = " << ("Lazy created") << '\n';
         TestClass obj = lazy();
-        ctx().expect_equal((obj.value()), (4.0), "obj.value(),4.0");
+        ARIADNE_EXPECT_EQUAL(ctx(), obj.value(), 4.0);
         TestClass same_obj = lazy();
-        ctx().expect_equal((same_obj.value()), (4.0), "same_obj.value(),4.0");
-        ctx().expect_equal((creations), (1), "creations,1");
+        ARIADNE_EXPECT_EQUAL(ctx(), same_obj.value(), 4.0);
+        ARIADNE_EXPECT_EQUAL(ctx(), creations, 1);
     }
 
 };

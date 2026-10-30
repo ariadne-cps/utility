@@ -25,6 +25,7 @@
 #include "utility/container.hpp"
 
 #include "testing/fixture.hpp"
+#include "testing/checks.hpp"
 
 using namespace Ariadne;
 
@@ -35,31 +36,31 @@ class TestContainer : public Ariadne::Testing::ContextFixture {
 
     void test_map_get() {
         Map<int,int> im = {{1,10},{2,20}};
-        ctx().expect_exception([&] { im.get(3); }, "im.get(3)");
-        ctx().expect_equal((im.get(2)), (20), "im.get(2),20");
+        ARIADNE_EXPECT_EXCEPTION(ctx(), im.get(3));
+        ARIADNE_EXPECT_EQUAL(ctx(), im.get(2), 20);
     }
 
     void test_map_convert() {
         Map<int,int> im = {{1,10},{2,20}};
 
         Map<int,double> dm(im);
-        ctx().prove((dm.at(1) == im.at(1) and dm.at(2) == im.at(2)), "dm.at(1) == im.at(1) and dm.at(2) == im.at(2)");
+        ARIADNE_PROVE(ctx(), dm.at(1) == im.at(1) and dm.at(2) == im.at(2));
     }
 
     void test_map_restrict_keys() {
         Set<int> s = {1,2};
         Map<int,double> m = {{1,1.2},{2,1.5},{3,1.0},{5,0.1}};
         auto restricted = restrict_keys(m,s);
-        ctx().expect_equal((restricted.size()), (2), "restricted.size(),2");
-        ctx().prove((restricted.has_key(1) and restricted.has_key(2)), "restricted.has_key(1) and restricted.has_key(2)");
-        ctx().prove((not restricted.has_key(3)), "not restricted.has_key(3)");
+        ARIADNE_EXPECT_EQUAL(ctx(), restricted.size(), 2);
+        ARIADNE_PROVE(ctx(), restricted.has_key(1) and restricted.has_key(2));
+        ARIADNE_PROVE(ctx(), not restricted.has_key(3));
     }
 
     void test_make_list_of_set() {
         Set<int> s = {1, 5, 3};
         auto l = make_list(s);
-        ctx().expect_equal((l.size()), (3), "l.size(),3");
-        ctx().prove((l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5), "l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5");
+        ARIADNE_EXPECT_EQUAL(ctx(), l.size(), 3);
+        ARIADNE_PROVE(ctx(), l.at(0) == 1 and l.at(1) == 3 and l.at(2) == 5);
     }
 
     void test_print_vector() {
