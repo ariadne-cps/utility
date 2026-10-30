@@ -23,11 +23,11 @@
  */
 
 #include <iostream>
+#include "ariadne-testing.hpp"
 
 #include "utility/randomiser.hpp"
 #include "utility/container.hpp"
 
-#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 using namespace std;

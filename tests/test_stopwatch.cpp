@@ -23,11 +23,10 @@
  */
 
 #include <iostream>
+#include "ariadne-testing.hpp"
 #include <thread>
 #include "utility/stopwatch.hpp"
 
-#include "testing/fixture.hpp"
-#include "testing/checks.hpp"
 
 using namespace Ariadne;
 using namespace std::chrono_literals;

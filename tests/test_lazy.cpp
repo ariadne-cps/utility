@@ -23,10 +23,9 @@
  */
 
 #include <iostream>
+#include "ariadne-testing.hpp"
 #include "utility/lazy.hpp"
 
-#include "testing/fixture.hpp"
-#include "testing/checks.hpp"
 
 using namespace Ariadne;
 

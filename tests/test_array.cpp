@@ -23,14 +23,13 @@
  */
 
 #include <iostream>
+#include "ariadne-testing.hpp"
 #include <utility>
 
 #include "utility/array.hpp"
 #include "utility/uniform_array.hpp"
 #include "utility/container.hpp"
 
-#include "testing/fixture.hpp"
-#include "testing/checks.hpp"
 
 using namespace Ariadne;
 

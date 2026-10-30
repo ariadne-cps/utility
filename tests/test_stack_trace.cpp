@@ -23,10 +23,10 @@
  */
 
 #include <iostream>
+#include "ariadne-testing.hpp"
 
 #include "utility/stack_trace.hpp"
 
-#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 

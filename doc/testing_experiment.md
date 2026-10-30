@@ -194,3 +194,20 @@ CTest executables, all original test bodies, exception checks and explicit
 NO_THROW demonstration checks are retained. The test-only dependency does
 not leak into the production library. No changes are made to `utility/main`.
 Utility's own CI must confirm the new revision before promotion.
+
+
+## 2026-10-30 — Umbrella include and strictly test-only dependency
+
+All nine Utility test translation units now include only
+`ariadne-testing.hpp` for their Testing framework APIs. This single
+header collects the core types, ContextFixture, assertion macros and
+parameterized variants; it does not replace unrelated Utility or C++
+standard library includes. The test-only `ss/tst` gitlink is updated to
+Testing `9e41df5496e1fe4d26d14f62300f3609d71c03a2`.
+
+Testing intentionally has **no install rules**: the header is available
+only in the source/build tree and its implementation is linked only to
+test executables. Utility's production target, install bundle, and
+`utility/main` remain untouched. No checker expressions, test case bodies,
+registrations, assertions or CTest definitions have been modified.
+Utility CI must validate this dependency update before promotion.

@@ -23,12 +23,11 @@
  */
 
 #include <iostream>
+#include "ariadne-testing.hpp"
 
 #include "utility/string.hpp"
 #include "utility/lru_cache.hpp"
 
-#include "testing/fixture.hpp"
-#include "testing/checks.hpp"
 
 using namespace Ariadne;
 

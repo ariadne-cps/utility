@@ -24,8 +24,7 @@
  */
 
 #include "utility/typedefs.hpp"
-#include "testing/fixture.hpp"
-#include "testing/checks.hpp"
+#include "ariadne-testing.hpp"
 #include <iostream>
 
 using namespace Ariadne;

@@ -23,9 +23,8 @@
  */
 
 #include "utility/container.hpp"
+#include "ariadne-testing.hpp"
 
-#include "testing/fixture.hpp"
-#include "testing/checks.hpp"
 
 using namespace Ariadne;
 
