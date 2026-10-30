@@ -45,16 +45,15 @@ class TestStopwatch : public Ariadne::Testing::ContextFixture {
         Stopwatch<Microseconds> sw;
         std::this_thread::sleep_for(10ms);
         auto duration = sw.click().duration();
-        ARIADNE_PROVE(ctx(), duration.count()>10000);
-        ARIADNE_PROVE(ctx(), sw.elapsed_seconds() > 0.01);
+        ARIADNE_PROVE(duration.count()>10000);
+        ARIADNE_PROVE(sw.elapsed_seconds() > 0.01);
     }
 
 };
 
 int main() {
-    Ariadne::Testing::Suite suite("stopwatch");
-    ARIADNE_ADD_TEST_NO_THROW(suite, TestStopwatch, test_create);
-    ARIADNE_ADD_TEST(suite, TestStopwatch, test_duration);
-    Ariadne::Testing::ConsoleReporter reporter(std::cout);
-    return suite.run(reporter).successful() ? 0 : 1;
+    ARIADNE_TEST_SUITE("stopwatch");
+    ARIADNE_ADD_TEST_NO_THROW(TestStopwatch, test_create);
+    ARIADNE_ADD_TEST(TestStopwatch, test_duration);
+    return ARIADNE_RUN_TESTS();
 }

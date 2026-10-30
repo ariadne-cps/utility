@@ -169,3 +169,28 @@ Source-level migration check: 118 check calls converted
 across 7 test files;
 each source retains the original number of `test_*` methods.
 CI must verify compilation/execution on all target platforms.
+
+
+## 2026-10-30 — Adopt fixture shorthand and conventional suites
+
+The experimental `utility/testing` branch now pins the test-only `ss/tst`
+submodule at Testing commit `044139bf5873744a6c1bead10e67677e1e90a684`.
+This dependency revision passed Testing's Ubuntu, macOS, Windows,
+Sanitizers and Coverage CI workflows.
+
+The eight fixture-based test executables now use implicit assertions such
+as `ARIADNE_EXPECT_EQUAL(actual, expected)`, internally forwarding to
+`*_CTX(this->ctx(), ...)`, rather than explicitly passing `ctx()`.
+Their `main()` functions use `ARIADNE_TEST_SUITE(name)`,
+`ARIADNE_ADD_TEST(Fixture, method)` (or the `_NO_THROW` variant), and
+`return ARIADNE_RUN_TESTS();`. The non-fixture `test_typedefs.cpp`
+continues to pass the lambda-local context explicitly via
+`ARIADNE_EXPECT_EQUAL_CTX(ctx, actual, expected)`; it also uses the
+conventional suite creation/run macros.
+
+This is exclusively an API-syntax migration: 118 assertion-call sites,
+33 fixture-method registrations with unchanged ordering, nine independent
+CTest executables, all original test bodies, exception checks and explicit
+NO_THROW demonstration checks are retained. The test-only dependency does
+not leak into the production library. No changes are made to `utility/main`.
+Utility's own CI must confirm the new revision before promotion.

@@ -24,17 +24,17 @@
  */
 
 #include "utility/typedefs.hpp"
+#include "testing/fixture.hpp"
 #include "testing/checks.hpp"
 #include <iostream>
 
 using namespace Ariadne;
 
 int main() {
-    Ariadne::Testing::Suite suite("typedefs");
-    suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
-        ARIADNE_EXPECT_EQUAL(ctx, static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
-        ARIADNE_EXPECT_EQUAL(ctx, static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
+    ARIADNE_TEST_SUITE("typedefs");
+    ariadne_test_suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
+        ARIADNE_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
+        ARIADNE_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
     });
-    Ariadne::Testing::ConsoleReporter reporter(std::cout);
-    return suite.run(reporter).successful() ? 0 : 1;
+    return ARIADNE_RUN_TESTS();
 }

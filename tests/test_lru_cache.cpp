@@ -40,49 +40,49 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 
 
     void test_construct() {
-        ARIADNE_EXPECT_EXCEPTION(ctx(), CacheType(0));
+        ARIADNE_EXPECT_EXCEPTION(CacheType(0));
         CacheType cache(1);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.current_size(), 0);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.maximum_size(), 1);
+        ARIADNE_EXPECT_EQUAL(cache.current_size(), 0);
+        ARIADNE_EXPECT_EQUAL(cache.maximum_size(), 1);
     }
 
     void test_find() {
         CacheType cache(2);
-        ARIADNE_PROVE(ctx(), not cache.has_label("something"));
+        ARIADNE_PROVE(not cache.has_label("something"));
     }
 
     void test_get_failure() {
         CacheType cache(2);
-        ARIADNE_EXPECT_EXCEPTION(ctx(), cache.get("something"));
-        ARIADNE_EXPECT_EXCEPTION(ctx(), cache.age("something"));
+        ARIADNE_EXPECT_EXCEPTION(cache.get("something"));
+        ARIADNE_EXPECT_EXCEPTION(cache.age("something"));
     }
 
     void test_string() {
         std::string std_string = "text";
         String string(std_string);
-        ARIADNE_PROVE(ctx(), std::string(c_str(string)) == "text");
-        ARIADNE_PROVE(ctx(), to_string(42) == "42");
-        ARIADNE_PROVE(ctx(), to_str(43) == "43");
-        ARIADNE_PROVE(ctx(), class_name<String>() == "String");
+        ARIADNE_PROVE(std::string(c_str(string)) == "text");
+        ARIADNE_PROVE(to_string(42) == "42");
+        ARIADNE_PROVE(to_str(43) == "43");
+        ARIADNE_PROVE(class_name<String>() == "String");
     }
 
     void test_put_single() {
         CacheType cache(2);
         cache.put("first",42);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.current_size(), 1);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("first"), 0);
+        ARIADNE_EXPECT_EQUAL(cache.current_size(), 1);
+        ARIADNE_EXPECT_EQUAL(cache.age("first"), 0);
         auto val = cache.get("first");
-        ARIADNE_EXPECT_EQUAL(ctx(), val, 42);
+        ARIADNE_EXPECT_EQUAL(val, 42);
     }
 
     void test_put_multiple() {
         CacheType cache(2);
         cache.put("first",42);
-        ARIADNE_EXPECT_EXCEPTION(ctx(), cache.put("first",10));
+        ARIADNE_EXPECT_EXCEPTION(cache.put("first",10));
         cache.put("second",10);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.current_size(), 2);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("first"), 1);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("second"), 0);
+        ARIADNE_EXPECT_EQUAL(cache.current_size(), 2);
+        ARIADNE_EXPECT_EQUAL(cache.age("first"), 1);
+        ARIADNE_EXPECT_EQUAL(cache.age("second"), 0);
     }
 
     void test_put_multiple_over() {
@@ -91,11 +91,11 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
         cache.put("second",10);
         cache.put("third",5);
         cache.put("fourth",12);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.current_size(), 3);
-        ARIADNE_PROVE(ctx(), not cache.has_label("first"));
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("second"), 2);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("third"), 1);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("fourth"), 0);
+        ARIADNE_EXPECT_EQUAL(cache.current_size(), 3);
+        ARIADNE_PROVE(not cache.has_label("first"));
+        ARIADNE_EXPECT_EQUAL(cache.age("second"), 2);
+        ARIADNE_EXPECT_EQUAL(cache.age("third"), 1);
+        ARIADNE_EXPECT_EQUAL(cache.age("fourth"), 0);
     }
 
     void test_get() {
@@ -105,24 +105,23 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
         cache.put("third",5);
         cache.put("fourth",12);
         cache.get("second");
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("second"), 0);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("first"), 3);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("third"), 2);
-        ARIADNE_EXPECT_EQUAL(ctx(), cache.age("fourth"), 1);
+        ARIADNE_EXPECT_EQUAL(cache.age("second"), 0);
+        ARIADNE_EXPECT_EQUAL(cache.age("first"), 3);
+        ARIADNE_EXPECT_EQUAL(cache.age("third"), 2);
+        ARIADNE_EXPECT_EQUAL(cache.age("fourth"), 1);
     }
 
 };
 
 int main() {
-    Ariadne::Testing::Suite suite("lru_cache");
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_construct);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_find);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_get_failure);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_string);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_put_single);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_put_multiple);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_put_multiple_over);
-    ARIADNE_ADD_TEST(suite, TestLRUCache, test_get);
-    Ariadne::Testing::ConsoleReporter reporter(std::cout);
-    return suite.run(reporter).successful() ? 0 : 1;
+    ARIADNE_TEST_SUITE("lru_cache");
+    ARIADNE_ADD_TEST(TestLRUCache, test_construct);
+    ARIADNE_ADD_TEST(TestLRUCache, test_find);
+    ARIADNE_ADD_TEST(TestLRUCache, test_get_failure);
+    ARIADNE_ADD_TEST(TestLRUCache, test_string);
+    ARIADNE_ADD_TEST(TestLRUCache, test_put_single);
+    ARIADNE_ADD_TEST(TestLRUCache, test_put_multiple);
+    ARIADNE_ADD_TEST(TestLRUCache, test_put_multiple_over);
+    ARIADNE_ADD_TEST(TestLRUCache, test_get);
+    return ARIADNE_RUN_TESTS();
 }
