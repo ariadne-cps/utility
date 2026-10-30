@@ -33,6 +33,9 @@ using namespace Ariadne;
 using namespace std;
 
 class TestRandomiser {
+  public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
   private:
     size_t _num_tries;
   public:
@@ -64,17 +67,18 @@ class TestRandomiser {
     }
 
     void test() {
-        ctx.expect_no_throw([&] { test_int(); }, "test_int()");
-        ctx.expect_no_throw([&] { test_real(); }, "test_real()");
+        ctx().expect_no_throw([&] { test_int(); }, "test_int()");
+        ctx().expect_no_throw([&] { test_real(); }, "test_real()");
     }
 
 };
 
 int main() {
     Ariadne::Testing::Suite suite("randomiser");
-    suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
-        ctx.expect_equal(static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
-        ctx.expect_equal(static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
+    TestRandomiser fixture(10);
+    suite.add("scenarios", [&](Ariadne::Testing::Context& ctx) {
+        fixture._ctx = &ctx;
+        fixture.test();
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

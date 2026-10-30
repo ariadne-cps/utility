@@ -1,4 +1,7 @@
 include(CTest)
+if(NOT TARGET testing)
+    ariadne_add_submodule(testing)
+endif()
 
 set(UNIT_TESTS
     test_array
@@ -15,7 +18,7 @@ set(UNIT_TESTS
 
 foreach(TEST ${UNIT_TESTS})
     add_executable(${TEST} ${TEST}.cpp)
-    target_link_libraries(${TEST} PRIVATE ariadne-utility utility testing)
+    target_link_libraries(${TEST} PRIVATE ariadne-utility utility ariadne-testing testing)
     add_test(NAME ${TEST} COMMAND $<TARGET_FILE:${TEST}>)
     if(WIN32)
         set_tests_properties(${TEST} PROPERTIES

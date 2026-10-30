@@ -31,8 +31,6 @@ using namespace Ariadne;
 
 class TestClass {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
 
     TestClass(double a) {
         _value = a*a;
@@ -47,6 +45,8 @@ class TestClass {
 
 class TestLazy {
   public:
+    Ariadne::Testing::Context* _ctx = nullptr;
+    Ariadne::Testing::Context& ctx() { return *_ctx; }
 
     void test_creation() {
         double arg = 2.0;
@@ -69,7 +69,7 @@ class TestLazy {
 
 int main() {
     Ariadne::Testing::Suite suite("lazy");
-    TestClass fixture ;
+    TestLazy fixture;
     suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
         fixture._ctx = &t;
         fixture.test();
