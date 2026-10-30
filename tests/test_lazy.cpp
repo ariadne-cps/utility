@@ -33,7 +33,7 @@ class TestClass {
   public:
     TestClass(double a) {
         _value = a*a;
-        bootstrap::print(("TestClass object created"), "\"TestClass object created\"")
+        bootstrap::print(("TestClass object created"), "\"TestClass object created\"");
     }
 
     double value() { return _value; }
@@ -50,12 +50,12 @@ class TestLazy {
         int creations = 0;
         Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
 
-        bootstrap::print(("Lazy created"), "\"Lazy created\"")
+        bootstrap::print(("Lazy created"), "\"Lazy created\"");
         TestClass obj = lazy();
-        bootstrap::equal((obj.value()), (4.0), "obj.value(),4.0")
+        bootstrap::equal((obj.value()), (4.0), "obj.value(),4.0");
         TestClass same_obj = lazy();
-        bootstrap::equal((same_obj.value()), (4.0), "same_obj.value(),4.0")
-        bootstrap::equal((creations), (1), "creations,1")
+        bootstrap::equal((same_obj.value()), (4.0), "same_obj.value(),4.0");
+        bootstrap::equal((creations), (1), "creations,1");
     }
 
     void test() {

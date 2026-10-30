@@ -48,7 +48,7 @@ class TestRandomiser {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        bootstrap::print((values), "values")
+        bootstrap::print((values), "values");
     }
 
     void test_real() {
@@ -60,7 +60,7 @@ class TestRandomiser {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        bootstrap::print((values), "values")
+        bootstrap::print((values), "values");
     }
 
     void test() {

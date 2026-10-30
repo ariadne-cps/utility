@@ -11,7 +11,7 @@
 using namespace Ariadne;
 
 Int main() {
-    bootstrap::equal((static_cast<SizeType>(SizeOne())), (1u), "static_cast<SizeType>(SizeOne()),1u")
-    bootstrap::equal((static_cast<SizeType>(IndexZero())), (0u), "static_cast<SizeType>(IndexZero()),0u")
+    bootstrap::equal((static_cast<SizeType>(SizeOne())), (1u), "static_cast<SizeType>(SizeOne()),1u");
+    bootstrap::equal((static_cast<SizeType>(IndexZero())), (0u), "static_cast<SizeType>(IndexZero()),0u");
     return bootstrap::failures;
 }
