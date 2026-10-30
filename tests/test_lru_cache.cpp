@@ -33,7 +33,7 @@ using namespace Ariadne;
 
 using CacheType = LRUCache<String,int>;
 
-class TestLRUCache : public Ariadne::Testing::ContextFixture {
+class TestLRUCache : public Ariadne::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 

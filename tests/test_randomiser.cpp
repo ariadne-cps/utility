@@ -32,14 +32,14 @@
 using namespace Ariadne;
 using namespace std;
 
-class TestRandomiser : public Ariadne::Testing::ContextFixture {
+class TestRandomiser : public Ariadne::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
   private:
     size_t _num_tries;
   public:
 
-    explicit TestRandomiser(Ariadne::Testing::Context& context)
+    explicit TestRandomiser(Ariadne::Context& context)
         : ContextFixture(context), _num_tries(10) { }
 
     void test_int() {

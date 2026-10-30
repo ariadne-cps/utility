@@ -36,7 +36,7 @@ struct TestClass {
     }
 };
 
-class TestLRUCache : public Ariadne::Testing::ContextFixture {
+class TestLRUCache : public Ariadne::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 

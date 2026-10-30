@@ -31,7 +31,7 @@
 using namespace Ariadne;
 using namespace std::chrono_literals;
 
-class TestStopwatch : public Ariadne::Testing::ContextFixture {
+class TestStopwatch : public Ariadne::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 

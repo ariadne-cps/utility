@@ -64,7 +64,7 @@ struct Tracked {
 int Tracked::live=0;
 int Tracked::copies_until_throw=-1;
 
-class TestArray : public Ariadne::Testing::ContextFixture {
+class TestArray : public Ariadne::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 
