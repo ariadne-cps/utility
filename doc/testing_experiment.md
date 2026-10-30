@@ -90,3 +90,15 @@ inside argument evaluation. For expensive expressions use deferred
 `Context::check([&] { return expression; }, "description")`.
 Exception checkers are already deferred. Separate CTest executables each
 have their own suite and numbering; no global cross-process index exists.
+
+### 2026-10-30 — Correct accidental removal of CLI test methods
+
+An overly broad dispatcher-removal pattern removed the seven `Void test_*`
+method definitions in `tests/test_command_line_interface.cpp` while keeping
+the new per-function suite registrations. Clang therefore reported seven
+missing members. The seven method bodies have been restored **verbatim**
+from Utility commit `2e80df3f0f9f489147cc3c6587c1330df96766a5`; only the old `Void test()` dispatcher
+is omitted. Method declarations and the seven `Suite::add` invocations
+were compared in original order to prevent coverage loss. Added the explicit
+`<iostream>` include for `std::cout`. CI must confirm compilation and
+execution before this branch is promoted.
