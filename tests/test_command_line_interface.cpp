@@ -132,25 +132,25 @@ class TestCommandLineInterface {
         ctx().expect_exception([&] { help_collision.add(
             CommandLineContribution("help-long",{
                 make_unvalued_argument_parser("x","help","collision",[]{})
-            })); }, "help_collision.add( CommandLineContribution(\"help-long\",{ make_unvalued_argument_parser(\"x\",\"help\",\"collision\",[]{}) }))")
+            })); }, "help_collision.add( CommandLineContribution(\"help-long\",{ make_unvalued_argument_parser(\"x\",\"help\",\"collision\",[]{}) }))");
         ctx().expect_exception([&] { help_collision.add(
             CommandLineContribution("help-short",{
                 make_unvalued_argument_parser("h","other","collision",[]{})
-            })); }, "help_collision.add( CommandLineContribution(\"help-short\",{ make_unvalued_argument_parser(\"h\",\"other\",\"collision\",[]{}) }))")
+            })); }, "help_collision.add( CommandLineContribution(\"help-short\",{ make_unvalued_argument_parser(\"h\",\"other\",\"collision\",[]{}) }))");
 
         CommandLineInterface internal_long_collision;
         ctx().expect_exception([&] { internal_long_collision.add(
             CommandLineContribution("long-collision",{
                 make_unvalued_argument_parser("a","same","first",[]{}),
                 make_unvalued_argument_parser("b","same","second",[]{})
-            })); }, "internal_long_collision.add( CommandLineContribution(\"long-collision\",{ make_unvalued_argument_parser(\"a\",\"same\",\"first\",[]{}), make_unvalued_argument_parser(\"b\",\"same\",\"second\",[]{}) }))")
+            })); }, "internal_long_collision.add( CommandLineContribution(\"long-collision\",{ make_unvalued_argument_parser(\"a\",\"same\",\"first\",[]{}), make_unvalued_argument_parser(\"b\",\"same\",\"second\",[]{}) }))");
 
         CommandLineInterface internal_short_collision;
         ctx().expect_exception([&] { internal_short_collision.add(
             CommandLineContribution("short-collision",{
                 make_unvalued_argument_parser("a","first","first",[]{}),
                 make_unvalued_argument_parser("a","second","second",[]{})
-            })); }, "internal_short_collision.add( CommandLineContribution(\"short-collision\",{ make_unvalued_argument_parser(\"a\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))")
+            })); }, "internal_short_collision.add( CommandLineContribution(\"short-collision\",{ make_unvalued_argument_parser(\"a\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))");
 
         CommandLineInterface existing_long_collision;
         existing_long_collision.add(CommandLineContribution("first",{
@@ -159,7 +159,7 @@ class TestCommandLineInterface {
         ctx().expect_exception([&] { existing_long_collision.add(
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("b","first","second",[]{})
-            })); }, "existing_long_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"b\",\"first\",\"second\",[]{}) }))")
+            })); }, "existing_long_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"b\",\"first\",\"second\",[]{}) }))");
 
         CommandLineInterface existing_short_collision;
         existing_short_collision.add(CommandLineContribution("first",{
@@ -168,14 +168,14 @@ class TestCommandLineInterface {
         ctx().expect_exception([&] { existing_short_collision.add(
             CommandLineContribution("second",{
                 make_unvalued_argument_parser("a","second","second",[]{})
-            })); }, "existing_short_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))")
+            })); }, "existing_short_collision.add( CommandLineContribution(\"second\",{ make_unvalued_argument_parser(\"a\",\"second\",\"second\",[]{}) }))");
 
         CommandLineInterface long_only;
         ctx().expect_no_throw([&] { long_only.add(
             CommandLineContribution("long-only",{
                 make_unvalued_argument_parser("x","first","first",[]{}),
                 make_unvalued_argument_parser("","second","second",[]{})
-            })); }, "long_only.add( CommandLineContribution(\"long-only\",{ make_unvalued_argument_parser(\"x\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"\",\"second\",\"second\",[]{}) }))")
+            })); }, "long_only.add( CommandLineContribution(\"long-only\",{ make_unvalued_argument_parser(\"x\",\"first\",\"first\",[]{}), make_unvalued_argument_parser(\"\",\"second\",\"second\",[]{}) }))");
     }
 
     Void test_priority_and_transactionality() {
