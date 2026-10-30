@@ -130,3 +130,14 @@ via `UNIT_TESTS`. The Utility-specific test executables remain untouched;
 there are now nine standalone CTest executables in Utility's test directory.
 No changes to Utility's production library or the `main` branch.
 This operation requires validation in Utility's CI after the submodule bump.
+
+## 2026-10-30 — Verify Testing submodule update after transient CI failures
+
+The initial Utility CI at commit `3491651` reported compilation failures across
+platforms. A temporary diagnostics workflow was added at `6e80688` to expose
+the first build error. The diagnostics Release build succeeded, and the
+complete Ubuntu, macOS, Windows and Sanitizers workflow families subsequently
+passed on that commit with the same `ss/tst` gitlink. Therefore no code or
+expectation change was justified by the evidence. The temporary workflow
+is removed. The original failures were not conclusively diagnosed, so
+repeated CI failures should be investigated independently if they recur.
