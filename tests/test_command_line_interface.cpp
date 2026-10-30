@@ -6,15 +6,14 @@
  ****************************************************************************/
 
 #include "utility/command_line_interface.hpp"
-#include "testing/testing.hpp"
+#include "testing/fixture.hpp"
 #include <iostream>
 
 using namespace Ariadne;
 
-class TestCommandLineInterface {
+class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
+    using ContextFixture::ContextFixture;
 
     Void test_argument_stream() {
         ctx().expect_exception([&] { ArgumentStream({}); }, "ArgumentStream({})");
@@ -213,41 +212,13 @@ class TestCommandLineInterface {
 
 int main() {
     Ariadne::Testing::Suite suite("command_line_interface");
-    suite.add("argument_stream", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_argument_stream();
-    });
-    suite.add("argument_pack", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_argument_pack();
-    });
-    suite.add("parser_metadata_and_help", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_parser_metadata_and_help();
-    });
-    suite.add("base_interface", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_base_interface();
-    });
-    suite.add("composition", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_composition();
-    });
-    suite.add("validation", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_validation();
-    });
-    suite.add("priority_and_transactionality", [&](Ariadne::Testing::Context& t) {
-        TestCommandLineInterface fixture;
-        fixture._ctx = &t;
-        fixture.test_priority_and_transactionality();
-    });
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_argument_stream);
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_argument_pack);
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_parser_metadata_and_help);
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_base_interface);
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_composition);
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_validation);
+    ARIADNE_ADD_TEST(suite, TestCommandLineInterface, test_priority_and_transactionality);
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
 }

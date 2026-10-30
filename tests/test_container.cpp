@@ -24,14 +24,13 @@
 
 #include "utility/container.hpp"
 
-#include "testing/testing.hpp"
+#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 
-class TestContainer {
+class TestContainer : public Ariadne::Testing::ContextFixture {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
+    using ContextFixture::ContextFixture;
 
 
     void test_map_get() {
@@ -82,31 +81,11 @@ class TestContainer {
 
 int main() {
     Ariadne::Testing::Suite suite("container");
-    suite.add("map_get", [&](Ariadne::Testing::Context& t) {
-        TestContainer fixture;
-        fixture._ctx = &t;
-        fixture.test_map_get();
-    });
-    suite.add("map_convert", [&](Ariadne::Testing::Context& t) {
-        TestContainer fixture;
-        fixture._ctx = &t;
-        fixture.test_map_convert();
-    });
-    suite.add("map_restrict_keys", [&](Ariadne::Testing::Context& t) {
-        TestContainer fixture;
-        fixture._ctx = &t;
-        fixture.test_map_restrict_keys();
-    });
-    suite.add("make_list_of_set", [&](Ariadne::Testing::Context& t) {
-        TestContainer fixture;
-        fixture._ctx = &t;
-        fixture.test_make_list_of_set();
-    });
-    suite.add("print_vector", [&](Ariadne::Testing::Context& t) {
-        TestContainer fixture;
-        fixture._ctx = &t;
-        t.expect_no_throw([&] { fixture.test_print_vector(); }, "operation completes");
-    });
+    ARIADNE_ADD_TEST(suite, TestContainer, test_map_get);
+    ARIADNE_ADD_TEST(suite, TestContainer, test_map_convert);
+    ARIADNE_ADD_TEST(suite, TestContainer, test_map_restrict_keys);
+    ARIADNE_ADD_TEST(suite, TestContainer, test_make_list_of_set);
+    ARIADNE_ADD_TEST_NO_THROW(suite, TestContainer, test_print_vector);
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
 }

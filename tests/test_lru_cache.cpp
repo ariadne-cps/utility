@@ -27,16 +27,15 @@
 #include "utility/string.hpp"
 #include "utility/lru_cache.hpp"
 
-#include "testing/testing.hpp"
+#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 
 using CacheType = LRUCache<String,int>;
 
-class TestLRUCache {
+class TestLRUCache : public Ariadne::Testing::ContextFixture {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
+    using ContextFixture::ContextFixture;
 
 
     void test_construct() {
@@ -115,46 +114,14 @@ class TestLRUCache {
 
 int main() {
     Ariadne::Testing::Suite suite("lru_cache");
-    suite.add("construct", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_construct();
-    });
-    suite.add("find", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_find();
-    });
-    suite.add("get_failure", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_get_failure();
-    });
-    suite.add("string", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_string();
-    });
-    suite.add("put_single", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_put_single();
-    });
-    suite.add("put_multiple", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_put_multiple();
-    });
-    suite.add("put_multiple_over", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_put_multiple_over();
-    });
-    suite.add("get", [&](Ariadne::Testing::Context& t) {
-        TestLRUCache fixture;
-        fixture._ctx = &t;
-        fixture.test_get();
-    });
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_construct);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_find);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_get_failure);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_string);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_put_single);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_put_multiple);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_put_multiple_over);
+    ARIADNE_ADD_TEST(suite, TestLRUCache, test_get);
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
 }

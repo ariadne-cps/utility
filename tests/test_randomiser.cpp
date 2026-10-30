@@ -27,20 +27,20 @@
 #include "utility/randomiser.hpp"
 #include "utility/container.hpp"
 
-#include "testing/testing.hpp"
+#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 using namespace std;
 
-class TestRandomiser {
+class TestRandomiser : public Ariadne::Testing::ContextFixture {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
+    using ContextFixture::ContextFixture;
   private:
     size_t _num_tries;
   public:
 
-    TestRandomiser(size_t num_tries) : _num_tries(num_tries) { }
+    explicit TestRandomiser(Ariadne::Testing::Context& context)
+        : ContextFixture(context), _num_tries(10) { }
 
     void test_int() {
         RandomGenerator generator;
@@ -70,16 +70,8 @@ class TestRandomiser {
 
 int main() {
     Ariadne::Testing::Suite suite("randomiser");
-    suite.add("int", [&](Ariadne::Testing::Context& t) {
-        TestRandomiser fixture(10);
-        fixture._ctx = &t;
-        t.expect_no_throw([&] { fixture.test_int(); }, "operation completes");
-    });
-    suite.add("real", [&](Ariadne::Testing::Context& t) {
-        TestRandomiser fixture(10);
-        fixture._ctx = &t;
-        t.expect_no_throw([&] { fixture.test_real(); }, "operation completes");
-    });
+    ARIADNE_ADD_TEST_NO_THROW(suite, TestRandomiser, test_int);
+    ARIADNE_ADD_TEST_NO_THROW(suite, TestRandomiser, test_real);
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
 }

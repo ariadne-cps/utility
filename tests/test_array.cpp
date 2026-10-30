@@ -29,7 +29,7 @@
 #include "utility/uniform_array.hpp"
 #include "utility/container.hpp"
 
-#include "testing/testing.hpp"
+#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 
@@ -64,10 +64,9 @@ struct Tracked {
 int Tracked::live=0;
 int Tracked::copies_until_throw=-1;
 
-class TestArray {
+class TestArray : public Ariadne::Testing::ContextFixture {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
+    using ContextFixture::ContextFixture;
 
 
     void test_convert() {
@@ -145,36 +144,12 @@ class TestArray {
 
 int main() {
     Ariadne::Testing::Suite suite("array");
-    suite.add("convert", [&](Ariadne::Testing::Context& t) {
-        TestArray fixture;
-        fixture._ctx = &t;
-        fixture.test_convert();
-    });
-    suite.add("print", [&](Ariadne::Testing::Context& t) {
-        TestArray fixture;
-        fixture._ctx = &t;
-        t.expect_no_throw([&] { fixture.test_print(); }, "operation completes");
-    });
-    suite.add("complement", [&](Ariadne::Testing::Context& t) {
-        TestArray fixture;
-        fixture._ctx = &t;
-        fixture.test_complement();
-    });
-    suite.add("move", [&](Ariadne::Testing::Context& t) {
-        TestArray fixture;
-        fixture._ctx = &t;
-        fixture.test_move();
-    });
-    suite.add("move_assignment_ownership", [&](Ariadne::Testing::Context& t) {
-        TestArray fixture;
-        fixture._ctx = &t;
-        fixture.test_move_assignment_ownership();
-    });
-    suite.add("exception_safe_construction", [&](Ariadne::Testing::Context& t) {
-        TestArray fixture;
-        fixture._ctx = &t;
-        fixture.test_exception_safe_construction();
-    });
+    ARIADNE_ADD_TEST(suite, TestArray, test_convert);
+    ARIADNE_ADD_TEST_NO_THROW(suite, TestArray, test_print);
+    ARIADNE_ADD_TEST(suite, TestArray, test_complement);
+    ARIADNE_ADD_TEST(suite, TestArray, test_move);
+    ARIADNE_ADD_TEST(suite, TestArray, test_move_assignment_ownership);
+    ARIADNE_ADD_TEST(suite, TestArray, test_exception_safe_construction);
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
 }

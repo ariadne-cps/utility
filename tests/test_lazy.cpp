@@ -25,7 +25,7 @@
 #include <iostream>
 #include "utility/lazy.hpp"
 
-#include "testing/testing.hpp"
+#include "testing/fixture.hpp"
 
 using namespace Ariadne;
 
@@ -43,10 +43,9 @@ class TestClass {
     double _value;
 };
 
-class TestLazy {
+class TestLazy : public Ariadne::Testing::ContextFixture {
   public:
-    Ariadne::Testing::Context* _ctx = nullptr;
-    Ariadne::Testing::Context& ctx() { return *_ctx; }
+    using ContextFixture::ContextFixture;
 
     void test_creation() {
         double arg = 2.0;
@@ -65,11 +64,7 @@ class TestLazy {
 
 int main() {
     Ariadne::Testing::Suite suite("lazy");
-    suite.add("creation", [&](Ariadne::Testing::Context& t) {
-        TestLazy fixture;
-        fixture._ctx = &t;
-        fixture.test_creation();
-    });
+    ARIADNE_ADD_TEST(suite, TestLazy, test_creation);
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
 }
