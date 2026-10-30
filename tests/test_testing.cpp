@@ -1,12 +1,8 @@
-/***************************************************************************
- *            test_testing.cpp
- *
- *  Copyright  2026  Ariadne contributors
- ****************************************************************************/
-
+#include "testing/testing.hpp"
+#include <iostream>
 #include <ostream>
-
-#include "macro/testing.hpp"
+#include <string>
+#include <vector>
 
 namespace TestLogic {
 
@@ -58,28 +54,37 @@ inline int mag(Difference difference) {
 
 } // namespace TestLogic
 
+
+struct CaptureReporter final : Ariadne::Testing::Reporter {
+    std::vector<Ariadne::Testing::CaseResult> cases;
+    void case_finished(Ariadne::Testing::CaseResult const& r) override { cases.push_back(r); }
+    void suite_finished(std::string_view, Ariadne::Testing::Summary const&) override { }
+};
+
 int main() {
-    using TestLogic::Truth;
+    using namespace Ariadne::Testing;
     using TestLogic::Value;
-
-    ARIADNE_TEST_ASSERT(true);
-    ARIADNE_TEST_ASSERT(Truth::True);
-    ARIADNE_TEST_ASSERT(Truth::Indeterminate);
-    ARIADNE_TEST_ASSERT(AriadneTesting::truth(Truth::False) == AriadneTesting::Truth::False);
-
-    Value one{1};
-    Value two{2};
-
-    ARIADNE_TEST_CHECK(one,one);
-    ARIADNE_TEST_SAME(one,one);
-    ARIADNE_TEST_EQUAL(one,one);
-    ARIADNE_TEST_NOT_EQUAL(one,two);
-    ARIADNE_TEST_EQUALS(one,one);
-    ARIADNE_TEST_LESS(one,two);
-    ARIADNE_TEST_UNARY_PREDICATE(TestLogic::is_positive,one);
-    ARIADNE_TEST_BINARY_PREDICATE(TestLogic::same_value,one,one);
-    ARIADNE_TEST_COMPARE(one,<,two);
-    ARIADNE_TEST_WITHIN(one,two,1);
-
-    return ARIADNE_TEST_FAILURES;
+    using TestLogic::Truth;
+    Value one{1}, two{2};
+    Suite suite("validated semantics");
+    suite.add("validated true", [&](Context& t) {
+        t.prove(Truth::True, "true proposition");
+        t.expect_equal(one, one);
+        t.expect_same(one, one);
+        t.prove(one < two, "strict less");
+        t.prove(TestLogic::is_positive(one), "unary predicate");
+        t.prove(TestLogic::same_value(one, one), "binary predicate");
+        t.expect_within(one, two, 1);
+        t.prove(one.value != two.value, "different values");
+    });
+    suite.add("validated false", [](Context& t) { t.prove(Truth::False, "refutation"); });
+    suite.add("validated indeterminate", [](Context& t) { t.prove(Truth::Indeterminate, "undecidable"); });
+    CaptureReporter results;
+    Summary const summary = suite.run(results);
+    if (summary.passed != 1 || summary.failed != 1 || summary.inconclusive != 1
+        || summary.errors != 0 || summary.skipped != 0) return 1;
+    if (results.cases.size() != 3) return 2;
+    if (results.cases[0].assertions.size() != 8) return 3;
+    if (results.cases[2].outcome != Outcome::Inconclusive) return 4;
+    return 0;
 }

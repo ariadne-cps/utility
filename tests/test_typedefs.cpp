@@ -7,6 +7,7 @@
 
 #include "utility/typedefs.hpp"
 #include "testing/testing.hpp"
+#include <iostream>
 
 using namespace Ariadne;
 
