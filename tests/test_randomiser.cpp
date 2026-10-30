@@ -66,19 +66,19 @@ class TestRandomiser {
         std::cout << "values" << " = " << (values) << '\n';
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_int(); }, "test_int()");
-        ctx().expect_no_throw([&] { test_real(); }, "test_real()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("randomiser");
-    TestRandomiser fixture(10);
-    suite.add("scenarios", [&](Ariadne::Testing::Context& ctx) {
-        fixture._ctx = &ctx;
-        fixture.test();
+    suite.add("int", [&](Ariadne::Testing::Context& t) {
+        TestRandomiser fixture(10);
+        fixture._ctx = &t;
+        t.expect_no_throw([&] { fixture.test_int(); }, "operation completes");
+    });
+    suite.add("real", [&](Ariadne::Testing::Context& t) {
+        TestRandomiser fixture(10);
+        fixture._ctx = &t;
+        t.expect_no_throw([&] { fixture.test_real(); }, "operation completes");
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

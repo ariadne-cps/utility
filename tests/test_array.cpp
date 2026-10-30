@@ -141,23 +141,39 @@ class TestArray {
         ctx().expect_equal((Tracked::live), (baseline), "Tracked::live,baseline");
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_convert(); }, "test_convert()");
-        ctx().expect_no_throw([&] { test_print(); }, "test_print()");
-        ctx().expect_no_throw([&] { test_complement(); }, "test_complement()");
-        ctx().expect_no_throw([&] { test_move(); }, "test_move()");
-        ctx().expect_no_throw([&] { test_move_assignment_ownership(); }, "test_move_assignment_ownership()");
-        ctx().expect_no_throw([&] { test_exception_safe_construction(); }, "test_exception_safe_construction()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("array");
-    TestArray fixture ;
-    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+    suite.add("convert", [&](Ariadne::Testing::Context& t) {
+        TestArray fixture;
         fixture._ctx = &t;
-        fixture.test();
+        fixture.test_convert();
+    });
+    suite.add("print", [&](Ariadne::Testing::Context& t) {
+        TestArray fixture;
+        fixture._ctx = &t;
+        t.expect_no_throw([&] { fixture.test_print(); }, "operation completes");
+    });
+    suite.add("complement", [&](Ariadne::Testing::Context& t) {
+        TestArray fixture;
+        fixture._ctx = &t;
+        fixture.test_complement();
+    });
+    suite.add("move", [&](Ariadne::Testing::Context& t) {
+        TestArray fixture;
+        fixture._ctx = &t;
+        fixture.test_move();
+    });
+    suite.add("move_assignment_ownership", [&](Ariadne::Testing::Context& t) {
+        TestArray fixture;
+        fixture._ctx = &t;
+        fixture.test_move_assignment_ownership();
+    });
+    suite.add("exception_safe_construction", [&](Ariadne::Testing::Context& t) {
+        TestArray fixture;
+        fixture._ctx = &t;
+        fixture.test_exception_safe_construction();
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

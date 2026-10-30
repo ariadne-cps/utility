@@ -111,25 +111,49 @@ class TestLRUCache {
         ctx().expect_equal((cache.age("fourth")), (1), "cache.age(\"fourth\"),1");
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_construct(); }, "test_construct()");
-        ctx().expect_no_throw([&] { test_find(); }, "test_find()");
-        ctx().expect_no_throw([&] { test_get_failure(); }, "test_get_failure()");
-        ctx().expect_no_throw([&] { test_string(); }, "test_string()");
-        ctx().expect_no_throw([&] { test_put_single(); }, "test_put_single()");
-        ctx().expect_no_throw([&] { test_put_multiple(); }, "test_put_multiple()");
-        ctx().expect_no_throw([&] { test_put_multiple_over(); }, "test_put_multiple_over()");
-        ctx().expect_no_throw([&] { test_get(); }, "test_get()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("lru_cache");
-    TestLRUCache fixture ;
-    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+    suite.add("construct", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
         fixture._ctx = &t;
-        fixture.test();
+        fixture.test_construct();
+    });
+    suite.add("find", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_find();
+    });
+    suite.add("get_failure", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_get_failure();
+    });
+    suite.add("string", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_string();
+    });
+    suite.add("put_single", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_put_single();
+    });
+    suite.add("put_multiple", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_put_multiple();
+    });
+    suite.add("put_multiple_over", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_put_multiple_over();
+    });
+    suite.add("get", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        fixture.test_get();
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

@@ -50,19 +50,19 @@ class TestLRUCache {
         TestClass().method();
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_free_function(); }, "test_free_function()");
-        ctx().expect_no_throw([&] { test_class_method(); }, "test_class_method()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("stack_trace");
-    TestLRUCache fixture ;
-    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+    suite.add("free_function", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
         fixture._ctx = &t;
-        fixture.test();
+        t.expect_no_throw([&] { fixture.test_free_function(); }, "operation completes");
+    });
+    suite.add("class_method", [&](Ariadne::Testing::Context& t) {
+        TestLRUCache fixture;
+        fixture._ctx = &t;
+        t.expect_no_throw([&] { fixture.test_class_method(); }, "operation completes");
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

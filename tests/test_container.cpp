@@ -78,22 +78,34 @@ class TestContainer {
         std::cout << "nonempty_double" << " = " << (nonempty_double) << '\n';
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_map_get(); }, "test_map_get()");
-        ctx().expect_no_throw([&] { test_map_convert(); }, "test_map_convert()");
-        ctx().expect_no_throw([&] { test_map_restrict_keys(); }, "test_map_restrict_keys()");
-        ctx().expect_no_throw([&] { test_make_list_of_set(); }, "test_make_list_of_set()");
-        ctx().expect_no_throw([&] { test_print_vector(); }, "test_print_vector()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("container");
-    TestContainer fixture ;
-    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+    suite.add("map_get", [&](Ariadne::Testing::Context& t) {
+        TestContainer fixture;
         fixture._ctx = &t;
-        fixture.test();
+        fixture.test_map_get();
+    });
+    suite.add("map_convert", [&](Ariadne::Testing::Context& t) {
+        TestContainer fixture;
+        fixture._ctx = &t;
+        fixture.test_map_convert();
+    });
+    suite.add("map_restrict_keys", [&](Ariadne::Testing::Context& t) {
+        TestContainer fixture;
+        fixture._ctx = &t;
+        fixture.test_map_restrict_keys();
+    });
+    suite.add("make_list_of_set", [&](Ariadne::Testing::Context& t) {
+        TestContainer fixture;
+        fixture._ctx = &t;
+        fixture.test_make_list_of_set();
+    });
+    suite.add("print_vector", [&](Ariadne::Testing::Context& t) {
+        TestContainer fixture;
+        fixture._ctx = &t;
+        t.expect_no_throw([&] { fixture.test_print_vector(); }, "operation completes");
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

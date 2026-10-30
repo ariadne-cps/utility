@@ -49,19 +49,19 @@ class TestStopwatch {
         ctx().prove((sw.elapsed_seconds() > 0.01), "sw.elapsed_seconds() > 0.01");
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_create(); }, "test_create()");
-        ctx().expect_no_throw([&] { test_duration(); }, "test_duration()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("stopwatch");
-    TestStopwatch fixture ;
-    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+    suite.add("create", [&](Ariadne::Testing::Context& t) {
+        TestStopwatch fixture;
         fixture._ctx = &t;
-        fixture.test();
+        t.expect_no_throw([&] { fixture.test_create(); }, "operation completes");
+    });
+    suite.add("duration", [&](Ariadne::Testing::Context& t) {
+        TestStopwatch fixture;
+        fixture._ctx = &t;
+        fixture.test_duration();
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;

@@ -61,18 +61,14 @@ class TestLazy {
         ctx().expect_equal((creations), (1), "creations,1");
     }
 
-    void test() {
-        ctx().expect_no_throw([&] { test_creation(); }, "test_creation()");
-    }
-
 };
 
 int main() {
     Ariadne::Testing::Suite suite("lazy");
-    TestLazy fixture;
-    suite.add("legacy scenarios", [&](Ariadne::Testing::Context& t) {
+    suite.add("creation", [&](Ariadne::Testing::Context& t) {
+        TestLazy fixture;
         fixture._ctx = &t;
-        fixture.test();
+        fixture.test_creation();
     });
     Ariadne::Testing::ConsoleReporter reporter(std::cout);
     return suite.run(reporter).successful() ? 0 : 1;
