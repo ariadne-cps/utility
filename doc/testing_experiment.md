@@ -211,3 +211,16 @@ test executables. Utility's production target, install bundle, and
 `utility/main` remain untouched. No checker expressions, test case bodies,
 registrations, assertions or CTest definitions have been modified.
 Utility CI must validate this dependency update before promotion.
+
+## 2026-10-30 — Centralized test-only CMake integration
+
+Pinned `ss/cfg` to Configuration `a3367703c0f95af09b823560f19c6830aaa760fc`
+and `ss/tst` to Testing `de5e3200c78397db2f3db42e63aa3c182e7824ec`.
+The root `setup_standalone_project_tests` invocation now passes the
+`USE_ARIADNE_TESTING` opt-in. Configuration initializes the pinned Testing
+submodule only for standalone tests, before entering `tests/`. The nine
+CTest executables link the existing build-tree `ariadne-testing` static
+library rather than the redundant `utility_testing_runtime` archive.
+Testing remains excluded from Utility's production interface, build and
+install bundle. Test sources, case registrations, check expressions,
+expected outcomes and CTest inventory are unchanged.
