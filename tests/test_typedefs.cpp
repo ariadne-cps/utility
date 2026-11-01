@@ -29,11 +29,18 @@
 
 using namespace Ariadne;
 
+class TestTypedefs : public Ariadne::Testing::ContextFixture {
+  public:
+    using ContextFixture::ContextFixture;
+
+    void test_conversions() {
+        ARIADNE_TESTING_EXPECT_EQUAL(static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
+        ARIADNE_TESTING_EXPECT_EQUAL(static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
+    }
+};
+
 int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("typedefs");
-    ariadne_test_suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
-        ARIADNE_TESTING_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
-        ARIADNE_TESTING_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
-    });
+    ARIADNE_TESTING_ADD_TEST(TestTypedefs, test_conversions);
     return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }
