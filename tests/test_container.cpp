@@ -69,12 +69,12 @@ class TestContainer : public Ariadne::Testing::ContextFixture {
         std::vector<unsigned int> nonempty_unsigned = {1u};
         std::vector<double> empty_double;
         std::vector<double> nonempty_double = {1.0};
-        std::cout << "empty_int" << " = " << (empty_int) << '\n';
-        std::cout << "nonempty_int" << " = " << (nonempty_int) << '\n';
-        std::cout << "empty_unsigned" << " = " << (empty_unsigned) << '\n';
-        std::cout << "nonempty_unsigned" << " = " << (nonempty_unsigned) << '\n';
-        std::cout << "empty_double" << " = " << (empty_double) << '\n';
-        std::cout << "nonempty_double" << " = " << (nonempty_double) << '\n';
+        ARIADNE_TESTING_INSPECT("empty_int", empty_int);
+        ARIADNE_TESTING_INSPECT("nonempty_int", nonempty_int);
+        ARIADNE_TESTING_INSPECT("empty_unsigned", empty_unsigned);
+        ARIADNE_TESTING_INSPECT("nonempty_unsigned", nonempty_unsigned);
+        ARIADNE_TESTING_INSPECT("empty_double", empty_double);
+        ARIADNE_TESTING_INSPECT("nonempty_double", nonempty_double);
     }
 
 };

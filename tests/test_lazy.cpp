@@ -34,7 +34,6 @@ class TestClass {
 
     TestClass(double a) {
         _value = a*a;
-        std::cout << "\"TestClass object created\"" << " = " << ("TestClass object created") << '\n';
     }
 
     double value() { return _value; }
@@ -52,7 +51,7 @@ class TestLazy : public Ariadne::Testing::ContextFixture {
         int creations = 0;
         Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
 
-        std::cout << "\"Lazy created\"" << " = " << ("Lazy created") << '\n';
+        ARIADNE_TESTING_NOTE("Lazy created");
         TestClass obj = lazy();
         ARIADNE_TESTING_EXPECT_EQUAL(obj.value(), 4.0);
         TestClass same_obj = lazy();

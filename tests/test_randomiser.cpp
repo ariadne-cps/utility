@@ -51,7 +51,7 @@ class TestRandomiser : public Ariadne::Testing::ContextFixture {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        std::cout << "values" << " = " << (values) << '\n';
+        ARIADNE_TESTING_INSPECT("values", values);
     }
 
     void test_real() {
@@ -63,7 +63,7 @@ class TestRandomiser : public Ariadne::Testing::ContextFixture {
         for (size_t i=0; i<_num_tries; ++i)
             values.push_back(rnd.get());
 
-        std::cout << "values" << " = " << (values) << '\n';
+        ARIADNE_TESTING_INSPECT("values", values);
     }
 
 };

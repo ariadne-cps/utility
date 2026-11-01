@@ -77,9 +77,9 @@ class TestArray : public Ariadne::Testing::ContextFixture {
 
     void test_print() {
         Array<int> a1;
-        std::cout << "a1" << " = " << (a1) << '\n';
+        ARIADNE_TESTING_INSPECT("a1", a1);
         Array<int> a2 = {1, 2};
-        std::cout << "a2" << " = " << (a2) << '\n';
+        ARIADNE_TESTING_INSPECT("a2", a2);
     }
 
     void test_complement() {
