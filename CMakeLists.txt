@@ -16,6 +16,13 @@ if(NOT TARGET ariadne-configuration)
 endif()
 
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    require_same_dependency_commit(Configuration
+        CHAINS
+            "configuration"
+            "testing|configuration"
+    )
+endif()
 
 setup_project()
 
