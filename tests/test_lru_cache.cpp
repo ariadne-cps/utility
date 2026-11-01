@@ -59,10 +59,10 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
     void test_string() {
         std::string std_string = "text";
         String string(std_string);
-        ARIADNE_TESTING_PROVE(std::string(c_str(string)) == "text");
-        ARIADNE_TESTING_PROVE(to_string(42) == "42");
-        ARIADNE_TESTING_PROVE(to_str(43) == "43");
-        ARIADNE_TESTING_PROVE(class_name<String>() == "String");
+        ARIADNE_TESTING_EXPECT_EQUAL(std::string(c_str(string)), "text");
+        ARIADNE_TESTING_EXPECT_EQUAL(to_string(42), "42");
+        ARIADNE_TESTING_EXPECT_EQUAL(to_str(43), "43");
+        ARIADNE_TESTING_EXPECT_EQUAL(class_name<String>(), "String");
     }
 
     void test_put_single() {

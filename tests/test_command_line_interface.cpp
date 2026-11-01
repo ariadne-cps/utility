@@ -49,7 +49,7 @@ class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
         ARIADNE_TESTING_EXPECT_EQUAL(valued.long_id(), "value");
         ARIADNE_TESTING_EXPECT_EQUAL(flag.short_id(), "");
         ARIADNE_TESTING_EXPECT_EQUAL(flag.long_id(), "flag");
-        ARIADNE_TESTING_PROVE(valued.help_description_header_size() > flag.help_description_header_size());
+        ARIADNE_TESTING_EXPECT_GREATER(valued.help_description_header_size(), flag.help_description_header_size());
         ARIADNE_TESTING_PROVE(valued.help_description(2).find("<value>") != String::npos);
         ARIADNE_TESTING_PROVE(flag.help_description(2).find("[--flag]") != String::npos);
 

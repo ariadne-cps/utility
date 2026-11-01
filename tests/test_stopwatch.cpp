@@ -44,8 +44,8 @@ class TestStopwatch : public Ariadne::Testing::ContextFixture {
         Stopwatch<Microseconds> sw;
         std::this_thread::sleep_for(10ms);
         auto duration = sw.click().duration();
-        ARIADNE_TESTING_PROVE(duration.count()>10000);
-        ARIADNE_TESTING_PROVE(sw.elapsed_seconds() > 0.01);
+        ARIADNE_TESTING_EXPECT_GREATER(duration.count(), 10000);
+        ARIADNE_TESTING_EXPECT_GREATER(sw.elapsed_seconds(), 0.01);
     }
 
 };
