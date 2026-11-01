@@ -72,7 +72,7 @@ class TestArray : public Ariadne::Testing::ContextFixture {
     void test_convert() {
         Array<TestClass> tca = {TestClass(1), TestClass(2)};
         Array<TestConvertibleTo> tcta = {TestConvertibleTo(1), TestConvertibleTo(2)};
-        ARIADNE_EXPECT_NO_THROW(Array<TestClass> tcac(tcta));
+        ARIADNE_TESTING_EXPECT_NO_THROW(Array<TestClass> tcac(tcta));
     }
 
     void test_print() {
@@ -85,43 +85,43 @@ class TestArray : public Ariadne::Testing::ContextFixture {
     void test_complement() {
         Array<size_t> vars = {1, 3};
         auto cmpl = complement(5, vars);
-        ARIADNE_EXPECT_EQUAL(cmpl.size(), 3);
-        ARIADNE_EXPECT_EQUAL(cmpl[0], 0);
-        ARIADNE_EXPECT_EQUAL(cmpl[1], 2);
-        ARIADNE_EXPECT_EQUAL(cmpl[2], 4);
+        ARIADNE_TESTING_EXPECT_EQUAL(cmpl.size(), 3);
+        ARIADNE_TESTING_EXPECT_EQUAL(cmpl[0], 0);
+        ARIADNE_TESTING_EXPECT_EQUAL(cmpl[1], 2);
+        ARIADNE_TESTING_EXPECT_EQUAL(cmpl[2], 4);
     }
 
     void test_move() {
         Array<size_t> source = {1, 3};
         Array<size_t> moved(std::move(source));
-        ARIADNE_EXPECT_EQUAL(moved.size(), 2);
-        ARIADNE_EXPECT_EQUAL(moved[0], 1);
-        ARIADNE_EXPECT_EQUAL(moved[1], 3);
-        ARIADNE_PROVE(source.empty());
+        ARIADNE_TESTING_EXPECT_EQUAL(moved.size(), 2);
+        ARIADNE_TESTING_EXPECT_EQUAL(moved[0], 1);
+        ARIADNE_TESTING_EXPECT_EQUAL(moved[1], 3);
+        ARIADNE_TESTING_PROVE(source.empty());
     }
 
     void test_move_assignment_ownership() {
         {
             Array<Tracked> target(3u,Tracked(1));
             Array<Tracked> source(2u,Tracked(2));
-            ARIADNE_EXPECT_EQUAL(Tracked::live, 5);
+            ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 5);
             target=std::move(source);
-            ARIADNE_EXPECT_EQUAL(Tracked::live, 2);
-            ARIADNE_EXPECT_EQUAL(target.size(), 2u);
-            ARIADNE_PROVE(source.empty());
+            ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 2);
+            ARIADNE_TESTING_EXPECT_EQUAL(target.size(), 2u);
+            ARIADNE_TESTING_PROVE(source.empty());
         }
-        ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
+        ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 0);
 
         {
             UniformArray<Tracked> target(3u,Tracked(1));
             UniformArray<Tracked> source(2u,Tracked(2));
-            ARIADNE_EXPECT_EQUAL(Tracked::live, 5);
+            ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 5);
             target=std::move(source);
-            ARIADNE_EXPECT_EQUAL(Tracked::live, 2);
-            ARIADNE_EXPECT_EQUAL(target.size(), 2u);
-            ARIADNE_PROVE(source.empty());
+            ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 2);
+            ARIADNE_TESTING_EXPECT_EQUAL(target.size(), 2u);
+            ARIADNE_TESTING_PROVE(source.empty());
         }
-        ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
+        ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 0);
     }
 
     void test_self_move_assignment_preserves_storage() {
@@ -130,54 +130,54 @@ class TestArray : public Ariadne::Testing::ContextFixture {
             Tracked* storage=array.begin();
             Array<Tracked>& self=array;
             array=std::move(self);
-            ARIADNE_EXPECT_EQUAL(array.size(), 2u);
-            ARIADNE_EXPECT_EQUAL(array.begin(), storage);
-            ARIADNE_EXPECT_EQUAL(array[0].value, 7);
-            ARIADNE_EXPECT_EQUAL(array[1].value, 7);
-            ARIADNE_EXPECT_EQUAL(Tracked::live, 2);
+            ARIADNE_TESTING_EXPECT_EQUAL(array.size(), 2u);
+            ARIADNE_TESTING_EXPECT_EQUAL(array.begin(), storage);
+            ARIADNE_TESTING_EXPECT_EQUAL(array[0].value, 7);
+            ARIADNE_TESTING_EXPECT_EQUAL(array[1].value, 7);
+            ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 2);
         }
-        ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
+        ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 0);
 
         {
             UniformArray<Tracked> array(2u,Tracked(9));
             Tracked* storage=array.begin();
             UniformArray<Tracked>& self=array;
             array=std::move(self);
-            ARIADNE_EXPECT_EQUAL(array.size(), 2u);
-            ARIADNE_EXPECT_EQUAL(array.begin(), storage);
-            ARIADNE_EXPECT_EQUAL(array.begin()[0].value, 9);
-            ARIADNE_EXPECT_EQUAL(array.begin()[1].value, 9);
-            ARIADNE_EXPECT_EQUAL(Tracked::live, 2);
+            ARIADNE_TESTING_EXPECT_EQUAL(array.size(), 2u);
+            ARIADNE_TESTING_EXPECT_EQUAL(array.begin(), storage);
+            ARIADNE_TESTING_EXPECT_EQUAL(array.begin()[0].value, 9);
+            ARIADNE_TESTING_EXPECT_EQUAL(array.begin()[1].value, 9);
+            ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 2);
         }
-        ARIADNE_EXPECT_EQUAL(Tracked::live, 0);
+        ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 0);
     }
 
     void test_exception_safe_construction() {
         Array<Tracked> array_source(3u,Tracked(1));
         int baseline=Tracked::live;
         Tracked::copies_until_throw=1;
-        ARIADNE_EXPECT_THROWS(std::runtime_error, (void)Array<Tracked>(array_source));
+        ARIADNE_TESTING_EXPECT_THROWS(std::runtime_error, (void)Array<Tracked>(array_source));
         Tracked::copies_until_throw=-1;
-        ARIADNE_EXPECT_EQUAL(Tracked::live, baseline);
+        ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, baseline);
 
         UniformArray<Tracked> uniform_source(3u,Tracked(1));
         baseline=Tracked::live;
         Tracked::copies_until_throw=1;
-        ARIADNE_EXPECT_THROWS(std::runtime_error, (void)UniformArray<Tracked>(uniform_source));
+        ARIADNE_TESTING_EXPECT_THROWS(std::runtime_error, (void)UniformArray<Tracked>(uniform_source));
         Tracked::copies_until_throw=-1;
-        ARIADNE_EXPECT_EQUAL(Tracked::live, baseline);
+        ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, baseline);
     }
 
 };
 
 int main() {
-    ARIADNE_TEST_SUITE("array");
-    ARIADNE_ADD_TEST(TestArray, test_convert);
-    ARIADNE_ADD_TEST_NO_THROW(TestArray, test_print);
-    ARIADNE_ADD_TEST(TestArray, test_complement);
-    ARIADNE_ADD_TEST(TestArray, test_move);
-    ARIADNE_ADD_TEST(TestArray, test_move_assignment_ownership);
-    ARIADNE_ADD_TEST(TestArray, test_self_move_assignment_preserves_storage);
-    ARIADNE_ADD_TEST(TestArray, test_exception_safe_construction);
-    return ARIADNE_RUN_TESTS();
+    ARIADNE_TESTING_SUITE("array");
+    ARIADNE_TESTING_ADD_TEST(TestArray, test_convert);
+    ARIADNE_TESTING_ADD_TEST_NO_THROW(TestArray, test_print);
+    ARIADNE_TESTING_ADD_TEST(TestArray, test_complement);
+    ARIADNE_TESTING_ADD_TEST(TestArray, test_move);
+    ARIADNE_TESTING_ADD_TEST(TestArray, test_move_assignment_ownership);
+    ARIADNE_TESTING_ADD_TEST(TestArray, test_self_move_assignment_preserves_storage);
+    ARIADNE_TESTING_ADD_TEST(TestArray, test_exception_safe_construction);
+    return ARIADNE_TESTING_RUN_TESTS();
 }

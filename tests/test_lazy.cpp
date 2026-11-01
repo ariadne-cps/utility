@@ -54,16 +54,16 @@ class TestLazy : public Ariadne::Testing::ContextFixture {
 
         std::cout << "\"Lazy created\"" << " = " << ("Lazy created") << '\n';
         TestClass obj = lazy();
-        ARIADNE_EXPECT_EQUAL(obj.value(), 4.0);
+        ARIADNE_TESTING_EXPECT_EQUAL(obj.value(), 4.0);
         TestClass same_obj = lazy();
-        ARIADNE_EXPECT_EQUAL(same_obj.value(), 4.0);
-        ARIADNE_EXPECT_EQUAL(creations, 1);
+        ARIADNE_TESTING_EXPECT_EQUAL(same_obj.value(), 4.0);
+        ARIADNE_TESTING_EXPECT_EQUAL(creations, 1);
     }
 
 };
 
 int main() {
-    ARIADNE_TEST_SUITE("lazy");
-    ARIADNE_ADD_TEST(TestLazy, test_creation);
-    return ARIADNE_RUN_TESTS();
+    ARIADNE_TESTING_SUITE("lazy");
+    ARIADNE_TESTING_ADD_TEST(TestLazy, test_creation);
+    return ARIADNE_TESTING_RUN_TESTS();
 }

@@ -52,8 +52,8 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 };
 
 int main() {
-    ARIADNE_TEST_SUITE("stack_trace");
-    ARIADNE_ADD_TEST_NO_THROW(TestLRUCache, test_free_function);
-    ARIADNE_ADD_TEST_NO_THROW(TestLRUCache, test_class_method);
-    return ARIADNE_RUN_TESTS();
+    ARIADNE_TESTING_SUITE("stack_trace");
+    ARIADNE_TESTING_ADD_TEST_NO_THROW(TestLRUCache, test_free_function);
+    ARIADNE_TESTING_ADD_TEST_NO_THROW(TestLRUCache, test_class_method);
+    return ARIADNE_TESTING_RUN_TESTS();
 }
