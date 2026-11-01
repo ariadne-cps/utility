@@ -50,9 +50,9 @@ class TestStopwatch : public Ariadne::Testing::ContextFixture {
 
 };
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("stopwatch");
     ARIADNE_TESTING_ADD_TEST_NO_THROW(TestStopwatch, test_create);
     ARIADNE_TESTING_ADD_TEST(TestStopwatch, test_duration);
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }

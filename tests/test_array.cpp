@@ -170,7 +170,7 @@ class TestArray : public Ariadne::Testing::ContextFixture {
 
 };
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("array");
     ARIADNE_TESTING_ADD_TEST(TestArray, test_convert);
     ARIADNE_TESTING_ADD_TEST_NO_THROW(TestArray, test_print);
@@ -179,5 +179,5 @@ int main() {
     ARIADNE_TESTING_ADD_TEST(TestArray, test_move_assignment_ownership);
     ARIADNE_TESTING_ADD_TEST(TestArray, test_self_move_assignment_preserves_storage);
     ARIADNE_TESTING_ADD_TEST(TestArray, test_exception_safe_construction);
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }

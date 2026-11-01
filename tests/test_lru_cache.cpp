@@ -112,7 +112,7 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 
 };
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("lru_cache");
     ARIADNE_TESTING_ADD_TEST(TestLRUCache, test_construct);
     ARIADNE_TESTING_ADD_TEST(TestLRUCache, test_find);
@@ -122,5 +122,5 @@ int main() {
     ARIADNE_TESTING_ADD_TEST(TestLRUCache, test_put_multiple);
     ARIADNE_TESTING_ADD_TEST(TestLRUCache, test_put_multiple_over);
     ARIADNE_TESTING_ADD_TEST(TestLRUCache, test_get);
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }

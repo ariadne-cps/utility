@@ -29,11 +29,11 @@
 
 using namespace Ariadne;
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("typedefs");
     ariadne_test_suite.add("typedef conversions", [&](Ariadne::Testing::Context& ctx) {
         ARIADNE_TESTING_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::SizeOne()), 1u);
         ARIADNE_TESTING_EXPECT_EQUAL_CTX(ctx, static_cast<Ariadne::SizeType>(Ariadne::IndexZero()), 0u);
     });
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }

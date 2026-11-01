@@ -79,12 +79,12 @@ class TestContainer : public Ariadne::Testing::ContextFixture {
 
 };
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("container");
     ARIADNE_TESTING_ADD_TEST(TestContainer, test_map_get);
     ARIADNE_TESTING_ADD_TEST(TestContainer, test_map_convert);
     ARIADNE_TESTING_ADD_TEST(TestContainer, test_map_restrict_keys);
     ARIADNE_TESTING_ADD_TEST(TestContainer, test_make_list_of_set);
     ARIADNE_TESTING_ADD_TEST_NO_THROW(TestContainer, test_print_vector);
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }

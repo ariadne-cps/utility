@@ -68,9 +68,9 @@ class TestRandomiser : public Ariadne::Testing::ContextFixture {
 
 };
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("randomiser");
     ARIADNE_TESTING_ADD_TEST_NO_THROW(TestRandomiser, test_int);
     ARIADNE_TESTING_ADD_TEST_NO_THROW(TestRandomiser, test_real);
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }

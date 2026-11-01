@@ -210,7 +210,7 @@ class TestCommandLineInterface : public Ariadne::Testing::ContextFixture {
     }
 };
 
-int main() {
+int main(int argc, char** argv) {
     ARIADNE_TESTING_SUITE("command_line_interface");
     ARIADNE_TESTING_ADD_TEST(TestCommandLineInterface, test_argument_stream);
     ARIADNE_TESTING_ADD_TEST(TestCommandLineInterface, test_argument_pack);
@@ -219,5 +219,5 @@ int main() {
     ARIADNE_TESTING_ADD_TEST(TestCommandLineInterface, test_composition);
     ARIADNE_TESTING_ADD_TEST(TestCommandLineInterface, test_validation);
     ARIADNE_TESTING_ADD_TEST(TestCommandLineInterface, test_priority_and_transactionality);
-    return ARIADNE_TESTING_RUN_TESTS();
+    return ARIADNE_TESTING_RUN_TESTS_WITH_ARGS(argc, argv);
 }
