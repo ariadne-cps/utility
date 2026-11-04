@@ -143,8 +143,8 @@ class UniformArray
         if (n==0) { if constexpr (DefaultConstructible<ValueType>) { return get_characteristics(ValueType()); } else { ARIADNE_PRECONDITION(n!=0); } }
         return get_characteristics(g(0)); }
     template<class ForwardIterator>
-    static CharacteristicsType _get_iterator_range_characteristics(ForwardIterator first, ForwardIterator last) {
-        ARIADNE_PRECONDITION(first!=last); return get_characteristics(*first); }
+    static CharacteristicsType _get_iterator_range_characteristics(ForwardIterator begin_iterator, ForwardIterator end_iterator) {
+        ARIADNE_PRECONDITION(begin_iterator!=end_iterator); return get_characteristics(*begin_iterator); }
     void _set_characteristics(CharacteristicsType pr) {
         static_cast<PR&>(*this)=pr; }
 
@@ -194,11 +194,11 @@ class UniformArray
     UniformArray(std::size_t n, G const& g)
             : PR(_get_generator_characteristics(n,g)), _size(n), _ptr(uninitialized_new(_size)) {
         this->_uninitialized_generate(g); }
-    //! \brief Constructs a UniformArray from the range \a first to \a last. Requires the size to be at least 1.
+    //! \brief Constructs a UniformArray from the range \a begin_iterator to \a end_iterator. Requires the size to be at least 1.
     template<class ForwardIterator>
-    UniformArray(ForwardIterator first, ForwardIterator last)
-            : _pr(_get_iterator_range_characteristics(first,last)), _size(static_cast<std::size_t>(std::distance(first,last))), _ptr(uninitialized_new(_size)) {
-        assert(std::distance(first,last) >= 0); this->_uninitialized_fill(first); }
+    UniformArray(ForwardIterator begin_iterator, ForwardIterator end_iterator)
+            : _pr(_get_iterator_range_characteristics(begin_iterator,end_iterator)), _size(static_cast<std::size_t>(std::distance(begin_iterator,end_iterator))), _ptr(uninitialized_new(_size)) {
+        assert(std::distance(begin_iterator,end_iterator) >= 0); this->_uninitialized_fill(begin_iterator); }
 
     //! \brief Generate from a function (object) \a g of type \a G mapping an index to a value and characteristic parameters.
     template<class G, class... PRS> requires InvocableReturning<ValueType,G,std::size_t> && Constructible<ValueType,PRS...>
