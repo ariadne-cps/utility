@@ -41,6 +41,7 @@ endif()
 ariadne_register_public_headers(
     TARGET utility
     DIRECTORIES "${PROJECT_SOURCE_DIR}/include/utility"
+    FILES "${PROJECT_SOURCE_DIR}/include/ariadne-utility.hpp"
 )
 
 setup_project_library(
