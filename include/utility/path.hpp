@@ -103,7 +103,7 @@ template<class T> class Path
 };
 
 enum class LeftOrRight : bool { LEFT=false, RIGHT=true };
-enum class LeftOrMiddleOrRight : char { LEFT=-1, MIDDLE=0, RIGHT=+1 };
+enum class LeftOrMiddleOrRight : signed char { LEFT=-1, MIDDLE=0, RIGHT=+1 };
 std::ostream& operator<<(std::ostream& os, const LeftOrRight& s);
 std::ostream& operator<<(std::ostream& os, const LeftOrMiddleOrRight& s);
 
