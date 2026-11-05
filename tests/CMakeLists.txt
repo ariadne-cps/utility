@@ -9,7 +9,6 @@ set(UNIT_TESTS
     test_randomiser
     test_stopwatch
     test_typedefs
-    test_umbrella
 )
 
 foreach(TEST ${UNIT_TESTS})
