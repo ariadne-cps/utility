@@ -16,8 +16,10 @@ if(NOT TARGET ariadne-build)
 endif()
 
 
-# Testing remains pinned to a previous CMake commit during migration;
-# no cross-submodule CMake commit equality is required here.
+if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    require_same_dependency_commit(Build CHAINS
+        "build" "testing|build")
+endif()
 
 setup_project()
 
