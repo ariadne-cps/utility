@@ -4,15 +4,15 @@ project(Utility VERSION 1.0)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
-if(NOT TARGET ariadne-cmake)
+if(NOT TARGET ariadne-build)
     find_package(Git REQUIRED)
     execute_process(COMMAND "${GIT_EXECUTABLE}" -C "${CMAKE_CURRENT_SOURCE_DIR}"
-                    submodule update --init -- ss/cma
+                    submodule update --init -- ss/bui
                     RESULT_VARIABLE _result)
     if(_result)
-        message(FATAL_ERROR "Cannot initialize cmake submodule")
+        message(FATAL_ERROR "Cannot initialize build submodule")
     endif()
-    include("${CMAKE_CURRENT_SOURCE_DIR}/ss/cma/cmake/ProjectOptions.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/ss/bui/cmake/ProjectOptions.cmake")
 endif()
 
 
@@ -65,7 +65,7 @@ endif()
 
 # Documentation targets are standalone-only to avoid conflicts in parent builds.
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-  include("${CMAKE_CURRENT_SOURCE_DIR}/ss/cma/cmake/UseDoxygen.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/ss/bui/cmake/UseDoxygen.cmake")
   ariadne_setup_documentation(
     INPUT "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
     IMAGE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/doc"
