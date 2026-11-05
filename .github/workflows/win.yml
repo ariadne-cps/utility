@@ -10,6 +10,8 @@ on:
 
 env:
   SCCACHE_GHA_ENABLED: "true"
+  SCCACHE_IGNORE_SERVER_IO_ERROR: "1"
+  SCCACHE_CONF: ${{ github.workspace }}/ss/cma/cmake/sccache.toml
 
 jobs:
   build-test:
@@ -33,15 +35,21 @@ jobs:
 
       - name: Set up sccache
         uses: mozilla-actions/sccache-action@v0.0.11
+        continue-on-error: true
         with:
           version: "v0.18.0"
+
+      - name: Initialize optional sccache before compilation
+        run: |
+          git submodule update --init -- ss/cma
+          cmake -P ss/cma/cmake/InitializeSccache.cmake
 
       - name: Configure CMake
         run: |
           cmake -S . -B build -G Ninja `
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
-            -DCMAKE_C_COMPILER_LAUNCHER=sccache `
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache `
+            -DCMAKE_C_COMPILER_LAUNCHER="$env:SCCACHE_LAUNCHER" `
+            -DCMAKE_CXX_COMPILER_LAUNCHER="$env:SCCACHE_LAUNCHER" `
             -DWARNINGS_AS_ERRORS=ON
 
       - name: Build Release library

@@ -7,7 +7,7 @@
 [![Coverage Status](https://github.com/ariadne-cps/utility/actions/workflows/coverage.yml/badge.svg)](https://github.com/ariadne-cps/utility/actions/workflows/coverage.yml)
 [![codecov](https://codecov.io/gh/ariadne-cps/utility/branch/main/graph/badge.svg)](https://codecov.io/gh/ariadne-cps/utility)
 
-Ariadne Utility is a small C++20 utility library used by Ariadne projects.
+Ariadne Utility is a small, independently usable C++20 utility library used by Ariadne projects. Although independently maintained, this repository is also part of the [Ariadne repository structure](https://github.com/ariadne-cps/ariadne/blob/main/doc/structure.md).
 
 ## Build
 
