@@ -52,7 +52,7 @@ setup_project_library(
     LINK_LIBRARIES utility
 )
 
-setup_standalone_project_tests(
+setup_standalone_project(
     TARGET ariadne-utility
     TEST_DIRECTORY tests
     TEST_TARGET tests
