@@ -18,12 +18,6 @@ if(NOT TARGET ariadne-build)
     include("${CMAKE_CURRENT_SOURCE_DIR}/ss/bui/cmake/ProjectOptions.cmake")
 endif()
 
-
-if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    require_same_dependency_commit(Build CHAINS
-        "build" "testing|build")
-endif()
-
 setup_project()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
