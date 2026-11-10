@@ -1,5 +1,5 @@
 /***************************************************************************
- *            lru_cache.hpp
+ *            utility/lru_cache.hpp
  *
  *  Copyright  2007-21  Luca Geretti
  *

@@ -1,5 +1,5 @@
 /***************************************************************************
- *            string.hpp
+ *            utility/string.hpp
  *
  *  Copyright  2023  Pieter Collins
  *

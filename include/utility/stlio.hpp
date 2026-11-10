@@ -1,5 +1,5 @@
 /***************************************************************************
- *            stlio.hpp
+ *            utility/stlio.hpp
  *
  *  Copyright  2023  Pieter Collins
  *

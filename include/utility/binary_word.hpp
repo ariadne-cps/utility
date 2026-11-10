@@ -1,5 +1,5 @@
 /***************************************************************************
- *            binary_word.hpp
+ *            utility/binary_word.hpp
  *
  *  Copyright  2004-20  Alberto Casagrande, Pieter Collins, Ivan S. Zapreev
  *

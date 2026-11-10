@@ -1,5 +1,5 @@
 /***************************************************************************
- *            randomiser.hpp
+ *            utility/randomiser.hpp
  *
  *  Copyright  2011-20  Luca Geretti
  *

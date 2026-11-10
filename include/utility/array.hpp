@@ -1,5 +1,5 @@
 /***************************************************************************
- *            array.hpp
+ *            utility/array.hpp
  *
  *  Copyright  2023  Pieter Collins
  *

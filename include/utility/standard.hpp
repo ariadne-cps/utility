@@ -1,5 +1,5 @@
 /***************************************************************************
- *            standard.hpp
+ *            utility/standard.hpp
  *
  *  Copyright  2014-26  Pieter Collins
  *

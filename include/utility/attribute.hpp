@@ -1,5 +1,5 @@
 /***************************************************************************
- *            attribute.hpp
+ *            utility/attribute.hpp
  *
  *  Copyright  2011-26  Pieter Collins
  *

@@ -1,5 +1,5 @@
 /***************************************************************************
- *            numeric/dispatching.hpp
+ *            utility/dispatching.hpp
  *
  *  Copyright  2013-22  Pieter Collins
  *

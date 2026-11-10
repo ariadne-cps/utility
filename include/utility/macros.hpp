@@ -1,5 +1,5 @@
 /***************************************************************************
- *            macros.hpp
+ *            utility/macros.hpp
  *
  *  Copyright  2026  Luca Geretti
  *  Author     Luca Geretti

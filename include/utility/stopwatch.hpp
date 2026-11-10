@@ -1,5 +1,5 @@
 /***************************************************************************
- *            stopwatch.hpp
+ *            utility/stopwatch.hpp
  *
  *  Copyright  2018-20  Luca Geretti
  *

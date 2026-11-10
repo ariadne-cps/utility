@@ -1,5 +1,5 @@
 /***************************************************************************
- *            writable.hpp
+ *            utility/writable.hpp
  *
  *  Copyright  2023  Pieter Collins
  *

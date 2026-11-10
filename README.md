@@ -52,8 +52,13 @@ cmake --build . --parallel --target coverage
 
 On Ubuntu coverage is generated with GCC/lcov. On macOS it is generated with AppleClang/LLVM coverage tools.
 
-## Testing experiment
+## Testing dependency
 
-The `testing` branch moves the general production macros to `utility/macros.hpp`
-and drops the `macro` dependency. The new `testing` submodule is **test-only**;
-the `utility` library interface and installed library do not link to it.
+The pinned `testing` submodule is used only for standalone tests. The
+production `utility` interface and `ariadne-utility` library do not link
+against or install Testing. The compilation root selects the active Testing
+checkout, whose Build gitlink must match the production Build commit.
+
+The common setup is provided by `ariadne_setup_module(utility)` in the pinned
+Ariadne Build submodule. CMake verifies the Build gitlink paths before setup;
+reconfigurations reuse successful checks when the relevant gitlinks are unchanged.

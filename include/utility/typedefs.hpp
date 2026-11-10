@@ -1,5 +1,5 @@
 /***************************************************************************
- *            typedefs.hpp
+ *            utility/typedefs.hpp
  *
  *  Copyright  2013-26  Pieter Collins
  *
