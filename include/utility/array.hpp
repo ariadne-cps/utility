@@ -26,37 +26,38 @@
  *  \brief
  */
 
-
-
 #ifndef ARIADNE_UTILITY_ARRAY_HPP
 #define ARIADNE_UTILITY_ARRAY_HPP
 
+#include <cassert>
 #include <initializer_list>
 #include <iterator>
 #include <stdexcept>
-#include <cassert>
+
 #include "utility/metaprogramming.hpp"
 
 namespace Ariadne {
 
 using std::size_t;
 
-template<class T> using InitializerList=std::initializer_list<T>;
+template<class T>
+using InitializerList = std::initializer_list<T>;
 
-struct Uninitialised { };
+struct Uninitialised {};
 
 template<class T>
 class Array {
-private:
-    static T* uninitialized_new(size_t n) { return static_cast<T*>(::operator new(n*sizeof(T))); }
+  private:
+    static T* uninitialized_new(size_t n) { return static_cast<T*>(::operator new(n * sizeof(T))); }
     static void uninitialized_delete(T* p) { ::operator delete(p); }
-public:
+
+  public:
     typedef T ValueType;
     typedef size_t IndexType;
     typedef ValueType* Iterator;
-    typedef ValueType const* ConstIterator;
+    typedef const ValueType* ConstIterator;
 
-public:
+  public:
     // Standard typedefs
     typedef T value_type;
     typedef value_type& reference;
@@ -66,209 +67,409 @@ public:
     typedef pointer iterator;
     typedef const_pointer const_iterator;
     typedef std::ptrdiff_t difference_type;
-public:
 
+  public:
     //! \brief Destructor
-    ~Array() { this->_destroy_elements(); uninitialized_delete(_ptr); }
+    ~Array() {
+        this->_destroy_elements();
+        uninitialized_delete(_ptr);
+    }
 
     //! \brief Default constructor. Constructs an empty Array.
-    Array() : _size(0), _ptr(0) { }
+    Array() : _size(0), _ptr(0) {}
     //! \brief Constructs an Array of size \a n with default-initialised elements.
     explicit Array(const size_t n) : _size(n), _ptr(uninitialized_new(n)) { this->_uninitialized_default_fill(); }
     //! \brief Constructs an Array of size \a n with uninitialised elements. The elements should be initialised using placement new.
-    explicit Array(const size_t n, Uninitialised) : _size(n), _ptr(uninitialized_new(n)) { }
+    explicit Array(const size_t n, Uninitialised) : _size(n), _ptr(uninitialized_new(n)) {}
     //! \brief Constructs an Array of size \a n with elements initialised to \a x.
     Array(const size_t n, const ValueType& x) : _size(n), _ptr(uninitialized_new(n)) { this->_uninitialized_fill(x); }
 
     //! \brief Converts an initializer list to an Array.
     Array(InitializerList<T> lst) : _size(lst.size()), _ptr(uninitialized_new(_size)) {
-        this->_uninitialized_fill(lst.begin()); }
+        this->_uninitialized_fill(lst.begin());
+    }
     //! \brief Constructs an Array from an initializer list and a precision parameter.
-    template<class TT, class PR> requires Constructible<T,TT,PR>
+    template<class TT, class PR>
+        requires Constructible<T, TT, PR>
     Array(InitializerList<TT> lst, PR pr) : _size(lst.size()), _ptr(uninitialized_new(_size)) {
-        this->_uninitialized_fill(lst.begin(),pr); }
+        this->_uninitialized_fill(lst.begin(), pr);
+    }
     //! \brief Generate from a function (object) \a g of type \a G mapping an index to a value.
-    template<class G> requires InvocableReturning<ValueType,G,size_t>
-    Array(size_t n, G const& g) : _size(n), _ptr(uninitialized_new(_size)) {
-        this->_uninitialized_generate(g); }
+    template<class G>
+        requires InvocableReturning<ValueType, G, size_t>
+    Array(size_t n, const G& g) : _size(n), _ptr(uninitialized_new(_size)) {
+        this->_uninitialized_generate(g);
+    }
 
     //! \brief Constructs an Array from the range \a first to \a last.
     template<class ForwardIterator>
     Array(ForwardIterator first, ForwardIterator last)
-            : _size(static_cast<size_t>(std::distance(first,last))), _ptr(uninitialized_new(_size)) {
-        assert(std::distance(first,last) >= 0);
-        this->_uninitialized_fill(first); }
+        : _size(static_cast<size_t>(std::distance(first, last))), _ptr(uninitialized_new(_size)) {
+        assert(std::distance(first, last) >= 0);
+        this->_uninitialized_fill(first);
+    }
 
     //! \brief Conversion constructor.
-    template<class TT> requires Convertible<TT,T>
+    template<class TT>
+        requires Convertible<TT, T>
     Array(const Array<TT>& a) : _size(a.size()), _ptr(uninitialized_new(_size)) {
-        this->_uninitialized_fill(a.begin()); }
+        this->_uninitialized_fill(a.begin());
+    }
 
     //! \brief Explicit conversion constructor.
     //! \details Requirement ExplicitlyConvertible<TT,T> as a static_assert to avoid definition of \c TT being required.
     template<class TT>
     explicit Array(const Array<TT>& a) : _size(a.size()), _ptr(uninitialized_new(_size)) {
-        static_assert(ExplicitlyConvertible<TT,T>); this->_uninitialized_fill(a.begin()); }
+        static_assert(ExplicitlyConvertible<TT, T>);
+        this->_uninitialized_fill(a.begin());
+    }
 
     //! \brief Explicit construction with properties parameter.
-    template<class TT, class PR> requires Constructible<T,TT,PR>
+    template<class TT, class PR>
+        requires Constructible<T, TT, PR>
     Array(const Array<TT>& a, PR pr) : _size(a.size()), _ptr(uninitialized_new(_size)) {
-        this->_uninitialized_fill(a.begin(),pr); }
+        this->_uninitialized_fill(a.begin(), pr);
+    }
 
     //! \brief Copy constructor.
     Array(const Array<T>& a) : _size(a.size()), _ptr(uninitialized_new(_size)) {
-        this->_uninitialized_fill(a.begin()); }
+        this->_uninitialized_fill(a.begin());
+    }
     //! \brief Move constructor.
     Array(Array<T>&& a) : _size(a._size), _ptr(a._ptr) {
-        a._size=0u; a._ptr=nullptr; }
+        a._size = 0u;
+        a._ptr = nullptr;
+    }
     //! \brief Copy assignment.
     Array<T>& operator=(const Array<T>& a) {
-        if(this!=&a) { Array<T> tmp(a); this->swap(tmp); }
-        return *this; }
+        if (this != &a) {
+            Array<T> tmp(a);
+            this->swap(tmp);
+        }
+        return *this;
+    }
     //! \brief Move assignment.
     Array<T>& operator=(Array<T>&& a) {
-        if(this!=&a) {
-            this->_destroy_elements(); uninitialized_delete(_ptr);
-            this->_size=a._size; this->_ptr=a._ptr; a._size=0u; a._ptr=nullptr;
+        if (this != &a) {
+            this->_destroy_elements();
+            uninitialized_delete(_ptr);
+            this->_size = a._size;
+            this->_ptr = a._ptr;
+            a._size = 0u;
+            a._ptr = nullptr;
         }
-        return *this; }
+        return *this;
+    }
 
     //! \brief True if the Array's size is 0.
-    bool empty() const { return _size==0u; }
+    bool empty() const { return _size == 0u; }
     //! \brief The size of the Array.
     size_t size() const { return _size; }
     //! \brief The maximum possible size of the Array.
-    size_t max_size() const { return (size_t) (-1); }
+    size_t max_size() const { return (size_t)(-1); }
     //! \brief Resizes the Array to hold \a n elements. If \a n is larger than the current size, the extra elements are default initialised.
     void resize(size_t n) {
         static_assert(DefaultConstructible<T>);
-        if(size()!=n) {
-            pointer new_ptr=uninitialized_new(n); pointer curr=new_ptr;
+        if (size() != n) {
+            pointer new_ptr = uninitialized_new(n);
+            pointer curr = new_ptr;
             try {
-                for(size_t i=0; i!=n; ++i,++curr) { if(i<_size) { new (curr) T(_ptr[i]); } else { new (curr) T(); } }
-            } catch(...) { _destroy_range(new_ptr,curr); uninitialized_delete(new_ptr); throw; }
-            this->_destroy_elements(); uninitialized_delete(_ptr); _size=n; _ptr=new_ptr;
-        } }
+                for (size_t i = 0; i != n; ++i, ++curr) {
+                    if (i < _size) {
+                        new (curr) T(_ptr[i]);
+                    } else {
+                        new (curr) T();
+                    }
+                }
+            } catch (...) {
+                _destroy_range(new_ptr, curr);
+                uninitialized_delete(new_ptr);
+                throw;
+            }
+            this->_destroy_elements();
+            uninitialized_delete(_ptr);
+            _size = n;
+            _ptr = new_ptr;
+        }
+    }
     //! \brief Resizes the Array to hold \a n elements. If \a n is larger than the current size, the extra elements are initialised with value \a t.
     void resize(size_t n, const T& t) {
-        if(size()!=n) {
-            pointer new_ptr=uninitialized_new(n); pointer curr=new_ptr;
+        if (size() != n) {
+            pointer new_ptr = uninitialized_new(n);
+            pointer curr = new_ptr;
             try {
-                for(size_t i=0; i!=n; ++i,++curr) { if(i<_size) { new (curr) T(_ptr[i]); } else { new (curr) T(t); } }
-            } catch(...) { _destroy_range(new_ptr,curr); uninitialized_delete(new_ptr); throw; }
-            this->_destroy_elements(); uninitialized_delete(_ptr); _size=n; _ptr=new_ptr;
-        } }
+                for (size_t i = 0; i != n; ++i, ++curr) {
+                    if (i < _size) {
+                        new (curr) T(_ptr[i]);
+                    } else {
+                        new (curr) T(t);
+                    }
+                }
+            } catch (...) {
+                _destroy_range(new_ptr, curr);
+                uninitialized_delete(new_ptr);
+                throw;
+            }
+            this->_destroy_elements();
+            uninitialized_delete(_ptr);
+            _size = n;
+            _ptr = new_ptr;
+        }
+    }
     //! \brief Reallocates the Array to hold \a n elements. The new elements are default-constructed.
-    void reallocate(size_t n) { if(size()!=n) { Array<T> tmp(n); this->swap(tmp); } }
+    void reallocate(size_t n) {
+        if (size() != n) {
+            Array<T> tmp(n);
+            this->swap(tmp);
+        }
+    }
     //! \brief Efficiently swap two arrays.
-    void swap(Array<T>& a) { std::swap(_size,a._size); std::swap(_ptr,a._ptr); }
+    void swap(Array<T>& a) {
+        std::swap(_size, a._size);
+        std::swap(_ptr, a._ptr);
+    }
 
     //! \brief The \a n th element.
     ValueType& operator[](size_t i) { return _ptr[i]; }
     //! \brief The \a n th element.
     const ValueType& operator[](size_t i) const { return _ptr[i]; }
     //! \brief Checked access to the \a n th element.
-    ValueType& at(size_t i) { if(i<_size) { return _ptr[i]; } else { throw std::out_of_range("Array: index out-of-range"); } }
+    ValueType& at(size_t i) {
+        if (i < _size) {
+            return _ptr[i];
+        } else {
+            throw std::out_of_range("Array: index out-of-range");
+        }
+    }
     //! \brief Checked access to the \a n th element.
-    const ValueType& at(size_t i) const { if(i<_size) { return _ptr[i]; } else { throw std::out_of_range("Array: index out-of-range"); } }
+    const ValueType& at(size_t i) const {
+        if (i < _size) {
+            return _ptr[i];
+        } else {
+            throw std::out_of_range("Array: index out-of-range");
+        }
+    }
 
     //! \brief A reference to the first element of the Array.
     ValueType& front() { return _ptr[0]; }
     //! \brief A constant reference to the first element of the Array.
     const ValueType& front() const { return _ptr[0]; }
     //! \brief A reference to the last element of the Array.
-    ValueType& back() { return _ptr[_size-1]; }
+    ValueType& back() { return _ptr[_size - 1]; }
     //! \brief A constant reference  to the last element of the Array.
-    const ValueType& back() const { return _ptr[_size-1]; }
+    const ValueType& back() const { return _ptr[_size - 1]; }
 
     //! \brief An Iterator pointing to the beginning of the Array.
     Iterator begin() { return _ptr; }
     //! \brief A constant Iterator pointing to the beginning of the Array.
     ConstIterator begin() const { return _ptr; }
     //! \brief An Iterator pointing to the end of the Array.
-    Iterator end() { return _ptr+_size; }
+    Iterator end() { return _ptr + _size; }
     //! \brief A constant Iterator pointing to the end of the Array.
-    ConstIterator end() const { return _ptr+_size; }
+    ConstIterator end() const { return _ptr + _size; }
 
     //! \brief Tests two arrays for equality
     bool operator==(const Array& other) const {
-        if(size()!=other.size()) return false;
-        T const* first=begin(); T const* last=end(); T const* curr=other.begin();
-        while(first!=last) { if((*first)!=(*curr)) { return false; } ++first; ++curr; } return true; }
+        if (size() != other.size())
+            return false;
+        const T* first = begin();
+        const T* last = end();
+        const T* curr = other.begin();
+        while (first != last) {
+            if ((*first) != (*curr)) {
+                return false;
+            }
+            ++first;
+            ++curr;
+        }
+        return true;
+    }
     //! \brief Tests two arrays for inequality
-    bool operator!=(const Array& other) const { return !((*this)==other); }
+    bool operator!=(const Array& other) const { return !((*this) == other); }
 
     //! \brief Fills the Array with copies of \a x.
     void fill(const ValueType& x) {
-        ValueType* curr=begin(); ValueType* end=this->end(); while(curr!=end) { *curr=x; ++curr; } }
+        ValueType* curr = begin();
+        ValueType* end = this->end();
+        while (curr != end) {
+            *curr = x;
+            ++curr;
+        }
+    }
     //! \brief Fills the Array from the sequence starting at \a first.
-    template<class InputIterator> void fill(InputIterator first) {
-        ValueType* curr=begin(); ValueType* end=this->end(); while(curr!=end) { *curr=*first; ++curr; ++first; } }
+    template<class InputIterator>
+    void fill(InputIterator first) {
+        ValueType* curr = begin();
+        ValueType* end = this->end();
+        while (curr != end) {
+            *curr = *first;
+            ++curr;
+            ++first;
+        }
+    }
     //! \brief Assigns the sequence from \a first to \a last.
-    template<class ForwardIterator> void assign(ForwardIterator first, ForwardIterator last) {
-        resize(std::distance(first,last)); fill(first); }
-private:
-    static void _destroy_range(pointer first, pointer last) { while(last!=first) { --last; last->~T(); } }
-    void _destroy_elements() { _destroy_range(_ptr,_ptr+_size); }
+    template<class ForwardIterator>
+    void assign(ForwardIterator first, ForwardIterator last) {
+        resize(std::distance(first, last));
+        fill(first);
+    }
+
+  private:
+    static void _destroy_range(pointer first, pointer last) {
+        while (last != first) {
+            --last;
+            last->~T();
+        }
+    }
+    void _destroy_elements() { _destroy_range(_ptr, _ptr + _size); }
     void _rollback_uninitialized(pointer curr) {
-        _destroy_range(_ptr,curr); uninitialized_delete(_ptr); _ptr=nullptr; _size=0u; }
+        _destroy_range(_ptr, curr);
+        uninitialized_delete(_ptr);
+        _ptr = nullptr;
+        _size = 0u;
+    }
     void _uninitialized_default_fill() {
-        pointer curr=_ptr; pointer end=_ptr+_size;
-        try { while(curr!=end) { new (curr) T(); ++curr; } }
-        catch(...) { this->_rollback_uninitialized(curr); throw; } }
+        pointer curr = _ptr;
+        pointer end = _ptr + _size;
+        try {
+            while (curr != end) {
+                new (curr) T();
+                ++curr;
+            }
+        } catch (...) {
+            this->_rollback_uninitialized(curr);
+            throw;
+        }
+    }
     void _uninitialized_fill(const ValueType& x) {
-        pointer curr=_ptr; pointer end=_ptr+_size;
-        try { while(curr!=end) { new (curr) T(x); ++curr; } }
-        catch(...) { this->_rollback_uninitialized(curr); throw; } }
-    template<class InputIterator> void _uninitialized_fill(InputIterator first) {
-        pointer curr=_ptr; pointer end=_ptr+_size;
-        try { while(curr!=end) { new (curr) T(*first); ++curr; ++first; } }
-        catch(...) { this->_rollback_uninitialized(curr); throw; } }
-    template<class InputIterator, class Parameters> void _uninitialized_fill(InputIterator first, Parameters parameters) {
-        pointer curr=_ptr; pointer end=_ptr+_size;
-        try { while(curr!=end) { new (curr) T(*first,parameters); ++curr; ++first; } }
-        catch(...) { this->_rollback_uninitialized(curr); throw; } }
-    template<class G> void _uninitialized_generate(G g) {
-        pointer curr=_ptr;
-        try { for(size_t i=0u; i!=this->size(); ++i,++curr) { new (curr) T(g(i)); } }
-        catch(...) { this->_rollback_uninitialized(curr); throw; } }
-private:
+        pointer curr = _ptr;
+        pointer end = _ptr + _size;
+        try {
+            while (curr != end) {
+                new (curr) T(x);
+                ++curr;
+            }
+        } catch (...) {
+            this->_rollback_uninitialized(curr);
+            throw;
+        }
+    }
+    template<class InputIterator>
+    void _uninitialized_fill(InputIterator first) {
+        pointer curr = _ptr;
+        pointer end = _ptr + _size;
+        try {
+            while (curr != end) {
+                new (curr) T(*first);
+                ++curr;
+                ++first;
+            }
+        } catch (...) {
+            this->_rollback_uninitialized(curr);
+            throw;
+        }
+    }
+    template<class InputIterator, class Parameters>
+    void _uninitialized_fill(InputIterator first, Parameters parameters) {
+        pointer curr = _ptr;
+        pointer end = _ptr + _size;
+        try {
+            while (curr != end) {
+                new (curr) T(*first, parameters);
+                ++curr;
+                ++first;
+            }
+        } catch (...) {
+            this->_rollback_uninitialized(curr);
+            throw;
+        }
+    }
+    template<class G>
+    void _uninitialized_generate(G g) {
+        pointer curr = _ptr;
+        try {
+            for (size_t i = 0u; i != this->size(); ++i, ++curr) {
+                new (curr) T(g(i));
+            }
+        } catch (...) {
+            this->_rollback_uninitialized(curr);
+            throw;
+        }
+    }
+
+  private:
     size_t _size;
     pointer _ptr;
 };
 
-template<class T> class SharedArray {
-public:
+template<class T>
+class SharedArray {
+  public:
     typedef T ValueType;
     typedef size_t IndexType;
     typedef ValueType* Iterator;
-    typedef ValueType const* ConstIterator;
-    size_t* _count; size_t _size; T* _ptr;
-public:
-    ~SharedArray() { --_count; if(*_count==0) { delete[] _ptr; } }
-    SharedArray(size_t n) : _count(new size_t(1u)), _size(n), _ptr(new T[n]) { }
+    typedef const ValueType* ConstIterator;
+    size_t* _count;
+    size_t _size;
+    T* _ptr;
+
+  public:
+    ~SharedArray() {
+        --_count;
+        if (*_count == 0) {
+            delete[] _ptr;
+        }
+    }
+    SharedArray(size_t n) : _count(new size_t(1u)), _size(n), _ptr(new T[n]) {}
     SharedArray(size_t n, const T& x) : SharedArray(n) {
-        for(size_t i=0; i!=n; ++i) { _ptr[i]=x; } }
+        for (size_t i = 0; i != n; ++i) {
+            _ptr[i] = x;
+        }
+    }
     SharedArray(const InitializerList<T>& lst) : SharedArray(lst.size()) {
-        auto from=lst.begin(); auto end=lst.end(); auto to=_ptr; while(from!=end) { *to = *from; ++from; ++to; } }
-    SharedArray(const SharedArray<T>& ary) : _count(ary._count), _size(ary._size), _ptr(ary._ptr) { ++ *_count; }
+        auto from = lst.begin();
+        auto end = lst.end();
+        auto to = _ptr;
+        while (from != end) {
+            *to = *from;
+            ++from;
+            ++to;
+        }
+    }
+    SharedArray(const SharedArray<T>& ary) : _count(ary._count), _size(ary._size), _ptr(ary._ptr) { ++*_count; }
     SharedArray<T>& operator=(const SharedArray<T>& ary) {
-        if(this->_ptr!=ary._ptr) { --*_count; if(*_count==0) { delete _count; delete[] _ptr; } { _count=ary._count; _size=ary._size; _ptr=ary._ptr; } ++ *_count; } return *this; }
+        if (this->_ptr != ary._ptr) {
+            --*_count;
+            if (*_count == 0) {
+                delete _count;
+                delete[] _ptr;
+            }
+            {
+                _count = ary._count;
+                _size = ary._size;
+                _ptr = ary._ptr;
+            }
+            ++*_count;
+        }
+        return *this;
+    }
     size_t size() const { return _size; }
     T& operator[](size_t i) { return _ptr[i]; }
     const T& operator[](size_t i) const { return _ptr[i]; }
     Iterator begin() { return _ptr; }
     ConstIterator begin() const { return _ptr; }
-    Iterator end() { return _ptr+_size; }
-    ConstIterator end() const { return _ptr+_size; }
+    Iterator end() { return _ptr + _size; }
+    ConstIterator end() const { return _ptr + _size; }
 };
 
 inline Array<size_t> complement(size_t nmax, Array<size_t> vars) {
-    Array<size_t> cmpl(nmax-vars.size());
-    size_t kr=0; size_t kv=0;
-    for(size_t j=0; j!=nmax; ++j) {
-        if(kv==vars.size() || j!=vars[kv]) {
-            cmpl[kr]=j; ++kr;
+    Array<size_t> cmpl(nmax - vars.size());
+    size_t kr = 0;
+    size_t kv = 0;
+    for (size_t j = 0; j != nmax; ++j) {
+        if (kv == vars.size() || j != vars[kv]) {
+            cmpl[kr] = j;
+            ++kr;
         } else {
             ++kv;
         }

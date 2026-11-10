@@ -70,18 +70,18 @@
 #ifndef ARIADNE_UTILITY_BINARY_WORD_HPP
 #define ARIADNE_UTILITY_BINARY_WORD_HPP
 
-#include <limits>
-#include <vector>
 #include <iosfwd>
+#include <limits>
 #include <stdexcept>
+#include <vector>
 
 #include "utility/macros.hpp"
 #include "utility/stlio.hpp"
 
 namespace Ariadne {
 
-using std::ostream;
 using std::istream;
+using std::ostream;
 
 /*! \brief A statically-allocated binary word of fixed maximum length.
  */
@@ -89,12 +89,13 @@ class BinaryWord : public std::vector<bool> {
   private:
     typedef unsigned char ByteType;
     // The number of bits per byte
-    static const size_t _bits_per_byte=std::numeric_limits<ByteType>::digits;
+    static const size_t _bits_per_byte = std::numeric_limits<ByteType>::digits;
+
   public:
     typedef std::vector<bool>::const_iterator ConstIterator;
 
     //! \brief Default constructor makes an empty word.
-    BinaryWord() : std::vector<bool>() { }
+    BinaryWord() : std::vector<bool>() {}
 
     //! \brief Construct from a string literal consisting of zeros and ones.
     explicit BinaryWord(const StringType& str);
@@ -103,10 +104,10 @@ class BinaryWord : public std::vector<bool> {
     bool operator<(const BinaryWord& w) const;
 
     //! \brief The number of machine bytes the word takes up.
-    size_t bytes() const { return (size()+_bits_per_byte-1)/_bits_per_byte; }
+    size_t bytes() const { return (size() + _bits_per_byte - 1) / _bits_per_byte; }
 
     //! \brief Sets the last bit to \a x.
-    void set_back (bool x) { (*this)[this->size()-1]=x; }
+    void set_back(bool x) { (*this)[this->size() - 1] = x; }
 
     //! \brief Erases the prefix of the word of size \a prefix_size
     void erase_prefix(const int prefix_size);
@@ -118,32 +119,34 @@ class BinaryWord : public std::vector<bool> {
     bool is_subword(const BinaryWord& b) const;
 
     //! \brief appends the binary symbol \a binarySymbol
-    void append( const bool& binarySymbol );
+    void append(const bool& binarySymbol);
     //! \brief appends the binary word \a binaryWord
-    void append( const BinaryWord& binaryWord );
+    void append(const BinaryWord& binaryWord);
 };
 
 inline void BinaryWord::erase_prefix(const int prefix_size) {
-    if(prefix_size <= 0) { return; }
-    const size_t erase_size = std::min(size(),static_cast<size_t>(prefix_size));
-    erase(begin(),begin()+static_cast<difference_type>(erase_size));
+    if (prefix_size <= 0) {
+        return;
+    }
+    const size_t erase_size = std::min(size(), static_cast<size_t>(prefix_size));
+    erase(begin(), begin() + static_cast<difference_type>(erase_size));
 }
 
 inline bool BinaryWord::operator<(const BinaryWord& w) const {
-    for( size_t i = 0; i != std::min( this->size(),w.size() ); ++i ) {
-        if( (*this)[i] != w[i] ) {
+    for (size_t i = 0; i != std::min(this->size(), w.size()); ++i) {
+        if ((*this)[i] != w[i]) {
             return (*this)[i] < w[i];
         }
     }
     return this->size() < w.size();
 }
 
-inline bool BinaryWord::is_prefix( const BinaryWord& b ) const {
-    if( this->size() > b.size() ) {
+inline bool BinaryWord::is_prefix(const BinaryWord& b) const {
+    if (this->size() > b.size()) {
         return false;
     }
-    for( size_t i=0; i != this->size(); ++i ) {
-        if( (*this)[i] != b[i] ) {
+    for (size_t i = 0; i != this->size(); ++i) {
+        if ((*this)[i] != b[i]) {
             return false;
         }
     }
@@ -151,28 +154,28 @@ inline bool BinaryWord::is_prefix( const BinaryWord& b ) const {
 }
 
 inline bool BinaryWord::is_subword(const BinaryWord& b) const {
-    if( this->size() > b.size() ) {
+    if (this->size() > b.size()) {
         return false;
     }
-    for( size_t i = 0; i != ( b.size() - this->size() + 1 ); ++i ) {
-        size_t j=0;
-        while( j != this->size() && (*this)[j] == b[i+j] ) {
+    for (size_t i = 0; i != (b.size() - this->size() + 1); ++i) {
+        size_t j = 0;
+        while (j != this->size() && (*this)[j] == b[i + j]) {
             ++j;
         }
-        if( j == this->size() ) {
+        if (j == this->size()) {
             return true;
         }
     }
     return false;
 }
 
-inline void BinaryWord::append( const bool& binarySymbol ) {
-    this->push_back( binarySymbol );
+inline void BinaryWord::append(const bool& binarySymbol) {
+    this->push_back(binarySymbol);
 }
 
-inline void BinaryWord::append( const BinaryWord& binaryWord ) {
-    for( size_t i = 0; i < binaryWord.size() ; i++ ){
-        this->push_back( binaryWord[i] );
+inline void BinaryWord::append(const BinaryWord& binaryWord) {
+    for (size_t i = 0; i < binaryWord.size(); i++) {
+        this->push_back(binaryWord[i]);
     }
 }
 
@@ -180,25 +183,25 @@ inline void BinaryWord::append( const BinaryWord& binaryWord ) {
  *  The data format is either "[0,1,0,1,1]" or equivalently "01011".
  */
 inline istream& operator>>(istream& input_stream, BinaryWord& binary_word) {
-    //Clear the binary word, as we assume that we input
-    //new data and the old one is not needed.
+    // Clear the binary word, as we assume that we input
+    // new data and the old one is not needed.
     binary_word.clear();
-    //Read the first stream symbol to check the input format
+    // Read the first stream symbol to check the input format
     char symbol;
     input_stream >> symbol;
-    if( symbol == '[' ) {
-        //If it is a standard std:vector input then put
-        //the symbol back and use it's input operator
-        std::vector<bool> & bool_vector = binary_word;
-        input_stream.putback( symbol );
+    if (symbol == '[') {
+        // If it is a standard std:vector input then put
+        // the symbol back and use it's input operator
+        std::vector<bool>& bool_vector = binary_word;
+        input_stream.putback(symbol);
         input_stream >> bool_vector;
     } else {
-        //Otherwise read a sequence of 0 and 1.
-        while( input_stream && ( symbol =='0' || symbol =='1' ) ) {
-            binary_word.push_back( symbol == '0' ? 0 : 1);
-            input_stream.get( symbol );
+        // Otherwise read a sequence of 0 and 1.
+        while (input_stream && (symbol == '0' || symbol == '1')) {
+            binary_word.push_back(symbol == '0' ? 0 : 1);
+            input_stream.get(symbol);
         }
-        input_stream.putback( symbol );
+        input_stream.putback(symbol);
     }
     return input_stream;
 }
@@ -208,23 +211,24 @@ inline istream& operator>>(istream& input_stream, BinaryWord& binary_word) {
  */
 inline BinaryWord make_binary_word(const StringType& string_data) {
     BinaryWord binary_word;
-    StringStream string_input_stream( string_data );
+    StringStream string_input_stream(string_data);
     string_input_stream >> binary_word;
     return binary_word;
 }
 
 inline BinaryWord::BinaryWord(const StringType& str) {
-    *this=make_binary_word(str); }
+    *this = make_binary_word(str);
+}
 
 /*! \brief Serializes data into a stream.
  * The data format is "01011" or "e" for an empty word.
  */
 inline ostream& operator<<(ostream& os, const BinaryWord& bw) {
-    if( bw.empty() ) {
+    if (bw.empty()) {
         return os << 'e';
     }
     os << std::noboolalpha;
-    for(size_t i=0; i!=bw.size(); ++i) {
+    for (size_t i = 0; i != bw.size(); ++i) {
         os << bw[i];
     }
     os << std::boolalpha;

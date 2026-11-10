@@ -30,8 +30,8 @@
 #ifndef ARIADNE_UTILITY_RANDOMISER_HPP
 #define ARIADNE_UTILITY_RANDOMISER_HPP
 
-#include <random>
 #include <chrono>
+#include <random>
 
 namespace Ariadne {
 
@@ -39,10 +39,8 @@ class RandomGenerator {
   public:
     RandomGenerator() {
         std::random_device rd;
-        std::mt19937::result_type seed = rd() ^ (
-                (std::mt19937::result_type) std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +
-                (std::mt19937::result_type) std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()
-        );
+        std::mt19937::result_type seed = rd() ^ ((std::mt19937::result_type)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +
+                                                 (std::mt19937::result_type)std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count());
         _engine = std::mt19937(seed);
     }
 
@@ -54,27 +52,32 @@ class RandomGenerator {
 
 static RandomGenerator RANDOM_GENERATOR;
 
-template<class T> class RandomiserInterface {
+template<class T>
+class RandomiserInterface {
   public:
     virtual T get() = 0;
 };
 
-template<class T,class D> class RandomiserBase : public RandomiserInterface<T> {
+template<class T, class D>
+class RandomiserBase : public RandomiserInterface<T> {
   protected:
-    RandomiserBase(T min, T max) : _distribution(D(min,max)) { }
+    RandomiserBase(T min, T max) : _distribution(D(min, max)) {}
     D _distribution;
+
   public:
     T get() override { return this->_distribution(RANDOM_GENERATOR.engine()); }
 };
 
-template<class T> struct UniformRealRandomiser : public RandomiserBase<T,std::uniform_real_distribution<T>> {
+template<class T>
+struct UniformRealRandomiser : public RandomiserBase<T, std::uniform_real_distribution<T>> {
   public:
-    UniformRealRandomiser(T min, T max) : RandomiserBase<T,std::uniform_real_distribution<T>>(min,max) { }
+    UniformRealRandomiser(T min, T max) : RandomiserBase<T, std::uniform_real_distribution<T>>(min, max) {}
 };
 
-template<class T> struct UniformIntRandomiser : public RandomiserBase<T,std::uniform_int_distribution<T>> {
+template<class T>
+struct UniformIntRandomiser : public RandomiserBase<T, std::uniform_int_distribution<T>> {
   public:
-    UniformIntRandomiser(T min, T max) : RandomiserBase<T,std::uniform_int_distribution<T>>(min,max) { }
+    UniformIntRandomiser(T min, T max) : RandomiserBase<T, std::uniform_int_distribution<T>>(min, max) {}
 };
 
 } // namespace Ariadne

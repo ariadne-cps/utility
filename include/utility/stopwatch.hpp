@@ -37,24 +37,32 @@ using Seconds = std::chrono::seconds;
 using Milliseconds = std::chrono::milliseconds;
 using Microseconds = std::chrono::microseconds;
 
-template<class D> class Stopwatch {
-public:
+template<class D>
+class Stopwatch {
+  public:
     using ResolutionType = std::chrono::high_resolution_clock;
     using TimePointType = std::chrono::time_point<ResolutionType>;
 
     Stopwatch() { restart(); }
 
     //! \brief Get the duration in the given type
-    D duration() const { return std::chrono::duration_cast<D>(_clicked-_initial); }
+    D duration() const { return std::chrono::duration_cast<D>(_clicked - _initial); }
     //! \brief Get the duration in seconds, in double precision
     double elapsed_seconds() const { return std::chrono::duration_cast<std::chrono::duration<double>>(duration()).count(); }
 
     //! \brief Restart the watch time to zero
-    Stopwatch& restart() { _initial = ResolutionType::now(); _clicked = _initial; return *this; }
+    Stopwatch& restart() {
+        _initial = ResolutionType::now();
+        _clicked = _initial;
+        return *this;
+    }
     //! \brief Save the current time
-    Stopwatch& click() { _clicked = ResolutionType::now(); return *this; }
+    Stopwatch& click() {
+        _clicked = ResolutionType::now();
+        return *this;
+    }
 
-private:
+  private:
     TimePointType _initial;
     TimePointType _clicked;
 };

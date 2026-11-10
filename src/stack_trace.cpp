@@ -29,20 +29,20 @@
 #include <cassert>
 #include <iostream>
 
-#include <execinfo.h>
-#include <dlfcn.h>
 #include <cxxabi.h>
+#include <dlfcn.h>
+#include <execinfo.h>
 
 namespace Ariadne {
 
 void stack_trace() {
     static const unsigned int CALLSTACK_SIZE = 128;
-    int skip=0;
-    void *callstack[CALLSTACK_SIZE];
+    int skip = 0;
+    void* callstack[CALLSTACK_SIZE];
     const int nMaxFrames = sizeof(callstack) / sizeof(callstack[0]);
     int nFrames = backtrace(callstack, nMaxFrames);
-    char **symbols = backtrace_symbols(callstack, nFrames);
-    assert (symbols != nullptr);
+    char** symbols = backtrace_symbols(callstack, nFrames);
+    assert(symbols != nullptr);
     for (int i = skip; i < nFrames; i++) {
         Dl_info info;
         if (dladdr(callstack[i], &info)) {
@@ -65,9 +65,9 @@ void stack_trace() {
 
 namespace Ariadne {
 
-void stack_trace() { }
+void stack_trace() {}
 
-}
+} // namespace Ariadne
 
 #endif /* ENABLE_STACK_TRACE */
 

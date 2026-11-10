@@ -22,16 +22,16 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "utility/command_line_interface.hpp"
+
 #include <algorithm>
 #include <iostream>
 
-#include "utility/command_line_interface.hpp"
-
 namespace Ariadne {
 
-ArgumentStream::ArgumentStream(List<String> const& args) {
+ArgumentStream::ArgumentStream(const List<String>& args) {
     ARIADNE_PRECONDITION(args.size() > 0)
-    for (auto const& arg : args) {
+    for (const auto& arg: args) {
         _args.push(arg);
     }
 }
@@ -42,7 +42,7 @@ String ArgumentStream::peek() const {
 }
 
 String ArgumentStream::pop() {
-    String value=peek();
+    String value = peek();
     _args.pop();
     return value;
 }
@@ -55,10 +55,10 @@ SizeType ArgumentStream::size() const {
     return _args.size();
 }
 
-ArgumentPack::ArgumentPack(String const& id, VoidFunction const& processor, Int priority)
-    : _id(id), _processor(processor), _priority(priority) { }
+ArgumentPack::ArgumentPack(const String& id, const VoidFunction& processor, Int priority)
+    : _id(id), _processor(processor), _priority(priority) {}
 
-String const& ArgumentPack::id() const {
+const String& ArgumentPack::id() const {
     return _id;
 }
 
@@ -73,20 +73,17 @@ Void ArgumentPack::process() const {
 class ArgumentParserBase : public ArgumentParserInterface {
   protected:
     ArgumentParserBase(
-            String const& short_id,
-            String const& long_id,
-            String const& instructions,
-            Int priority)
-        : _short_id(short_id)
-        , _long_id(long_id)
-        , _instructions(instructions)
-        , _priority(priority) { }
+        const String& short_id,
+        const String& long_id,
+        const String& instructions,
+        Int priority)
+        : _short_id(short_id), _long_id(long_id), _instructions(instructions), _priority(priority) {}
 
   public:
-    String const& short_id() const override { return _short_id; }
-    String const& long_id() const override { return _long_id; }
+    const String& short_id() const override { return _short_id; }
+    const String& long_id() const override { return _long_id; }
 
-    Bool is_consumable(ArgumentStream const& stream) const override;
+    Bool is_consumable(const ArgumentStream& stream) const override;
     ArgumentPack consume(ArgumentStream& stream) const override;
     SizeType help_description_header_size() const override;
     String help_description(SizeType num_chars_to_align_instructions) const override;
@@ -104,12 +101,12 @@ class ArgumentParserBase : public ArgumentParserInterface {
 };
 
 SizeType ArgumentParserBase::help_description_header_size() const {
-    SizeType result=4+long_id().size();
+    SizeType result = 4 + long_id().size();
     if (not short_id().empty()) {
-        result+=4+short_id().size();
+        result += 4 + short_id().size();
     }
     if (requires_value()) {
-        result+=8;
+        result += 8;
     }
     return result;
 }
@@ -124,31 +121,31 @@ String ArgumentParserBase::help_description(SizeType num_chars_to_separate_instr
     if (requires_value()) {
         ss << " <value>";
     }
-    ss << std::string(num_chars_to_separate_instructions,' ') << _instructions;
+    ss << std::string(num_chars_to_separate_instructions, ' ') << _instructions;
     return ss.str();
 }
 
-Bool ArgumentParserBase::is_consumable(ArgumentStream const& stream) const {
-    String const argument=stream.peek();
-    if (not short_id().empty() and argument == String("-")+short_id()) {
+Bool ArgumentParserBase::is_consumable(const ArgumentStream& stream) const {
+    const String argument = stream.peek();
+    if (not short_id().empty() and argument == String("-") + short_id()) {
         return true;
     }
-    return argument == String("--")+long_id();
+    return argument == String("--") + long_id();
 }
 
 ArgumentPack ArgumentParserBase::consume(ArgumentStream& stream) const {
     stream.pop();
-    return ArgumentPack(long_id(),create_processor(stream),_priority);
+    return ArgumentPack(long_id(), create_processor(stream), _priority);
 }
 
 class ValuedArgumentParserBase : public ArgumentParserBase {
   public:
     ValuedArgumentParserBase(
-            String const& short_id,
-            String const& long_id,
-            String const& instructions,
-            Int priority)
-        : ArgumentParserBase(short_id,long_id,instructions,priority) { }
+        const String& short_id,
+        const String& long_id,
+        const String& instructions,
+        Int priority)
+        : ArgumentParserBase(short_id, long_id, instructions, priority) {}
 
     Bool requires_value() const override { return true; }
 
@@ -170,11 +167,11 @@ class ValuedArgumentParserBase : public ArgumentParserBase {
 class UnvaluedArgumentParserBase : public ArgumentParserBase {
   public:
     UnvaluedArgumentParserBase(
-            String const& short_id,
-            String const& long_id,
-            String const& instructions,
-            Int priority)
-        : ArgumentParserBase(short_id,long_id,instructions,priority) { }
+        const String& short_id,
+        const String& long_id,
+        const String& instructions,
+        Int priority)
+        : ArgumentParserBase(short_id, long_id, instructions, priority) {}
 
     Bool requires_value() const override { return false; }
 };
@@ -182,17 +179,16 @@ class UnvaluedArgumentParserBase : public ArgumentParserBase {
 class FunctionalValuedArgumentParser : public ValuedArgumentParserBase {
   public:
     FunctionalValuedArgumentParser(
-            String const& short_id,
-            String const& long_id,
-            String const& instructions,
-            ArgumentValueProcessor const& processor,
-            Int priority)
-        : ValuedArgumentParserBase(short_id,long_id,instructions,priority)
-        , _processor(processor) { }
+        const String& short_id,
+        const String& long_id,
+        const String& instructions,
+        const ArgumentValueProcessor& processor,
+        Int priority)
+        : ValuedArgumentParserBase(short_id, long_id, instructions, priority), _processor(processor) {}
 
   protected:
     VoidFunction _create_processor(ArgumentStream& stream) const override {
-        String const value=stream.pop();
+        const String value = stream.pop();
         return _processor(value);
     }
 
@@ -203,13 +199,12 @@ class FunctionalValuedArgumentParser : public ValuedArgumentParserBase {
 class FunctionalUnvaluedArgumentParser : public UnvaluedArgumentParserBase {
   public:
     FunctionalUnvaluedArgumentParser(
-            String const& short_id,
-            String const& long_id,
-            String const& instructions,
-            VoidFunction const& processor,
-            Int priority)
-        : UnvaluedArgumentParserBase(short_id,long_id,instructions,priority)
-        , _processor(processor) { }
+        const String& short_id,
+        const String& long_id,
+        const String& instructions,
+        const VoidFunction& processor,
+        Int priority)
+        : UnvaluedArgumentParserBase(short_id, long_id, instructions, priority), _processor(processor) {}
 
   protected:
     VoidFunction create_processor(ArgumentStream&) const override {
@@ -221,37 +216,35 @@ class FunctionalUnvaluedArgumentParser : public UnvaluedArgumentParserBase {
 };
 
 ArgumentParser make_valued_argument_parser(
-        String const& short_id,
-        String const& long_id,
-        String const& instructions,
-        ArgumentValueProcessor const& processor,
-        Int priority)
-{
+    const String& short_id,
+    const String& long_id,
+    const String& instructions,
+    const ArgumentValueProcessor& processor,
+    Int priority) {
     return FunctionalValuedArgumentParser(
-        short_id,long_id,instructions,processor,priority);
+        short_id, long_id, instructions, processor, priority);
 }
 
 ArgumentParser make_unvalued_argument_parser(
-        String const& short_id,
-        String const& long_id,
-        String const& instructions,
-        VoidFunction const& processor,
-        Int priority)
-{
+    const String& short_id,
+    const String& long_id,
+    const String& instructions,
+    const VoidFunction& processor,
+    Int priority) {
     return FunctionalUnvaluedArgumentParser(
-        short_id,long_id,instructions,processor,priority);
+        short_id, long_id, instructions, processor, priority);
 }
 
 CommandLineContribution::CommandLineContribution(
-        String const& name,
-        List<ArgumentParser> const& parsers)
-    : _name(name), _parsers(parsers) { }
+    const String& name,
+    const List<ArgumentParser>& parsers)
+    : _name(name), _parsers(parsers) {}
 
-String const& CommandLineContribution::name() const {
+const String& CommandLineContribution::name() const {
     return _name;
 }
 
-List<ArgumentParser> const& CommandLineContribution::parsers() const {
+const List<ArgumentParser>& CommandLineContribution::parsers() const {
     return _parsers;
 }
 
@@ -259,25 +252,23 @@ class HelpArgumentParser : public UnvaluedArgumentParserBase {
   public:
     HelpArgumentParser()
         : UnvaluedArgumentParserBase(
-            "h","help","Show this list of supported arguments",0) { }
+              "h", "help", "Show this list of supported arguments", 0) {}
 
   protected:
     VoidFunction create_processor(ArgumentStream&) const override {
-        return []{};
+        return [] {};
     }
 };
 
 CommandLineInterface::CommandLineInterface()
-    : _parsers({HelpArgumentParser()})
-    , _contribution_names() { }
+    : _parsers({HelpArgumentParser()}), _contribution_names() {}
 
 Void CommandLineInterface::_validate_contribution(
-        CommandLineContribution const& contribution) const
-{
-    auto const& added=contribution.parsers();
-    for (SizeType i=0; i<added.size(); ++i) {
-        auto const& parser=added[i];
-        for (auto const& existing : _parsers) {
+    const CommandLineContribution& contribution) const {
+    const auto& added = contribution.parsers();
+    for (SizeType i = 0; i < added.size(); ++i) {
+        const auto& parser = added[i];
+        for (const auto& existing: _parsers) {
             if (parser.long_id() == existing.long_id()) {
                 throw DuplicateArgumentIdentifierException(parser.long_id());
             }
@@ -285,8 +276,8 @@ Void CommandLineInterface::_validate_contribution(
                 throw DuplicateArgumentIdentifierException(parser.short_id());
             }
         }
-        for (SizeType j=0; j<i; ++j) {
-            auto const& previous=added[j];
+        for (SizeType j = 0; j < i; ++j) {
+            const auto& previous = added[j];
             if (parser.long_id() == previous.long_id()) {
                 throw DuplicateArgumentIdentifierException(parser.long_id());
             }
@@ -298,13 +289,12 @@ Void CommandLineInterface::_validate_contribution(
 }
 
 CommandLineInterface& CommandLineInterface::add(
-        CommandLineContribution const& contribution)
-{
+    const CommandLineContribution& contribution) {
     if (_contribution_names.contains(contribution.name())) {
         return *this;
     }
     _validate_contribution(contribution);
-    for (auto const& parser : contribution.parsers()) {
+    for (const auto& parser: contribution.parsers()) {
         _parsers.append(parser);
     }
     _contribution_names.insert(contribution.name());
@@ -313,13 +303,13 @@ CommandLineInterface& CommandLineInterface::add(
 
 Bool CommandLineInterface::acquire(int argc, const char* argv[]) const {
     List<String> args;
-    for (Int i=0; i<argc; ++i) {
+    for (Int i = 0; i < argc; ++i) {
         args.append(String(argv[i]));
     }
     return acquire(args);
 }
 
-Bool CommandLineInterface::acquire(List<String> const& args) const {
+Bool CommandLineInterface::acquire(const List<String>& args) const {
     ArgumentStream stream(args);
     stream.pop();
 
@@ -327,12 +317,12 @@ Bool CommandLineInterface::acquire(List<String> const& args) const {
     List<ArgumentPack> packs;
 
     while (not stream.empty()) {
-        Bool consumed=false;
-        for (auto const& parser : _parsers) {
+        Bool consumed = false;
+        for (const auto& parser: _parsers) {
             if (parser.is_consumable(stream)) {
-                consumed=true;
+                consumed = true;
                 try {
-                    ArgumentPack pack=parser.consume(stream);
+                    ArgumentPack pack = parser.consume(stream);
                     if (pack.id() == "help") {
                         pack.process();
                         _print_help();
@@ -361,22 +351,23 @@ Bool CommandLineInterface::acquire(List<String> const& args) const {
         }
         if (not consumed) {
             std::clog << "Unrecognised command-line argument '" << stream.peek()
-                      << "'" << std::endl << std::endl;
+                      << "'" << std::endl
+                      << std::endl;
             _print_help();
             return false;
         }
     }
 
     std::stable_sort(
-        packs.begin(),packs.end(),
-        [](ArgumentPack const& left, ArgumentPack const& right) {
+        packs.begin(), packs.end(),
+        [](const ArgumentPack& left, const ArgumentPack& right) {
             if (left.priority() != right.priority()) {
                 return left.priority() < right.priority();
             }
             return left.id() < right.id();
         });
 
-    for (auto const& pack : packs) {
+    for (const auto& pack: packs) {
         pack.process();
     }
 
@@ -384,19 +375,19 @@ Bool CommandLineInterface::acquire(List<String> const& args) const {
 }
 
 Void CommandLineInterface::_print_help() const {
-    List<SizeType> header_sizes(_parsers.size(),0);
-    SizeType max_header_size=0;
-    for (SizeType i=0; i<_parsers.size(); ++i) {
-        header_sizes[i]=_parsers[i].help_description_header_size();
+    List<SizeType> header_sizes(_parsers.size(), 0);
+    SizeType max_header_size = 0;
+    for (SizeType i = 0; i < _parsers.size(); ++i) {
+        header_sizes[i] = _parsers[i].help_description_header_size();
         if (header_sizes[i] > max_header_size) {
-            max_header_size=header_sizes[i];
+            max_header_size = header_sizes[i];
         }
     }
 
     std::clog << "Supported arguments:" << std::endl;
-    for (SizeType i=0; i<_parsers.size(); ++i) {
+    for (SizeType i = 0; i < _parsers.size(); ++i) {
         std::clog << "    "
-                  << _parsers[i].help_description(4+max_header_size-header_sizes[i])
+                  << _parsers[i].help_description(4 + max_header_size - header_sizes[i])
                   << std::endl;
     }
 }

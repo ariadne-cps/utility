@@ -26,8 +26,6 @@
  *  \brief
  */
 
-
-
 #ifndef ARIADNE_UTILITY_VARIANT_HPP
 #define ARIADNE_UTILITY_VARIANT_HPP
 
@@ -38,17 +36,23 @@
 namespace Ariadne {
 
 //! Internal alias for standard variant.
-template<class... TS> using Variant = std::variant<TS...>;
+template<class... TS>
+using Variant = std::variant<TS...>;
 
-template<class C, class... TS> class CodedVariant {
+template<class C, class... TS>
+class CodedVariant {
     C _code;
+
   public:
-    explicit CodedVariant(C code) : _code(code) { }
-    template<OneOf<TS...> T> CodedVariant(T const&) : _code(T::code()) { }
-    template<class V> inline decltype(auto) accept(V const& v) const;
+    explicit CodedVariant(C code) : _code(code) {}
+    template<OneOf<TS...> T>
+    CodedVariant(const T&) : _code(T::code()) {}
+    template<class V>
+    inline decltype(auto) accept(const V& v) const;
     C code() const { return _code; }
 };
-template<class T, class C, class... TS> bool holds_alternative(CodedVariant<C,TS...> const& var) { return var.code()==T::code(); }
+template<class T, class C, class... TS>
+bool holds_alternative(const CodedVariant<C, TS...>& var) { return var.code() == T::code(); }
 
 } // namespace Ariadne
 

@@ -29,18 +29,15 @@
 #ifndef ARIADNE_UTILITY_MODULE_HPP
 #define ARIADNE_UTILITY_MODULE_HPP
 
-#include "utility/stdlib.hpp"
-#include "utility/macros.hpp"
-
-#include "utility/typedefs.hpp"
-#include "utility/string.hpp"
-#include "utility/metaprogramming.hpp"
-
-#include "utility/writable.hpp"
 #include "utility/clonable.hpp"
-
-#include "utility/handle.hpp"
-#include "utility/container.hpp"
 #include "utility/command_line_interface.hpp"
+#include "utility/container.hpp"
+#include "utility/handle.hpp"
+#include "utility/macros.hpp"
+#include "utility/metaprogramming.hpp"
+#include "utility/stdlib.hpp"
+#include "utility/string.hpp"
+#include "utility/typedefs.hpp"
+#include "utility/writable.hpp"
 
 #endif

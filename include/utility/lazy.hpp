@@ -22,7 +22,6 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /*! \file lazy.hpp
  *  \brief Class for holding objects that are lazily retrieved.
  */
@@ -41,8 +40,13 @@ using std::shared_ptr;
 template<class O>
 class Lazy {
   public:
-    O const& operator()() const { if (_obj == nullptr) _obj.reset(_func()); return *_obj; };
-    Lazy(function<O*()> func) : _func(func) { }
+    const O& operator()() const {
+        if (_obj == nullptr)
+            _obj.reset(_func());
+        return *_obj;
+    };
+    Lazy(function<O*()> func) : _func(func) {}
+
   private:
     function<O*()> _func;
     mutable shared_ptr<O> _obj;

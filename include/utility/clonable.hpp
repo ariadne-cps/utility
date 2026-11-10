@@ -23,10 +23,8 @@
  */
 
 /*! \file utility/clonable.hpp
- *  \brief 
+ *  \brief
  */
-
-
 
 #ifndef ARIADNE_UTILITY_CLONABLE_HPP
 #define ARIADNE_UTILITY_CLONABLE_HPP
@@ -38,6 +36,7 @@ namespace Ariadne {
 class ClonableInterface {
   public:
     virtual ~ClonableInterface() = default;
+
   protected:
     virtual ClonableInterface* _copy() const = 0;
     virtual ClonableInterface* _move() = 0;

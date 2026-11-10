@@ -33,14 +33,19 @@
 
 namespace Ariadne {
 
-template<class T> class Prototype {
+template<class T>
+class Prototype {
     T _prototype;
+
   public:
-    Prototype(T t) : _prototype(t) { }
-    template<class X> X convert(X const& x) { return _prototype.convert(x); }
+    Prototype(T t) : _prototype(t) {}
+    template<class X>
+    X convert(const X& x) { return _prototype.convert(x); }
 };
-template<class T> inline Prototype<T> make_prototype(T const& t) {
-    return Prototype<T>(t); }
+template<class T>
+inline Prototype<T> make_prototype(const T& t) {
+    return Prototype<T>(t);
+}
 
 } // namespace Ariadne
 

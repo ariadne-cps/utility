@@ -30,6 +30,7 @@
 #define ARIADNE_UTILITY_LRU_CACHE_HPP
 
 #include <map>
+
 #include "utility/macros.hpp"
 
 namespace Ariadne {
@@ -37,26 +38,28 @@ namespace Ariadne {
 using std::size_t;
 
 //! \brief A Least Recently Used cache for holding a limited number of commonly-accessed objects of type \a V indexed by a label \a L
-template<class L, class V> class LRUCache {
+template<class L, class V>
+class LRUCache {
   private:
     struct AgeValuePair {
-        AgeValuePair(size_t a, V v) : age(a), value(v) { }
+        AgeValuePair(size_t a, V v) : age(a), value(v) {}
         size_t age;
         V value;
     };
+
   public:
     //! \brief Construct with a given \a maximum_size
-    LRUCache(size_t maximum_size) : _maximum_size(maximum_size) { ARIADNE_PRECONDITION(maximum_size>0); }
+    LRUCache(size_t maximum_size) : _maximum_size(maximum_size) { ARIADNE_PRECONDITION(maximum_size > 0); }
 
     //! \brief Check whether the label is present
-    bool has_label(L const& label) { return (_elements.find(label) != _elements.end()); }
+    bool has_label(const L& label) { return (_elements.find(label) != _elements.end()); }
 
     //! \brief Get the element identified with \a label
     //! \details Updates age accordingly
-    V const& get(L const& label) {
+    const V& get(const L& label) {
         auto e = _elements.find(label);
         ARIADNE_ASSERT_MSG(e != _elements.end(), "Cache has no element for label " << label);
-        for (auto& other : _elements) {
+        for (auto& other: _elements) {
             if (other.second.age < e->second.age)
                 other.second.age++;
         }
@@ -65,7 +68,7 @@ template<class L, class V> class LRUCache {
     }
 
     //! \brief The age of a given \a label in the cache
-    size_t age(L const& label) {
+    size_t age(const L& label) {
         auto e = _elements.find(label);
         ARIADNE_ASSERT_MSG(e != _elements.end(), "Cache has no element for label " << label);
         return e->second.age;
@@ -73,19 +76,21 @@ template<class L, class V> class LRUCache {
 
     //! \brief Insert the element
     //! \details The element must not already exist; updates ages accordingly
-    void put(L const& label, V const& val) {
+    void put(const L& label, const V& val) {
         ARIADNE_PRECONDITION(not has_label(label));
         if (_elements.size() < _maximum_size) {
-            for (auto& other : _elements) other.second.age++;
+            for (auto& other: _elements)
+                other.second.age++;
         } else {
             auto to_remove = _elements.end();
             for (auto it = _elements.begin(); it != _elements.end(); ++it) {
-                if (it->second.age == _maximum_size-1) to_remove = it;
+                if (it->second.age == _maximum_size - 1)
+                    to_remove = it;
                 it->second.age++;
             }
             _elements.erase(to_remove);
         }
-        _elements.insert({label,AgeValuePair(0,val)});
+        _elements.insert({label, AgeValuePair(0, val)});
     }
 
     //! \brief The current size due to putting elements
@@ -100,9 +105,8 @@ template<class L, class V> class LRUCache {
 
   private:
     size_t _maximum_size;
-    std::map<L,AgeValuePair> _elements;
+    std::map<L, AgeValuePair> _elements;
 };
-
 
 } // namespace Ariadne
 

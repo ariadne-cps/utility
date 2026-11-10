@@ -29,26 +29,33 @@
 #ifndef ARIADNE_UTILITY_TUPLE_HPP
 #define ARIADNE_UTILITY_TUPLE_HPP
 
-#include <utility>
 #include <tuple>
+#include <utility>
 
 namespace Ariadne {
 
-template<class T1, class T2> using Pair = std::pair<T1,T2>;
+template<class T1, class T2>
+using Pair = std::pair<T1, T2>;
 using std::make_pair;
-template<class T1, class T2> constexpr Pair<T1&,T2&> make_lpair(T1& t1, T2& t2) { return Pair<T1&,T2&>(t1,t2); }
+template<class T1, class T2>
+constexpr Pair<T1&, T2&> make_lpair(T1& t1, T2& t2) { return Pair<T1&, T2&>(t1, t2); }
 
-template<class... TS> using Tuple = std::tuple<TS...>;
+template<class... TS>
+using Tuple = std::tuple<TS...>;
 using std::make_tuple;
-template<class... TS> constexpr Tuple<TS&...> make_ltuple(TS&... ts) { return Tuple<TS&...>(std::tie(ts...)); }
+template<class... TS>
+constexpr Tuple<TS&...> make_ltuple(TS&... ts) { return Tuple<TS&...>(std::tie(ts...)); }
 
-
-template<class T> inline decltype(auto) get_first(T&& t) { return std::get<0>(std::forward<T>(t)); }
-template<class T> inline decltype(auto) get_second(T&& t) { return std::get<1>(std::forward<T>(t)); }
-template<class T> inline decltype(auto) get_third(T&& t) { return std::get<2>(std::forward<T>(t)); }
-template<class T> inline decltype(auto) get_fourth(T&& t) { return std::get<3>(std::forward<T>(t)); }
-template<class T> inline decltype(auto) get_fifth(T&& t) { return std::get<4>(std::forward<T>(t)); }
-
+template<class T>
+inline decltype(auto) get_first(T&& t) { return std::get<0>(std::forward<T>(t)); }
+template<class T>
+inline decltype(auto) get_second(T&& t) { return std::get<1>(std::forward<T>(t)); }
+template<class T>
+inline decltype(auto) get_third(T&& t) { return std::get<2>(std::forward<T>(t)); }
+template<class T>
+inline decltype(auto) get_fourth(T&& t) { return std::get<3>(std::forward<T>(t)); }
+template<class T>
+inline decltype(auto) get_fifth(T&& t) { return std::get<4>(std::forward<T>(t)); }
 
 } // namespace Ariadne
 

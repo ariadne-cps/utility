@@ -29,8 +29,8 @@
 #ifndef ARIADNE_UTILITY_STRING_HPP
 #define ARIADNE_UTILITY_STRING_HPP
 
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace Ariadne {
 
@@ -38,19 +38,28 @@ namespace Ariadne {
 class String : public std::string {
   public:
     using std::string::string;
-    String(std::string const& str) : std::string(str) { };
+    String(const std::string& str) : std::string(str) {};
     String() = default;
 };
 
 inline const char* c_str(const String& str) {
-    return str.c_str(); }
-template<class T> inline String to_string(const T& t) {
-    std::stringstream ss; ss << t; return ss.str(); }
-template<class T> inline String to_str(T const& t) {
-    return to_string(t); }
+    return str.c_str();
+}
+template<class T>
+inline String to_string(const T& t) {
+    std::stringstream ss;
+    ss << t;
+    return ss.str();
+}
+template<class T>
+inline String to_str(const T& t) {
+    return to_string(t);
+}
 
-template<class T> String class_name();
-template<> inline String class_name<String>() { return "String"; }
+template<class T>
+String class_name();
+template<>
+inline String class_name<String>() { return "String"; }
 
 } // namespace Ariadne
 

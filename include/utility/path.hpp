@@ -26,17 +26,15 @@
  *  \brief
  */
 
-
-
 #ifndef ARIADNE_UTILITY_PATH_HPP
 #define ARIADNE_UTILITY_PATH_HPP
 
-#include "utility/macros.hpp"
-#include "utility/typedefs.hpp"
-
-#include "utility/container.hpp"
 #include <cstdint>
 #include <ostream>
+
+#include "utility/container.hpp"
+#include "utility/macros.hpp"
+#include "utility/typedefs.hpp"
 
 namespace Ariadne {
 
@@ -44,10 +42,11 @@ using HeightType = std::int32_t;
 typedef HeightType DepthType;
 
 //! \brief A dynamically-allocated word.
-template<class T> class Path
-{
+template<class T>
+class Path {
     HeightType _height;
     List<T> _word;
+
   public:
     typedef typename List<T>::ConstIterator ConstIterator;
 
@@ -64,7 +63,7 @@ template<class T> class Path
     //! The number of elements in the word
     std::size_t size() const;
     //! The word describing the path.
-    List<T> const& word() const;
+    const List<T>& word() const;
 
     //! Equality operator.
     bool operator==(const Path<T>& w) const;
@@ -79,10 +78,10 @@ template<class T> class Path
     T operator[](DepthType k) const;
 
     //! \brief Sets the last bit to \a x.
-    T get_back () const;
+    T get_back() const;
 
     //! \brief Sets the last bit to \a x.
-    void set_back (T x);
+    void set_back(T x);
 
     //! \brief appends the symbol \a s.
     void push_back(const T& s);
@@ -102,130 +101,161 @@ template<class T> class Path
     void append(const List<T>& w);
 };
 
-enum class LeftOrRight : bool { LEFT=false, RIGHT=true };
-enum class LeftOrMiddleOrRight : signed char { LEFT=-1, MIDDLE=0, RIGHT=+1 };
+enum class LeftOrRight : bool { LEFT = false,
+                                RIGHT = true };
+enum class LeftOrMiddleOrRight : signed char { LEFT = -1,
+                                               MIDDLE = 0,
+                                               RIGHT = +1 };
 std::ostream& operator<<(std::ostream& os, const LeftOrRight& s);
 std::ostream& operator<<(std::ostream& os, const LeftOrMiddleOrRight& s);
-
 
 class BinaryTreePath : public Path<bool> {
   public:
     using Path<bool>::Path;
-    BinaryTreePath(const Path<bool>& pth) : Path<bool>(pth) { }
+    BinaryTreePath(const Path<bool>& pth) : Path<bool>(pth) {}
 };
 class TernaryDagPath : public Path<LeftOrMiddleOrRight> {
-  public: using Path<LeftOrMiddleOrRight>::Path;
+  public:
+    using Path<LeftOrMiddleOrRight>::Path;
 };
 
-
 //! \related Path \brief write to an output stream.
-template<class T> std::ostream& operator<<(std::ostream& os, const Path<T>& pth);
+template<class T>
+std::ostream& operator<<(std::ostream& os, const Path<T>& pth);
 
-
-template<class T> Path<T>::Path(HeightType h)
-    : _height(h), _word()
-{
+template<class T>
+Path<T>::Path(HeightType h)
+    : _height(h), _word() {
 }
 
-template<class T> Path<T>::Path(HeightType h, const InitializerList<T>& wd)
-    : _height(h), _word(wd)
-{
+template<class T>
+Path<T>::Path(HeightType h, const InitializerList<T>& wd)
+    : _height(h), _word(wd) {
 }
 
-template<class T> HeightType Path<T>::height() const {
+template<class T>
+HeightType Path<T>::height() const {
     return this->_height;
 }
 
-template<class T> DepthType Path<T>::depth() const {
+template<class T>
+DepthType Path<T>::depth() const {
     return static_cast<DepthType>(this->_word.size()) - this->height();
 }
 
-template<class T> std::size_t Path<T>::size() const {
+template<class T>
+std::size_t Path<T>::size() const {
     return this->_word.size();
 }
 
-template<class T> List<T> const& Path<T>::word() const {
+template<class T>
+const List<T>& Path<T>::word() const {
     return this->_word;
 }
 
-template<class T> bool Path<T>::operator==(const Path<T>& other) const {
-    auto w1=this->word();
-    auto w2=other.word();
-    if(this->height()!=other.height()) { return false; }
-    if(w1.size() != w2.size()) { return false; }
-    for(std::size_t i = 0; i != w1.size(); ++i ) {
-        if( w1[i] != w2[i] ) {
+template<class T>
+bool Path<T>::operator==(const Path<T>& other) const {
+    auto w1 = this->word();
+    auto w2 = other.word();
+    if (this->height() != other.height()) {
+        return false;
+    }
+    if (w1.size() != w2.size()) {
+        return false;
+    }
+    for (std::size_t i = 0; i != w1.size(); ++i) {
+        if (w1[i] != w2[i]) {
             return false;
         }
     }
     return true;
 }
 
-template<class T> bool Path<T>::operator<(const Path<T>& other) const {
-    auto w1=this->word();
-    auto w2=other.word();
-    if(this->height()!=other.height()) { return false; }
-    for( std::size_t i = 0; i != std::min( w1.size(),w2.size() ); ++i ) {
-        if( w1[i] != w2[i] ) {
+template<class T>
+bool Path<T>::operator<(const Path<T>& other) const {
+    auto w1 = this->word();
+    auto w2 = other.word();
+    if (this->height() != other.height()) {
+        return false;
+    }
+    for (std::size_t i = 0; i != std::min(w1.size(), w2.size()); ++i) {
+        if (w1[i] != w2[i]) {
             return w1[i] < w2[i];
         }
     }
     return w1.size() < w2.size();
 }
 
-template<class T> Path<T> Path<T>::operator+(const T& s) const {
-    Path<T> r=*this;
+template<class T>
+Path<T> Path<T>::operator+(const T& s) const {
+    Path<T> r = *this;
     r.append(s);
     return r;
 }
 
-template<class T> T Path<T>::operator[](DepthType k) const {
-    return this->_word[k+this->height()];
+template<class T>
+T Path<T>::operator[](DepthType k) const {
+    return this->_word[k + this->height()];
 }
 
-template<class T> T Path<T>::get_back() const {
+template<class T>
+T Path<T>::get_back() const {
     return this->_word.back();
 }
 
-template<class T> void Path<T>::set_back(T t) {
-    this->_word.back()=t;
+template<class T>
+void Path<T>::set_back(T t) {
+    this->_word.back() = t;
 }
 
-template<class T> T Path<T>::pop() {
-    T back=this->_word.back(); this->_word.pop_back(); return back;
+template<class T>
+T Path<T>::pop() {
+    T back = this->_word.back();
+    this->_word.pop_back();
+    return back;
 }
 
-template<class T> void Path<T>::push( const T& s ) {
-    this->_word.push_back( s );
+template<class T>
+void Path<T>::push(const T& s) {
+    this->_word.push_back(s);
 }
 
-template<class T> T Path<T>::pop_back( ) {
-    T back=this->_word.back(); this->_word.pop_back(); return back;
+template<class T>
+T Path<T>::pop_back() {
+    T back = this->_word.back();
+    this->_word.pop_back();
+    return back;
 }
 
-template<class T> void Path<T>::push_back( const T& s ) {
-    this->_word.push_back( s );
+template<class T>
+void Path<T>::push_back(const T& s) {
+    this->_word.push_back(s);
 }
 
-template<class T> void Path<T>::append( const T& s ) {
-    this->_word.push_back( s );
+template<class T>
+void Path<T>::append(const T& s) {
+    this->_word.push_back(s);
 }
 
-template<class T> void Path<T>::append( const List<T>& w ) {
-    for( std::size_t i = 0; i < w.size() ; i++ ){
-        this->_word.push_back( w[i] );
+template<class T>
+void Path<T>::append(const List<T>& w) {
+    for (std::size_t i = 0; i < w.size(); i++) {
+        this->_word.push_back(w[i]);
     }
 }
 
 //! \brief Serializes data into a stream.
 //! The data format is "01011" or "e" for an empty word.
-template<class T> std::ostream& operator<<(std::ostream& os, const Path<T>& pth) {
-    if( pth.word().empty() ) {
+template<class T>
+std::ostream& operator<<(std::ostream& os, const Path<T>& pth) {
+    if (pth.word().empty()) {
         return os << 'e';
     }
     os << std::noboolalpha;
-    for(std::size_t i=0; i!=pth.size(); ++i) {
-        if(i==pth.height()) { os << "."; }
+    for (std::size_t i = 0; i != pth.size(); ++i) {
+        if (i == pth.height()) {
+            os << ".";
+        }
         os << pth.word()[i];
     }
     os << std::boolalpha;

@@ -29,62 +29,63 @@
 #ifndef ARIADNE_UTILITY_EXCEPTIONS_HPP
 #define ARIADNE_UTILITY_EXCEPTIONS_HPP
 
-#include "utility/string.hpp"
-
 #include <exception>
 #include <stdexcept>
+
+#include "utility/string.hpp"
 
 namespace Ariadne {
 
 class Exception {
     String _what;
+
   public:
     Exception(const String& what);
 };
 
 class NotImplemented : public std::logic_error {
   public:
-    NotImplemented(const String& str) : std::logic_error(str) { }
+    NotImplemented(const String& str) : std::logic_error(str) {}
 };
 
 class BadCast : public std::bad_cast {
   public:
-    BadCast(const String&) : std::bad_cast() { }
+    BadCast(const String&) : std::bad_cast() {}
 };
 
 class DivideByZeroException : public std::runtime_error {
   public:
-    DivideByZeroException(const String& str) : std::runtime_error(str) { }
+    DivideByZeroException(const String& str) : std::runtime_error(str) {}
 };
 
 class DomainException : public std::runtime_error {
   public:
-    DomainException(const String& str) : std::runtime_error(str) { }
+    DomainException(const String& str) : std::runtime_error(str) {}
 };
 
 class IncompatibleSizes : public std::runtime_error {
   public:
-    IncompatibleSizes(const String& str) : std::runtime_error(str) { }
+    IncompatibleSizes(const String& str) : std::runtime_error(str) {}
 };
 
 class InvalidGridPosition : public std::runtime_error {
   public:
-    InvalidGridPosition(const String& str) : std::runtime_error(str) { }
+    InvalidGridPosition(const String& str) : std::runtime_error(str) {}
 };
 
 class InvalidCoordinate : public std::runtime_error {
   public:
-    InvalidCoordinate(const String& str) : std::runtime_error(str) { }
+    InvalidCoordinate(const String& str) : std::runtime_error(str) {}
 };
 
 class InvalidInput : public std::runtime_error {
   public:
-    InvalidInput(const String& str) : std::runtime_error(str) { }
+    InvalidInput(const String& str) : std::runtime_error(str) {}
 };
 
 class OuterChainOverspill : public std::runtime_error {
   public:
-    OuterChainOverspill(const String& str) : std::runtime_error(str) { }
+    OuterChainOverspill(const String& str) : std::runtime_error(str) {}
 };
 
 } // namespace Ariadne

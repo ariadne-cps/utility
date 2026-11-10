@@ -27,8 +27,6 @@
 
 // Utility has no public runtime submodule dependencies; Build is CMake
 // infrastructure and Testing is used only by the test suite.
-#include "utility/module.hpp"
-
 #include "utility/attribute.hpp"
 #include "utility/binary_word.hpp"
 #include "utility/dispatching.hpp"
@@ -36,6 +34,7 @@
 #include "utility/iterator.hpp"
 #include "utility/lazy.hpp"
 #include "utility/lru_cache.hpp"
+#include "utility/module.hpp"
 #include "utility/path.hpp"
 #include "utility/pointer.hpp"
 #include "utility/prototype.hpp"

@@ -29,8 +29,8 @@
 #ifndef ARIADNE_UTILITY_WRITABLE_HPP
 #define ARIADNE_UTILITY_WRITABLE_HPP
 
-#include "utility/typedefs.hpp"
 #include "utility/metaprogramming.hpp"
+#include "utility/typedefs.hpp"
 
 namespace Ariadne {
 
@@ -42,73 +42,102 @@ class WritableInterface {
   public:
     virtual ~WritableInterface() = default;
     friend ostream& operator<<(ostream& os, const WritableInterface& w);
+
   public:
     inline ostream& write(ostream& os) const { return this->_write(os); }
+
   protected:
+
   public:
     virtual ostream& _write(ostream&) const = 0;
 };
-inline ostream& operator<<(ostream& os, const WritableInterface& w) { w._write(os); return os; }
+inline ostream& operator<<(ostream& os, const WritableInterface& w) {
+    w._write(os);
+    return os;
+}
 
-template<class T, class = decltype(declval<T>()._write(declval<ostream&>()))> True has_write(int);
-template<class T> False has_write(...);
-template<class T, class = Fallback> struct IsWritable : decltype(has_write<T>(1)) { };
+template<class T, class = decltype(declval<T>()._write(declval<ostream&>()))>
+True has_write(int);
+template<class T>
+False has_write(...);
+template<class T, class = Fallback>
+struct IsWritable : decltype(has_write<T>(1)) {};
 
-template<class T> requires IsWritable<T>::value ostream& operator<<(ostream& os, const T& t) {
+template<class T>
+    requires IsWritable<T>::value
+ostream& operator<<(ostream& os, const T& t) {
     return t._write(os);
 }
 
-template<class T> class Writer;
-template<class T> class WriterInterface;
-template<class T, class W=WriterInterface<T>> class WritableTemporary;
+template<class T>
+class Writer;
+template<class T>
+class WriterInterface;
+template<class T, class W = WriterInterface<T>>
+class WritableTemporary;
 
-template<class T> class WriterInterface {
+template<class T>
+class WriterInterface {
   public:
     virtual ~WriterInterface() = default;
-    inline WritableTemporary<T> operator() (T const& t) const;
+    inline WritableTemporary<T> operator()(const T& t) const;
+
   private:
-    virtual ostream& _write(ostream& os, T const& t) const = 0;
-    friend ostream& operator<<(ostream& os, WritableTemporary<T> const& t);
+    virtual ostream& _write(ostream& os, const T& t) const = 0;
+    friend ostream& operator<<(ostream& os, const WritableTemporary<T>& t);
 };
 
-template<class T> class Handle;
+template<class T>
+class Handle;
 
-template<class W, class T> concept AWriter = requires (W const& w, ostream& os, T const& t) {
-    w._write(os,t);
+template<class W, class T>
+concept AWriter = requires(const W& w, ostream& os, const T& t) {
+    w._write(os, t);
 };
 
-template<class T, AWriter<T> W> class WriterMixin : public WriterInterface<T> {
+template<class T, AWriter<T> W>
+class WriterMixin : public WriterInterface<T> {
     W _w;
+
   public:
-    WriterMixin(W w) : _w(w) { }
-    virtual ostream& _write(ostream& os, T const& t) const override { return this->_w._write(os,t); }
+    WriterMixin(W w) : _w(w) {}
+    virtual ostream& _write(ostream& os, const T& t) const override { return this->_w._write(os, t); }
 };
 
-template<class T> class Writer : public Handle<WriterInterface<T>> {
+template<class T>
+class Writer : public Handle<WriterInterface<T>> {
   public:
     using Handle<WriterInterface<T>>::Handle;
-    Writer(Handle<WriterInterface<T> > wh) : Handle<WriterInterface<T> >(wh) { }
-    template<AWriter<T> W> Writer(W w) : Writer(new WriterMixin<T,W>(w)) { }
-    inline WritableTemporary<T> operator() (T const& t) const;
+    Writer(Handle<WriterInterface<T>> wh) : Handle<WriterInterface<T>>(wh) {}
+    template<AWriter<T> W>
+    Writer(W w) : Writer(new WriterMixin<T, W>(w)) {}
+    inline WritableTemporary<T> operator()(const T& t) const;
 };
 
-
-template<class T, class W> class WritableTemporary {
+template<class T, class W>
+class WritableTemporary {
   private:
-    W const& _w; T const& _t;
-    WritableTemporary(W const& w, T const& t) : _w(w), _t(t) { }
-    friend W; friend class Writer<T>;
+    const W& _w;
+    const T& _t;
+    WritableTemporary(const W& w, const T& t) : _w(w), _t(t) {}
+    friend W;
+    friend class Writer<T>;
+
   public:
-    friend ostream& operator<<(ostream& os, WritableTemporary<T,W> const& wt) { return wt._w._write(os,wt._t); }
+    friend ostream& operator<<(ostream& os, const WritableTemporary<T, W>& wt) { return wt._w._write(os, wt._t); }
 };
 
-template<class T> WritableTemporary<T> WriterInterface<T>::operator() (T const& t) const {
-    return WritableTemporary<T>(*this,t); }
-template<class T> WritableTemporary<T> Writer<T>::operator() (T const& t) const {
-    return WritableTemporary<T>(*this->_ptr,t); }
+template<class T>
+WritableTemporary<T> WriterInterface<T>::operator()(const T& t) const {
+    return WritableTemporary<T>(*this, t);
+}
+template<class T>
+WritableTemporary<T> Writer<T>::operator()(const T& t) const {
+    return WritableTemporary<T>(*this->_ptr, t);
+}
 
-
-template<class T> class RepresentationWriter;
+template<class T>
+class RepresentationWriter;
 
 } // namespace Ariadne
 

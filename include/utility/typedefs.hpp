@@ -25,15 +25,15 @@
 #ifndef ARIADNE_UTILITY_TYPEDEFS_HPP
 #define ARIADNE_UTILITY_TYPEDEFS_HPP
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
+#include <initializer_list>
 #include <iosfwd>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <memory>
-#include <initializer_list>
-#include <utility>
 #include <tuple>
+#include <utility>
 
 namespace Ariadne {
 
@@ -66,18 +66,27 @@ using ComparableEnumerationType = short;
 using ComparableEnumerationType = char;
 #endif
 
-template<class T> class Array;
+template<class T>
+class Array;
 
-template<class T> using UniquePointer = std::unique_ptr<T>;
-template<class T> using SharedPointer = std::shared_ptr<T>;
-template<class T> using InitializerList = std::initializer_list<T>;
-template<class T1, class T2> using Pair = std::pair<T1,T2>;
-template<class... TS> using Tuple = std::tuple<TS...>;
+template<class T>
+using UniquePointer = std::unique_ptr<T>;
+template<class T>
+using SharedPointer = std::shared_ptr<T>;
+template<class T>
+using InitializerList = std::initializer_list<T>;
+template<class T1, class T2>
+using Pair = std::pair<T1, T2>;
+template<class... TS>
+using Tuple = std::tuple<TS...>;
 
-struct SizeOne { operator SizeType() const { return 1u; } };
-struct IndexZero { operator SizeType() const { return 0u; } };
+struct SizeOne {
+    operator SizeType() const { return 1u; }
+};
+struct IndexZero {
+    operator SizeType() const { return 0u; }
+};
 
 } // namespace Ariadne
-
 
 #endif /* ARIADNE_UTILITY_TYPEDEFS_HPP */

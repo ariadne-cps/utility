@@ -36,20 +36,29 @@
 
 namespace Ariadne {
 
-template<class T> class List;
+template<class T>
+class List;
 
-template<class F, class T> List<ResultOf<F(T)>> elementwise(F const& f, List<T> const& l) {
+template<class F, class T>
+List<ResultOf<F(T)>> elementwise(const F& f, const List<T>& l) {
     typedef ResultOf<F(T)> R;
-    List<R> r; r.reserve(l.size());
-    for(std::size_t i=0; i!=l.size(); ++i) { r.append(f(l[i])); }
+    List<R> r;
+    r.reserve(l.size());
+    for (std::size_t i = 0; i != l.size(); ++i) {
+        r.append(f(l[i]));
+    }
     return r;
 }
 
-template<class F, class T1, class T2> List<ResultOf<F(T1,T2)>> elementwise(F const& f, List<T1> const& l1, List<T2> const& l2) {
-    typedef ResultOf<F(T1,T2)> R;
-    assert(l1.size()==l2.size());
-    List<R> r; r.reserve(l1.size());
-    for(std::size_t i=0; i!=l1.size(); ++i) { r.append(f(l1[i],l2[i])); }
+template<class F, class T1, class T2>
+List<ResultOf<F(T1, T2)>> elementwise(const F& f, const List<T1>& l1, const List<T2>& l2) {
+    typedef ResultOf<F(T1, T2)> R;
+    assert(l1.size() == l2.size());
+    List<R> r;
+    r.reserve(l1.size());
+    for (std::size_t i = 0; i != l1.size(); ++i) {
+        r.append(f(l1[i], l2[i]));
+    }
     return r;
 }
 

@@ -33,18 +33,25 @@
 
 namespace Ariadne {
 
-template<class T> class Generator {
+template<class T>
+class Generator {
     using V = typename T::Type;
+
   public:
-    inline T operator=(V const& v) const;
+    inline T operator=(const V &v) const;
 };
 
-template<class V> class Attribute {
-    template<class T> friend class Generator;
+template<class V>
+class Attribute {
+    template<class T>
+    friend class Generator;
+
   private:
     V _v;
+
   protected:
-    explicit Attribute(V const& v) : _v(v) { }
+    explicit Attribute(const V &v) : _v(v) {}
+
   public:
     using Type = V;
     operator V() const { return this->_v; }
@@ -52,20 +59,20 @@ template<class V> class Attribute {
 };
 
 template<class T>
-inline T Generator<T>::operator=(typename T::Type const& v) const {
+inline T Generator<T>::operator=(const typename T::Type &v) const {
     Attribute<typename T::Type> attr(v);
-    return static_cast<T const&>(attr);
+    return static_cast<const T &>(attr);
 }
 
-struct Capacity : Attribute<SizeType> { };
+struct Capacity : Attribute<SizeType> {};
 static const Generator<Capacity> capacity = Generator<Capacity>();
-struct Size : Attribute<SizeType> { };
+struct Size : Attribute<SizeType> {};
 static const Generator<Size> size = Generator<Size>();
-struct ResultSize : Attribute<SizeType> { };
+struct ResultSize : Attribute<SizeType> {};
 static const Generator<ResultSize> result_size = Generator<ResultSize>();
-struct ArgumentSize : Attribute<SizeType> { };
+struct ArgumentSize : Attribute<SizeType> {};
 static const Generator<ArgumentSize> argument_size = Generator<ArgumentSize>();
-struct Degree : Attribute<DegreeType> { };
+struct Degree : Attribute<DegreeType> {};
 static const Generator<Degree> degree = Generator<Degree>();
 
 } // namespace Ariadne

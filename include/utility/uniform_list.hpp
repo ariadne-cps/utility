@@ -29,8 +29,8 @@
 #ifndef ARIADNE_UTILITY_UNIFORM_LIST_HPP
 #define ARIADNE_UTILITY_UNIFORM_LIST_HPP
 
-#include <iostream>
 #include <initializer_list>
+#include <iostream>
 #include <vector>
 
 #include "utility/container.hpp"
@@ -38,24 +38,29 @@
 
 namespace Ariadne {
 
-template<class T> class UniformList;
+template<class T>
+class UniformList;
 
-template<class T> requires (not HasCharacteristics<T>) class UniformList<T>
-    : public List<T>
-{
+template<class T>
+    requires(not HasCharacteristics<T>)
+class UniformList<T>
+    : public List<T> {
     T _zero_element;
+
   public:
     using List<T>::List;
-    UniformList(Tuple<>) : List<T>() { }
+    UniformList(Tuple<>) : List<T>() {}
     Tuple<> element_characteristics() const { return Tuple<>(); }
-    T const& zero_element() const { return this->_zero_element; }
+    const T& zero_element() const { return this->_zero_element; }
 };
 
-template<class T> requires HasCharacteristics<T> class UniformList<T>
-    : public List<T>
-{
+template<class T>
+    requires HasCharacteristics<T>
+class UniformList<T>
+    : public List<T> {
     T _zero_element;
-    static T* uninitialized_new(std::size_t n) { return static_cast<T*>(::operator new(n*sizeof(T))); }
+    static T* uninitialized_new(std::size_t n) { return static_cast<T*>(::operator new(n * sizeof(T))); }
+
   public:
     using Reference = typename List<T>::Reference;
     using ConstReference = typename List<T>::ConstReference;
@@ -65,31 +70,43 @@ template<class T> requires HasCharacteristics<T> class UniformList<T>
     using ConstIterator = typename List<T>::ConstIterator;
 
     explicit UniformList(CharacteristicsType<T> prps)
-        : _zero_element(make_zero_from_characteristics<T>(prps)) { }
+        : _zero_element(make_zero_from_characteristics<T>(prps)) {}
     explicit UniformList(std::size_t n, CharacteristicsType<T> prps)
-        : List<T>(n,make_zero_from_characteristics<T>(prps)), _zero_element(make_zero_from_characteristics<T>(prps)) { }
-    explicit UniformList(std::size_t n, T const& t)
-        : List<T>(n,t), _zero_element(nul(t)) { }
+        : List<T>(n, make_zero_from_characteristics<T>(prps)), _zero_element(make_zero_from_characteristics<T>(prps)) {}
+    explicit UniformList(std::size_t n, const T& t)
+        : List<T>(n, t), _zero_element(nul(t)) {}
     explicit UniformList(List<T> lst)
-            : _zero_element((assert(!lst.empty()),nul(lst[0]))) {
-        for(auto val : lst) { this->append(val); } }
-    UniformList<T> const& append(T const& t) {
-        assert(get_characteristics(t)==this->element_characteristics()); this->List<T>::append(t); return *this; }
+        : _zero_element((assert(!lst.empty()), nul(lst[0]))) {
+        for (auto val: lst) {
+            this->append(val);
+        }
+    }
+    const UniformList<T>& append(const T& t) {
+        assert(get_characteristics(t) == this->element_characteristics());
+        this->List<T>::append(t);
+        return *this;
+    }
     CharacteristicsType<T> element_characteristics() const {
-        return get_characteristics(this->_zero_element); }
-    T const& zero_element() const {
-        return this->_zero_element; }
+        return get_characteristics(this->_zero_element);
+    }
+    const T& zero_element() const {
+        return this->_zero_element;
+    }
     void resize(std::size_t n) {
-        if(this->size()!=n) {
-            List<T> new_lst; new_lst.reserve(n);
-            for(std::size_t i=0; i!=n; ++i) {
-                if(i<this->size()) { new_lst.append((*this)[i]); }
-                else { new_lst.append(this->zero_element()); } }
-            std::swap(static_cast<List<T>&>(*this),new_lst);
+        if (this->size() != n) {
+            List<T> new_lst;
+            new_lst.reserve(n);
+            for (std::size_t i = 0; i != n; ++i) {
+                if (i < this->size()) {
+                    new_lst.append((*this)[i]);
+                } else {
+                    new_lst.append(this->zero_element());
+                }
+            }
+            std::swap(static_cast<List<T>&>(*this), new_lst);
         }
     }
 };
-
 
 } // namespace Ariadne
 
