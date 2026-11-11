@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file numeric/dispatching.hpp
- *  \brief Utility classes supporting double dispatching
+/** @file utility/dispatching.hpp
+ *  @brief Utility classes supporting double dispatching
  */
 
 #ifndef ARIADNE_UTILITY_DISPATCHING_HPP

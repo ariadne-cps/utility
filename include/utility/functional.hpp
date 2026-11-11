@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/functional.hpp
- *  \brief Classes for functional-style operations.
+/** @file utility/functional.hpp
+ *  @brief Classes for functional-style operations.
  */
 
 #ifndef ARIADNE_UTILITY_FUNCTIONAL_PROGRAMMING_HPP

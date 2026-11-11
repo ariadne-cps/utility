@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file Helper/stlio.hpp
- *  \brief Input-output utilities
+/** @file utility/stlio.hpp
+ *  @brief Input-output utilities
  */
 
 #ifndef ARIADNE_UTILITY_STLIO_HPP

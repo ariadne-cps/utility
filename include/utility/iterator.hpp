@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file iterator.hpp
- *  \brief Iterator support, similar to Boost's iterator package.
+/** @file utility/iterator.hpp
+ *  @brief Iterator support, similar to Boost's iterator package.
  */
 
 #ifndef ARIADNE_UTILITY_ITERATOR_HPP

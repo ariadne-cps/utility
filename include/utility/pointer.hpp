@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/pointer.hpp
- *  \brief Smart pointers in Euclidean space.
+/** @file utility/pointer.hpp
+ *  @brief Smart pointers in Euclidean space.
  */
 
 #ifndef ARIADNE_UTILITY_POINTER_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file array.hpp
- *  \brief
+/** @file utility/array.hpp
+ *  @brief Dynamic arrays and related storage and iteration helpers.
  */
 
 #ifndef ARIADNE_UTILITY_ARRAY_HPP

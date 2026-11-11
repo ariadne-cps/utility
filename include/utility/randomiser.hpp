@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file randomiser.hpp
- *  \brief Generators of random numbers for a type.
+/** @file utility/randomiser.hpp
+ *  @brief Generators of random numbers for a type.
  *  \details The values are generated uniformly in the provided interval.
  */
 

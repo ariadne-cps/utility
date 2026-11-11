@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file variant.hpp
- *  \brief
+/** @file utility/variant.hpp
+ *  @brief Variant aliases and code-tagged variant utilities.
  */
 
 #ifndef ARIADNE_UTILITY_VARIANT_HPP

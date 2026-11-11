@@ -22,6 +22,10 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/** @file utility/variant.inl.hpp
+ *  @brief Implementation helpers for visiting code-tagged variants.
+ */
+
 #ifndef ARIADNE_UTILITY_VARIANT_INL_HPP
 #define ARIADNE_UTILITY_VARIANT_INL_HPP
 

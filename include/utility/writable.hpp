@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file writable.hpp
- *  \brief
+/** @file utility/writable.hpp
+ *  @brief Interfaces and adapters for writing objects to output streams.
  */
 
 #ifndef ARIADNE_UTILITY_WRITABLE_HPP

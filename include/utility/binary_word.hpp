@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file binary_word.hpp
- *  \brief Binary words and sets of binary words.
+/** @file utility/binary_word.hpp
+ *  @brief Binary words and sets of binary words.
  *
  * Binary words are generally useful objects.
  * This file provides a class of binary words of

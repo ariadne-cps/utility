@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/module.hpp
- *  \brief
+/** @file utility/module.hpp
+ *  @brief Convenience header collecting the main Utility interfaces.
  */
 
 #ifndef ARIADNE_UTILITY_MODULE_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/builtin.hpp
- *  \brief
+/** @file utility/builtin.hpp
+ *  @brief Wrappers for built-in integral and floating-point values.
  */
 
 #ifndef ARIADNE_UTILITY_BUILTIN_HPP

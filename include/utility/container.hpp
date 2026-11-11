@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file container.hpp
- *  \brief
+/** @file utility/container.hpp
+ *  @brief Container adapters, lists, and container output helpers.
  */
 
 #ifndef ARIADNE_UTILITY_CONTAINER_HPP

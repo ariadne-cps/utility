@@ -22,6 +22,10 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/** @file ariadne-utility.hpp
+ *  @brief Umbrella header for the public Ariadne Utility interfaces.
+ */
+
 #ifndef ARIADNE_UTILITY_UMBRELLA_HPP
 #define ARIADNE_UTILITY_UMBRELLA_HPP
 

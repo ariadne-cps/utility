@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file tuple.hpp
- *  \brief Pair and Tuple types, and types to be used as lvalues in assignments.
+/** @file utility/tuple.hpp
+ *  @brief Pair and Tuple types, and types to be used as lvalues in assignments.
  */
 
 #ifndef ARIADNE_UTILITY_TUPLE_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file stdlib.hpp
- *  \brief
+/** @file utility/stdlib.hpp
+ *  @brief Convenience includes for frequently used C++ standard-library components.
  */
 
 #include <cassert>

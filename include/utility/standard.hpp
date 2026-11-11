@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file standard.hpp
- *  \brief Standard library and utility classes. File suitable for use as a pre-compiled header.
+/** @file utility/standard.hpp
+ *  @brief Standard library and utility classes. File suitable for use as a pre-compiled header.
  */
 
 #ifndef ARIADNE_UTILITY_STANDARD_HPP

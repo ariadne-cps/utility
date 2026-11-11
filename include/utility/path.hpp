@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/path.hpp
- *  \brief
+/** @file utility/path.hpp
+ *  @brief Paths and height-indexed sequences of elements.
  */
 
 #ifndef ARIADNE_UTILITY_PATH_HPP

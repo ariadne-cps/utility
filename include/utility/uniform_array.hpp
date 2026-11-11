@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/array.hpp
- *  \brief
+/** @file utility/uniform_array.hpp
+ *  @brief Arrays of values sharing common characteristics.
  */
 
 #ifndef ARIADNE_UTILITY_UNIFORM_ARRAY_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file string.hpp
- *  \brief Wrapper for string class
+/** @file utility/string.hpp
+ *  @brief Wrapper for string class
  */
 
 #ifndef ARIADNE_UTILITY_STRING_HPP

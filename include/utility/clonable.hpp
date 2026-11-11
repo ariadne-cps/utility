@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/clonable.hpp
- *  \brief
+/** @file utility/clonable.hpp
+ *  @brief Interface for objects supporting polymorphic copying and moving.
  */
 
 #ifndef ARIADNE_UTILITY_CLONABLE_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/command_line_interface.hpp
- *  \brief Generic support for composing and acquiring command-line arguments.
+/** @file utility/command_line_interface.hpp
+ *  @brief Generic support for composing and acquiring command-line arguments.
  */
 
 #ifndef ARIADNE_UTILITY_COMMAND_LINE_INTERFACE_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file lazy.hpp
- *  \brief Class for holding objects that are lazily retrieved.
+/** @file utility/lazy.hpp
+ *  @brief Class for holding objects that are lazily retrieved.
  */
 
 #ifndef ARIADNE_UTILITY_LAZY_HPP

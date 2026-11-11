@@ -22,6 +22,10 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/** @file utility/stack_trace.hpp
+ *  @brief Stack-trace diagnostic interface.
+ */
+
 #ifndef ARIADNE_UTILITY_STACK_TRACE
 #define ARIADNE_UTILITY_STACK_TRACE
 

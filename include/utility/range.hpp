@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file range.hpp
- *  \brief Index ranges.
+/** @file utility/range.hpp
+ *  @brief Index ranges.
  */
 
 #ifndef ARIADNE_UTILITY_RANGE_HPP

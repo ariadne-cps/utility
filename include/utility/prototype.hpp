@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/prototype.hpp
- *  \brief
+/** @file utility/prototype.hpp
+ *  @brief Prototype-based conversion helpers.
  */
 
 #ifndef ARIADNE_UTILITY_PROTOTYPE_HPP

@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file handle.hpp
- *  \brief
+/** @file utility/handle.hpp
+ *  @brief Reference-counted handles and wrappers for polymorphic objects.
  */
 
 #ifndef ARIADNE_UTILITY_HANDLE_HPP

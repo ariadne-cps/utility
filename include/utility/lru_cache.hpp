@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file lru_cache.hpp
- *  \brief A Least Recently Used cache for holding a limited number of commonly-accessed objects
+/** @file utility/lru_cache.hpp
+ *  @brief A Least Recently Used cache for holding a limited number of commonly-accessed objects
  */
 
 #ifndef ARIADNE_UTILITY_LRU_CACHE_HPP

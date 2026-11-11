@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file metaprogramming.hpp
- *  \brief Classes for template metaprogramming.
+/** @file utility/metaprogramming.hpp
+ *  @brief Classes for template metaprogramming.
  */
 
 #ifndef ARIADNE_UTILITY_METAPROGRAMMING_HPP

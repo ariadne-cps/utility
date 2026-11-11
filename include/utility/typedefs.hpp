@@ -22,6 +22,10 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/** @file utility/typedefs.hpp
+ *  @brief Common type aliases and forward declarations used by Utility.
+ */
+
 #ifndef ARIADNE_UTILITY_TYPEDEFS_HPP
 #define ARIADNE_UTILITY_TYPEDEFS_HPP
 

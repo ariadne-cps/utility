@@ -23,6 +23,10 @@
  *  along with Ariadne Utility. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/** @file utility/macros.hpp
+ *  @brief Common construction, assertion, and error-handling macros.
+ */
+
 #ifndef ARIADNE_UTILITY_MACROS_HPP
 #define ARIADNE_UTILITY_MACROS_HPP
 

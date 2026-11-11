@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file attribute.hpp
- *  \brief Generic attributes for named parameters.
+/** @file utility/attribute.hpp
+ *  @brief Generic attributes for named parameters.
  */
 
 #ifndef ARIADNE_UTILITY_ATTRIBUTE_HPP

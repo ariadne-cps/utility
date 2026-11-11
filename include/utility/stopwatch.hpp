@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file stopwatch.hpp
- *  \brief Stopwatch class to be used for profiling execution times.
+/** @file utility/stopwatch.hpp
+ *  @brief Stopwatch class to be used for profiling execution times.
  */
 
 #ifndef ARIADNE_UTILITY_STOPWATCH_HPP

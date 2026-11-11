@@ -22,8 +22,8 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*! \file utility/exceptions.hpp
- *  \brief Exception classes
+/** @file utility/exceptions.hpp
+ *  @brief Exception classes
  */
 
 #ifndef ARIADNE_UTILITY_EXCEPTIONS_HPP
