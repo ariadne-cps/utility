@@ -23,17 +23,17 @@
  */
 
 #include <iostream>
-#include "ariadne-testing.hpp"
+
 #include "utility/lazy.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 
 class TestClass {
   public:
-
     TestClass(double a) {
-        _value = a*a;
+        _value = a * a;
     }
 
     double value() { return _value; }
@@ -49,7 +49,7 @@ class TestLazy : public Ariadne::Testing::ContextFixture {
     void test_creation() {
         double arg = 2.0;
         int creations = 0;
-        Lazy<TestClass> lazy([arg,&creations]{ ++creations; return new TestClass(arg); });
+        Lazy<TestClass> lazy([arg, &creations] { ++creations; return new TestClass(arg); });
 
         ARIADNE_TESTING_NOTE("Lazy created");
         TestClass obj = lazy();
@@ -58,7 +58,6 @@ class TestLazy : public Ariadne::Testing::ContextFixture {
         ARIADNE_TESTING_EXPECT_EQUAL(same_obj.value(), 4.0);
         ARIADNE_TESTING_EXPECT_EQUAL(creations, 1);
     }
-
 };
 
 int main(int argc, char** argv) {

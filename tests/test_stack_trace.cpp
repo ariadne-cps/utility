@@ -23,10 +23,10 @@
  */
 
 #include <iostream>
-#include "ariadne-testing.hpp"
 
 #include "utility/stack_trace.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 
@@ -40,7 +40,6 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 
-
     void test_free_function() {
         stack_trace();
     }
@@ -48,7 +47,6 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
     void test_class_method() {
         TestClass().method();
     }
-
 };
 
 int main(int argc, char** argv) {

@@ -23,9 +23,11 @@
  *  along with Ariadne Utility. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "utility/typedefs.hpp"
-#include "ariadne-testing.hpp"
 #include <iostream>
+
+#include "utility/typedefs.hpp"
+
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 

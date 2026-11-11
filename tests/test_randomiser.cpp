@@ -23,11 +23,11 @@
  */
 
 #include <iostream>
-#include "ariadne-testing.hpp"
 
-#include "utility/randomiser.hpp"
 #include "utility/container.hpp"
+#include "utility/randomiser.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 using namespace std;
@@ -35,20 +35,21 @@ using namespace std;
 class TestRandomiser : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
+
   private:
     size_t _num_tries;
-  public:
 
+  public:
     explicit TestRandomiser(Ariadne::Testing::Context& context)
-        : ContextFixture(context), _num_tries(10) { }
+        : ContextFixture(context), _num_tries(10) {}
 
     void test_int() {
         RandomGenerator generator;
 
-        auto rnd = UniformIntRandomiser<unsigned int>(0,255);
+        auto rnd = UniformIntRandomiser<unsigned int>(0, 255);
 
         List<unsigned int> values;
-        for (size_t i=0; i<_num_tries; ++i)
+        for (size_t i = 0; i < _num_tries; ++i)
             values.push_back(rnd.get());
 
         ARIADNE_TESTING_INSPECT("values", values);
@@ -57,15 +58,14 @@ class TestRandomiser : public Ariadne::Testing::ContextFixture {
     void test_real() {
         RandomGenerator generator;
 
-        auto rnd = UniformRealRandomiser<double>(0.0,1.0);
+        auto rnd = UniformRealRandomiser<double>(0.0, 1.0);
 
         List<double> values;
-        for (size_t i=0; i<_num_tries; ++i)
+        for (size_t i = 0; i < _num_tries; ++i)
             values.push_back(rnd.get());
 
         ARIADNE_TESTING_INSPECT("values", values);
     }
-
 };
 
 int main(int argc, char** argv) {

@@ -23,24 +23,24 @@
  */
 
 #include <iostream>
-#include "ariadne-testing.hpp"
 #include <utility>
 
 #include "utility/array.hpp"
-#include "utility/uniform_array.hpp"
 #include "utility/container.hpp"
+#include "utility/uniform_array.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 
 struct TestConvertibleTo {
-    TestConvertibleTo(int a_) : a(a_) { }
+    TestConvertibleTo(int a_) : a(a_) {}
     int a;
 };
 
 struct TestClass {
-    TestClass(int a_) : a(a_) { }
-    explicit TestClass(TestConvertibleTo const& c) : TestClass(c.a) { }
+    TestClass(int a_) : a(a_) {}
+    explicit TestClass(const TestConvertibleTo& c) : TestClass(c.a) {}
     int a;
 };
 
@@ -49,25 +49,28 @@ struct Tracked {
     static int copies_until_throw;
     int value;
 
-    Tracked(int value_=0) : value(value_) { ++live; }
-    Tracked(Tracked const& other) : value(other.value) {
-        if(copies_until_throw==0) { throw std::runtime_error("tracked copy failure"); }
-        if(copies_until_throw>0) { --copies_until_throw; }
+    Tracked(int value_ = 0) : value(value_) { ++live; }
+    Tracked(const Tracked& other) : value(other.value) {
+        if (copies_until_throw == 0) {
+            throw std::runtime_error("tracked copy failure");
+        }
+        if (copies_until_throw > 0) {
+            --copies_until_throw;
+        }
         ++live;
     }
     Tracked(Tracked&& other) noexcept : value(other.value) { ++live; }
-    Tracked& operator=(Tracked const&)=default;
-    Tracked& operator=(Tracked&&)=default;
+    Tracked& operator=(const Tracked&) = default;
+    Tracked& operator=(Tracked&&) = default;
     ~Tracked() { --live; }
 };
 
-int Tracked::live=0;
-int Tracked::copies_until_throw=-1;
+int Tracked::live = 0;
+int Tracked::copies_until_throw = -1;
 
 class TestArray : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
-
 
     void test_convert() {
         Array<TestClass> tca = {TestClass(1), TestClass(2)};
@@ -102,10 +105,10 @@ class TestArray : public Ariadne::Testing::ContextFixture {
 
     void test_move_assignment_ownership() {
         {
-            Array<Tracked> target(3u,Tracked(1));
-            Array<Tracked> source(2u,Tracked(2));
+            Array<Tracked> target(3u, Tracked(1));
+            Array<Tracked> source(2u, Tracked(2));
             ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 5);
-            target=std::move(source);
+            target = std::move(source);
             ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 2);
             ARIADNE_TESTING_EXPECT_EQUAL(target.size(), 2u);
             ARIADNE_TESTING_PROVE(source.empty());
@@ -113,10 +116,10 @@ class TestArray : public Ariadne::Testing::ContextFixture {
         ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 0);
 
         {
-            UniformArray<Tracked> target(3u,Tracked(1));
-            UniformArray<Tracked> source(2u,Tracked(2));
+            UniformArray<Tracked> target(3u, Tracked(1));
+            UniformArray<Tracked> source(2u, Tracked(2));
             ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 5);
-            target=std::move(source);
+            target = std::move(source);
             ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 2);
             ARIADNE_TESTING_EXPECT_EQUAL(target.size(), 2u);
             ARIADNE_TESTING_PROVE(source.empty());
@@ -126,10 +129,10 @@ class TestArray : public Ariadne::Testing::ContextFixture {
 
     void test_self_move_assignment_preserves_storage() {
         {
-            Array<Tracked> array(2u,Tracked(7));
-            Tracked* storage=array.begin();
-            Array<Tracked>& self=array;
-            array=std::move(self);
+            Array<Tracked> array(2u, Tracked(7));
+            Tracked* storage = array.begin();
+            Array<Tracked>& self = array;
+            array = std::move(self);
             ARIADNE_TESTING_EXPECT_EQUAL(array.size(), 2u);
             ARIADNE_TESTING_EXPECT_EQUAL(array.begin(), storage);
             ARIADNE_TESTING_EXPECT_EQUAL(array[0].value, 7);
@@ -139,10 +142,10 @@ class TestArray : public Ariadne::Testing::ContextFixture {
         ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, 0);
 
         {
-            UniformArray<Tracked> array(2u,Tracked(9));
-            Tracked* storage=array.begin();
-            UniformArray<Tracked>& self=array;
-            array=std::move(self);
+            UniformArray<Tracked> array(2u, Tracked(9));
+            Tracked* storage = array.begin();
+            UniformArray<Tracked>& self = array;
+            array = std::move(self);
             ARIADNE_TESTING_EXPECT_EQUAL(array.size(), 2u);
             ARIADNE_TESTING_EXPECT_EQUAL(array.begin(), storage);
             ARIADNE_TESTING_EXPECT_EQUAL(array.begin()[0].value, 9);
@@ -153,21 +156,20 @@ class TestArray : public Ariadne::Testing::ContextFixture {
     }
 
     void test_exception_safe_construction() {
-        Array<Tracked> array_source(3u,Tracked(1));
-        int baseline=Tracked::live;
-        Tracked::copies_until_throw=1;
+        Array<Tracked> array_source(3u, Tracked(1));
+        int baseline = Tracked::live;
+        Tracked::copies_until_throw = 1;
         ARIADNE_TESTING_EXPECT_THROWS(std::runtime_error, (void)Array<Tracked>(array_source));
-        Tracked::copies_until_throw=-1;
+        Tracked::copies_until_throw = -1;
         ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, baseline);
 
-        UniformArray<Tracked> uniform_source(3u,Tracked(1));
-        baseline=Tracked::live;
-        Tracked::copies_until_throw=1;
+        UniformArray<Tracked> uniform_source(3u, Tracked(1));
+        baseline = Tracked::live;
+        Tracked::copies_until_throw = 1;
         ARIADNE_TESTING_EXPECT_THROWS(std::runtime_error, (void)UniformArray<Tracked>(uniform_source));
-        Tracked::copies_until_throw=-1;
+        Tracked::copies_until_throw = -1;
         ARIADNE_TESTING_EXPECT_EQUAL(Tracked::live, baseline);
     }
-
 };
 
 int main(int argc, char** argv) {

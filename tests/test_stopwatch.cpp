@@ -23,10 +23,11 @@
  */
 
 #include <iostream>
-#include "ariadne-testing.hpp"
 #include <thread>
+
 #include "utility/stopwatch.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 using namespace std::chrono_literals;
@@ -34,7 +35,6 @@ using namespace std::chrono_literals;
 class TestStopwatch : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
-
 
     void test_create() {
         Stopwatch<Milliseconds> sw;
@@ -47,7 +47,6 @@ class TestStopwatch : public Ariadne::Testing::ContextFixture {
         ARIADNE_TESTING_EXPECT_GREATER(duration.count(), 10000);
         ARIADNE_TESTING_EXPECT_GREATER(sw.elapsed_seconds(), 0.01);
     }
-
 };
 
 int main(int argc, char** argv) {

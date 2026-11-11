@@ -23,20 +23,19 @@
  */
 
 #include <iostream>
-#include "ariadne-testing.hpp"
 
-#include "utility/string.hpp"
 #include "utility/lru_cache.hpp"
+#include "utility/string.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 
-using CacheType = LRUCache<String,int>;
+using CacheType = LRUCache<String, int>;
 
 class TestLRUCache : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
-
 
     void test_construct() {
         ARIADNE_TESTING_EXPECT_EXCEPTION(CacheType(0));
@@ -67,7 +66,7 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 
     void test_put_single() {
         CacheType cache(2);
-        cache.put("first",42);
+        cache.put("first", 42);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.current_size(), 1);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("first"), 0);
         auto val = cache.get("first");
@@ -76,9 +75,9 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 
     void test_put_multiple() {
         CacheType cache(2);
-        cache.put("first",42);
-        ARIADNE_TESTING_EXPECT_EXCEPTION(cache.put("first",10));
-        cache.put("second",10);
+        cache.put("first", 42);
+        ARIADNE_TESTING_EXPECT_EXCEPTION(cache.put("first", 10));
+        cache.put("second", 10);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.current_size(), 2);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("first"), 1);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("second"), 0);
@@ -86,10 +85,10 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 
     void test_put_multiple_over() {
         CacheType cache(3);
-        cache.put("first",42);
-        cache.put("second",10);
-        cache.put("third",5);
-        cache.put("fourth",12);
+        cache.put("first", 42);
+        cache.put("second", 10);
+        cache.put("third", 5);
+        cache.put("fourth", 12);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.current_size(), 3);
         ARIADNE_TESTING_PROVE(not cache.has_label("first"));
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("second"), 2);
@@ -99,17 +98,16 @@ class TestLRUCache : public Ariadne::Testing::ContextFixture {
 
     void test_get() {
         CacheType cache(4);
-        cache.put("first",42);
-        cache.put("second",10);
-        cache.put("third",5);
-        cache.put("fourth",12);
+        cache.put("first", 42);
+        cache.put("second", 10);
+        cache.put("third", 5);
+        cache.put("fourth", 12);
         cache.get("second");
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("second"), 0);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("first"), 3);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("third"), 2);
         ARIADNE_TESTING_EXPECT_EQUAL(cache.age("fourth"), 1);
     }
-
 };
 
 int main(int argc, char** argv) {

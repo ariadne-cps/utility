@@ -23,8 +23,8 @@
  */
 
 #include "utility/container.hpp"
-#include "ariadne-testing.hpp"
 
+#include "ariadne-testing.hpp"
 
 using namespace Ariadne;
 
@@ -32,24 +32,34 @@ class TestContainer : public Ariadne::Testing::ContextFixture {
   public:
     using ContextFixture::ContextFixture;
 
-
     void test_map_get() {
-        Map<int,int> im = {{1,10},{2,20}};
+        Map<int, int> im = {
+            {1, 10},
+            {2, 20}
+        };
         ARIADNE_TESTING_EXPECT_EXCEPTION(im.get(3));
         ARIADNE_TESTING_EXPECT_EQUAL(im.get(2), 20);
     }
 
     void test_map_convert() {
-        Map<int,int> im = {{1,10},{2,20}};
+        Map<int, int> im = {
+            {1, 10},
+            {2, 20}
+        };
 
-        Map<int,double> dm(im);
+        Map<int, double> dm(im);
         ARIADNE_TESTING_PROVE(dm.at(1) == im.at(1) and dm.at(2) == im.at(2));
     }
 
     void test_map_restrict_keys() {
-        Set<int> s = {1,2};
-        Map<int,double> m = {{1,1.2},{2,1.5},{3,1.0},{5,0.1}};
-        auto restricted = restrict_keys(m,s);
+        Set<int> s = {1, 2};
+        Map<int, double> m = {
+            {1, 1.2},
+            {2, 1.5},
+            {3, 1.0},
+            {5, 0.1}
+        };
+        auto restricted = restrict_keys(m, s);
         ARIADNE_TESTING_EXPECT_EQUAL(restricted.size(), 2);
         ARIADNE_TESTING_PROVE(restricted.has_key(1) and restricted.has_key(2));
         ARIADNE_TESTING_PROVE(not restricted.has_key(3));
@@ -76,7 +86,6 @@ class TestContainer : public Ariadne::Testing::ContextFixture {
         ARIADNE_TESTING_INSPECT("empty_double", empty_double);
         ARIADNE_TESTING_INSPECT("nonempty_double", nonempty_double);
     }
-
 };
 
 int main(int argc, char** argv) {
