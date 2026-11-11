@@ -84,10 +84,14 @@ using Pair = std::pair<T1, T2>;
 template<class... TS>
 using Tuple = std::tuple<TS...>;
 
+/** @brief Compile-time size value equal to one. */
 struct SizeOne {
+    /** @brief Convert to size type. */
     operator SizeType() const { return 1u; }
 };
+/** @brief Compile-time index value equal to zero. */
 struct IndexZero {
+    /** @brief Convert to size type. */
     operator SizeType() const { return 0u; }
 };
 

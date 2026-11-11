@@ -37,12 +37,14 @@ using Seconds = std::chrono::seconds;
 using Milliseconds = std::chrono::milliseconds;
 using Microseconds = std::chrono::microseconds;
 
+/** @brief Elapsed-time measurement using a monotonic clock. */
 template<class D>
 class Stopwatch {
   public:
     using ResolutionType = std::chrono::high_resolution_clock;
     using TimePointType = std::chrono::time_point<ResolutionType>;
 
+    /** @brief Construct a \c Stopwatch with the specified characteristics. */
     Stopwatch() { restart(); }
 
     //! \brief Get the duration in the given type

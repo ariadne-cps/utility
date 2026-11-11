@@ -35,8 +35,10 @@
 
 namespace Ariadne {
 
+/** @brief Owner of the random-number engine shared by randomisers. */
 class RandomGenerator {
   public:
+    /** @brief Construct a \c RandomGenerator with the specified characteristics. */
     RandomGenerator() {
         std::random_device rd;
         std::mt19937::result_type seed = rd() ^ ((std::mt19937::result_type)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +
@@ -44,6 +46,7 @@ class RandomGenerator {
         _engine = std::mt19937(seed);
     }
 
+    /** @brief Return the random-number engine. */
     std::mt19937& engine() { return _engine; };
 
   private:
@@ -52,31 +55,40 @@ class RandomGenerator {
 
 static RandomGenerator RANDOM_GENERATOR;
 
+/** @brief Polymorphic interface for randomiser. */
 template<class T>
 class RandomiserInterface {
   public:
+    /** @brief Return the requested element or stored value. */
     virtual T get() = 0;
 };
 
+/** @brief Common engine access for random-number distributions. */
 template<class T, class D>
 class RandomiserBase : public RandomiserInterface<T> {
   protected:
+    /** @brief Construct a \c RandomiserBase from min, max. */
     RandomiserBase(T min, T max) : _distribution(D(min, max)) {}
     D _distribution;
 
   public:
+    /** @brief Return the requested element or stored value. */
     T get() override { return this->_distribution(RANDOM_GENERATOR.engine()); }
 };
 
+/** @brief Uniform distribution over a real-valued interval. */
 template<class T>
 struct UniformRealRandomiser : public RandomiserBase<T, std::uniform_real_distribution<T>> {
   public:
+    /** @brief Construct a \c UniformRealRandomiser from min, max. */
     UniformRealRandomiser(T min, T max) : RandomiserBase<T, std::uniform_real_distribution<T>>(min, max) {}
 };
 
+/** @brief Uniform distribution over an integer-valued interval. */
 template<class T>
 struct UniformIntRandomiser : public RandomiserBase<T, std::uniform_int_distribution<T>> {
   public:
+    /** @brief Construct a \c UniformIntRandomiser from min, max. */
     UniformIntRandomiser(T min, T max) : RandomiserBase<T, std::uniform_int_distribution<T>>(min, max) {}
 };
 

@@ -33,6 +33,7 @@
 
 namespace Ariadne {
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C>
 decltype(auto) coded_visit(V&, C code) {
     switch (code) {
@@ -41,6 +42,7 @@ decltype(auto) coded_visit(V&, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -51,6 +53,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -63,6 +66,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -77,6 +81,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -93,6 +98,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -111,6 +117,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -131,6 +138,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -153,6 +161,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 decltype(auto) coded_visit(V& v, C code) {
     switch (code) {
@@ -177,6 +186,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9>
 decltype(auto) coded_visit(V& v, C code) {
@@ -204,6 +214,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10>
 decltype(auto) coded_visit(V& v, C code) {
@@ -233,6 +244,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11>
 decltype(auto) coded_visit(V& v, C code) {
@@ -264,6 +276,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11, class T12>
 decltype(auto) coded_visit(V& v, C code) {
@@ -297,6 +310,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11, class T12, class T13>
 decltype(auto) coded_visit(V& v, C code) {
@@ -332,6 +346,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11, class T12, class T13, class T14>
 decltype(auto) coded_visit(V& v, C code) {
@@ -369,6 +384,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11, class T12, class T13, class T14, class T15>
 decltype(auto) coded_visit(V& v, C code) {
@@ -408,6 +424,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16>
 decltype(auto) coded_visit(V& v, C code) {
@@ -449,6 +466,7 @@ decltype(auto) coded_visit(V& v, C code) {
     }
 }
 
+/** @brief Visit the alternative identified by the variant code. */
 template<class V, class C, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8,
          class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17>
 decltype(auto) coded_visit(V& v, C code) {

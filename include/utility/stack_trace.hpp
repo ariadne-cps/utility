@@ -31,6 +31,7 @@
 
 namespace Ariadne {
 
+/** @brief Return a description of the current call stack. */
 void stack_trace();
 
 } // namespace Ariadne

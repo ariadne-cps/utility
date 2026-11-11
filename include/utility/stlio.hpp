@@ -49,6 +49,7 @@ namespace Ariadne {
 using std::istream;
 using std::ostream;
 
+/** @brief Write a sequence with the supplied delimiters. */
 template<class InputIterator>
 ostream&
     write_sequence(ostream& os, InputIterator first, InputIterator last,
@@ -65,6 +66,7 @@ ostream&
     return os;
 }
 
+/** @brief Write the values referenced by a sequence of pointers. */
 template<class InputIterator>
 ostream&
     write_pointer_sequence(ostream& os, InputIterator first, InputIterator last,
@@ -81,6 +83,7 @@ ostream&
     return os;
 }
 
+/** @brief Write the key-value entries of the map. */
 template<class InputIterator>
 ostream&
     write_map_sequence(ostream& os, InputIterator first, InputIterator last,
@@ -97,6 +100,7 @@ ostream&
     return os;
 }
 
+/** @brief Write map entries by dereferencing their stored pointers. */
 template<class InputIterator>
 ostream&
     write_map_pointer_sequence(ostream& os, InputIterator first, InputIterator last,
@@ -113,6 +117,7 @@ ostream&
     return os;
 }
 
+/** @brief Write the coefficient map in expansion notation. */
 template<class InputIterator>
 ostream&
     write_coefficient_map_sequence(ostream& os, InputIterator first, InputIterator last,
@@ -129,6 +134,7 @@ ostream&
     return os;
 }
 
+/** @brief Read a delimited sequence from the input stream. */
 template<class Container>
 istream&
     read_sequence(istream& is, Container& v,
@@ -175,6 +181,7 @@ istream&
     return is;
 }
 
+/** @brief Write the tuple elements to the output stream. */
 template<class TUP, std::size_t N>
 void write_tuple(std::ostream& os, TUP const& tup, std::integral_constant<std::size_t, N>) {
     if constexpr (N != 1) {
@@ -193,12 +200,14 @@ void write_tuple(std::ostream& os, TUP const& tup, std::integral_constant<std::s
 */
 namespace std {
 
+/** @brief Write the value to the output stream. */
 template<class S, class T>
 inline std::ostream&
     operator<<(std::ostream& os, const std::pair<S, T>& s) {
     return os << '(' << s.first << ',' << s.second << ')';
 }
 
+/** @brief Write the value to the output stream. */
 template<class... TS>
 inline std::ostream& operator<<(std::ostream& os, const std::tuple<TS...>& tup) {
     typename std::tuple_size<std::tuple<TS...>>::type sz;
@@ -260,6 +269,7 @@ operator<<(std::ostream &os, const std::map<K,std::shared_ptr<T>,C>& m)
 
 */
 
+/** @brief Read the value from the input stream. */
 template<class T>
 inline std::istream&
     operator>>(std::istream& is, std::vector<T>& v) {

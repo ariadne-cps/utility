@@ -39,18 +39,24 @@ namespace Ariadne {
 template<class... TS>
 using Variant = std::variant<TS...>;
 
+/** @brief Variant with a stable operation-code discriminator. */
 template<class C, class... TS>
 class CodedVariant {
     C _code;
 
   public:
+    /** @brief Construct a \c CodedVariant from code. */
     explicit CodedVariant(C code) : _code(code) {}
+    /** @brief Construct a \c CodedVariant with the specified characteristics. */
     template<OneOf<TS...> T>
     CodedVariant(const T&) : _code(T::code()) {}
+    /** @brief Dispatch the stored alternative to the visitor. */
     template<class V>
     inline decltype(auto) accept(const V& v) const;
+    /** @brief Return the operation or variant discriminator. */
     C code() const { return _code; }
 };
+/** @brief Test whether the variant contains the requested alternative. */
 template<class T, class C, class... TS>
 bool holds_alternative(const CodedVariant<C, TS...>& var) { return var.code() == T::code(); }
 

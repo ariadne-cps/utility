@@ -38,9 +38,11 @@
 
 namespace Ariadne {
 
+/** @brief Sequence whose elements share construction characteristics. */
 template<class T>
 class UniformList;
 
+/** @brief Sequence whose elements share construction characteristics. */
 template<class T>
     requires(not HasCharacteristics<T>)
 class UniformList<T>
@@ -49,8 +51,11 @@ class UniformList<T>
 
   public:
     using List<T>::List;
+    /** @brief Construct a \c UniformList with the specified characteristics. */
     UniformList(Tuple<>) : List<T>() {}
+    /** @brief Return the common characteristics of the elements. */
     Tuple<> element_characteristics() const { return Tuple<>(); }
+    /** @brief Return a zero with the element characteristics. */
     const T& zero_element() const { return this->_zero_element; }
 };
 
@@ -59,6 +64,7 @@ template<class T>
 class UniformList<T>
     : public List<T> {
     T _zero_element;
+    /** @brief Allocate raw storage without constructing elements. */
     static T* uninitialized_new(std::size_t n) { return static_cast<T*>(::operator new(n * sizeof(T))); }
 
   public:
@@ -69,29 +75,37 @@ class UniformList<T>
     using Iterator = typename List<T>::Iterator;
     using ConstIterator = typename List<T>::ConstIterator;
 
+    /** @brief Construct a \c UniformList from prps. */
     explicit UniformList(CharacteristicsType<T> prps)
         : _zero_element(make_zero_from_characteristics<T>(prps)) {}
+    /** @brief Construct a \c UniformList from n, prps. */
     explicit UniformList(std::size_t n, CharacteristicsType<T> prps)
         : List<T>(n, make_zero_from_characteristics<T>(prps)), _zero_element(make_zero_from_characteristics<T>(prps)) {}
+    /** @brief Construct a \c UniformList from n, t. */
     explicit UniformList(std::size_t n, const T& t)
         : List<T>(n, t), _zero_element(nul(t)) {}
+    /** @brief Construct a \c UniformList from lst. */
     explicit UniformList(List<T> lst)
         : _zero_element((assert(!lst.empty()), nul(lst[0]))) {
         for (auto val: lst) {
             this->append(val);
         }
     }
+    /** @brief Append the supplied element or sequence. */
     const UniformList<T>& append(const T& t) {
         assert(get_characteristics(t) == this->element_characteristics());
         this->List<T>::append(t);
         return *this;
     }
+    /** @brief Return the common characteristics of the elements. */
     CharacteristicsType<T> element_characteristics() const {
         return get_characteristics(this->_zero_element);
     }
+    /** @brief Return a zero with the element characteristics. */
     const T& zero_element() const {
         return this->_zero_element;
     }
+    /** @brief Change the number of elements. */
     void resize(std::size_t n) {
         if (this->size() != n) {
             List<T> new_lst;

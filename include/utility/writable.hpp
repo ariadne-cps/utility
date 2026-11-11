@@ -38,31 +38,41 @@ using std::ostream;
 
 /************ WritableInterface **********************************************/
 
+/** @brief Polymorphic interface for writable. */
 class WritableInterface {
   public:
+    /** @brief Destroy the object and release its owned resources. */
     virtual ~WritableInterface() = default;
+    /** @brief Write the value to the output stream. */
     friend ostream& operator<<(ostream& os, const WritableInterface& w);
 
   public:
+    /** @brief Write the value to the output stream. */
     inline ostream& write(ostream& os) const { return this->_write(os); }
 
   protected:
 
   public:
+    /** @brief Write the value to the output stream. */
     virtual ostream& _write(ostream&) const = 0;
 };
+/** @brief Write the value to the output stream. */
 inline ostream& operator<<(ostream& os, const WritableInterface& w) {
     w._write(os);
     return os;
 }
 
+/** @brief Test whether the object provides stream output. */
 template<class T, class = decltype(declval<T>()._write(declval<ostream&>()))>
 True has_write(int);
+/** @brief Test whether the object provides stream output. */
 template<class T>
 False has_write(...);
+/** @brief Compile-time predicate testing whether a type is writable. */
 template<class T, class = Fallback>
 struct IsWritable : decltype(has_write<T>(1)) {};
 
+/** @brief Write the value to the output stream. */
 template<class T>
     requires IsWritable<T>::value
 ostream& operator<<(ostream& os, const T& t) {
@@ -76,14 +86,19 @@ class WriterInterface;
 template<class T, class W = WriterInterface<T>>
 class WritableTemporary;
 
+/** @brief Polymorphic interface for writer. */
 template<class T>
 class WriterInterface {
   public:
+    /** @brief Destroy the object and release its owned resources. */
     virtual ~WriterInterface() = default;
+    /** @brief Apply the callable to the supplied arguments. */
     inline WritableTemporary<T> operator()(const T& t) const;
 
   private:
+    /** @brief Write the value to the output stream. */
     virtual ostream& _write(ostream& os, const T& t) const = 0;
+    /** @brief Write the value to the output stream. */
     friend ostream& operator<<(ostream& os, const WritableTemporary<T>& t);
 };
 
@@ -95,35 +110,45 @@ concept AWriter = requires(const W& w, ostream& os, const T& t) {
     w._write(os, t);
 };
 
+/** @brief Reusable implementation of writer. */
 template<class T, AWriter<T> W>
 class WriterMixin : public WriterInterface<T> {
     W _w;
 
   public:
+    /** @brief Construct a \c WriterMixin from w. */
     WriterMixin(W w) : _w(w) {}
+    /** @brief Write the value to the output stream. */
     virtual ostream& _write(ostream& os, const T& t) const override { return this->_w._write(os, t); }
 };
 
+/** @brief Polymorphic stream-formatting policy. */
 template<class T>
 class Writer : public Handle<WriterInterface<T>> {
   public:
     using Handle<WriterInterface<T>>::Handle;
+    /** @brief Construct a \c Writer from wh. */
     Writer(Handle<WriterInterface<T>> wh) : Handle<WriterInterface<T>>(wh) {}
+    /** @brief Construct a \c Writer from w. */
     template<AWriter<T> W>
     Writer(W w) : Writer(new WriterMixin<T, W>(w)) {}
+    /** @brief Apply the callable to the supplied arguments. */
     inline WritableTemporary<T> operator()(const T& t) const;
 };
 
+/** @brief Temporary pairing a value with its stream writer. */
 template<class T, class W>
 class WritableTemporary {
   private:
     const W& _w;
     const T& _t;
+    /** @brief Construct a \c WritableTemporary from w, t. */
     WritableTemporary(const W& w, const T& t) : _w(w), _t(t) {}
     friend W;
     friend class Writer<T>;
 
   public:
+    /** @brief Write the value to the output stream. */
     friend ostream& operator<<(ostream& os, const WritableTemporary<T, W>& wt) { return wt._w._write(os, wt._t); }
 };
 
@@ -136,6 +161,7 @@ WritableTemporary<T> Writer<T>::operator()(const T& t) const {
     return WritableTemporary<T>(*this->_ptr, t);
 }
 
+/** @brief Output policy selecting the stored value representation. */
 template<class T>
 class RepresentationWriter;
 

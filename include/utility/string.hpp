@@ -38,26 +38,33 @@ namespace Ariadne {
 class String : public std::string {
   public:
     using std::string::string;
+    /** @brief Construct a \c String from str. */
     String(const std::string& str) : std::string(str) {};
+    /** @brief Construct a \c String with the specified characteristics. */
     String() = default;
 };
 
+/** @brief Return the null-terminated character sequence. */
 inline const char* c_str(const String& str) {
     return str.c_str();
 }
+/** @brief Return the string representation. */
 template<class T>
 inline String to_string(const T& t) {
     std::stringstream ss;
     ss << t;
     return ss.str();
 }
+/** @brief Return the string representation. */
 template<class T>
 inline String to_str(const T& t) {
     return to_string(t);
 }
 
+/** @brief Return the display name of the type. */
 template<class T>
 String class_name();
+/** @brief Return the display name of the type. */
 template<>
 inline String class_name<String>() { return "String"; }
 

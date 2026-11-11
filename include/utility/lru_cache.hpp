@@ -41,7 +41,9 @@ using std::size_t;
 template<class L, class V>
 class LRUCache {
   private:
+    /** @brief Cached value paired with its access age for LRU eviction. */
     struct AgeValuePair {
+        /** @brief Construct a \c AgeValuePair from a, v. */
         AgeValuePair(size_t a, V v) : age(a), value(v) {}
         size_t age;
         V value;

@@ -43,12 +43,14 @@ using False = std::false_type;
 template<class T, T V>
 using IntegralConstant = std::integral_constant<T, V>;
 
+/** @brief Callable selecting the first element of a pair. */
 template<class T1, class... TS>
 struct First {
     typedef T1 Type;
 };
 template<class... TS>
 using FirstType = typename First<TS...>::Type;
+/** @brief Callable selecting the second element of a pair. */
 template<class T1, class T2, class... TS>
 struct Second {
     typedef T2 Type;
@@ -56,6 +58,7 @@ struct Second {
 template<class... TS>
 using SecondType = typename Second<TS...>::Type;
 
+/** @brief Callable returning its argument. */
 template<class T>
 struct Self {
     typedef T Type;
@@ -63,43 +66,58 @@ struct Self {
 template<class T>
 using SelfType = typename Self<T>::Type;
 
+/** @brief Compile-time predicate testing equality of all supplied types. */
 template<class... TS>
 struct AreAllSame;
+/** @brief Compile-time predicate testing equality of all supplied types. */
 template<>
 struct AreAllSame<> : True {};
+/** @brief Compile-time predicate testing equality of all supplied types. */
 template<class T>
 struct AreAllSame<T> : True {};
+/** @brief Compile-time predicate testing equality of all supplied types. */
 template<class T, class... TS>
 struct AreAllSame<T, T, TS...> : AreAllSame<T, TS...> {};
+/** @brief Compile-time predicate testing equality of all supplied types. */
 template<class T0, class T1, class... TS>
 struct AreAllSame<T0, T1, TS...> : False {};
 
+/** @brief Compile-time predicate testing whether a type is one of. */
 template<class T, class... US>
 struct IsOneOf;
+/** @brief Compile-time predicate testing whether a type is one of. */
 template<class T>
 struct IsOneOf<T> : False {};
+/** @brief Compile-time predicate testing whether a type is one of. */
 template<class T, class... US>
 struct IsOneOf<T, T, US...> : True {};
+/** @brief Compile-time predicate testing whether a type is one of. */
 template<class T, class U0, class... US>
 struct IsOneOf<T, U0, US...> : IsOneOf<T, US...> {};
 
+/** @brief Compile-time index of a type in a type list. */
 template<class T, class... TS>
 struct IndexOf;
+/** @brief Compile-time index of a type in a type list. */
 template<class T, class... TS>
 struct IndexOf<T, T, TS...> {
     static const size_t N = 0;
 };
+/** @brief Compile-time index of a type in a type list. */
 template<class T, class T0, class... TS>
 struct IndexOf<T, T0, TS...> {
     static const size_t N = IndexOf<T, TS...>::N + 1u;
 };
+/** @brief Compile-time index of a type in a type list. */
 template<class T>
 struct IndexOf<T> {};
 
 template<class F, class... AS>
 using InvokeResult = typename std::invoke_result<F, AS...>::type;
+/** @brief Compile-time trait for result of. */
 template<class SIG>
 struct ResultOfTrait;
+/** @brief Compile-time trait for result of. */
 template<class F, class... AS>
 struct ResultOfTrait<F(AS...)> {
     typedef typename std::invoke_result<F, AS...>::type Type;
@@ -107,12 +125,16 @@ struct ResultOfTrait<F(AS...)> {
 template<class SIG>
 using ResultOf = typename ResultOfTrait<SIG>::Type;
 
+/** @brief Fallback overload selected when a preferred expression is unavailable. */
 struct Fallback {};
+/** @brief Placeholder accepting arguments whose values are unused. */
 struct DontCare {
+    /** @brief Construct a \c DontCare with the specified characteristics. */
     template<class T>
     DontCare(T);
 };
 
+/** @brief Compile-time carrier of a result type. */
 template<class R>
 struct Return {
     typedef R ReturnType;
@@ -168,24 +190,32 @@ using InplaceProductType = RemoveReference<decltype(declval<X1&>() *= declval<X2
 template<class X1, class X2 = X1>
 using InplaceQuotientType = RemoveReference<decltype(declval<X1&>() /= declval<X2>())>;
 
+/** @brief Compile-time predicate testing whether a type is invocable. */
 template<class F, class... AS>
 struct IsInvocable;
+/** @brief Compile-time predicate testing whether a type is invocable returning. */
 template<class R, class F, class... AS>
 struct IsInvocableReturning;
 
+/** @brief Compile-time predicate testing whether a type is invocable. */
 template<class F, class A>
 struct IsInvocable<F, A> {
+    /** @brief Evaluate the compile-time or runtime predicate for the supplied arguments. */
     template<class FF, class AA, class = decltype(std::declval<FF>()(std::declval<AA>()))>
     static std::true_type test(int);
+    /** @brief Evaluate the compile-time or runtime predicate for the supplied arguments. */
     template<class FF, class AA>
     static std::false_type test(...);
     static const bool value = decltype(test<F, A>(1))::value;
 };
 
+/** @brief Compile-time predicate testing whether a type is invocable returning. */
 template<class R, class F, class A>
 struct IsInvocableReturning<R, F, A> {
+    /** @brief Evaluate the compile-time or runtime predicate for the supplied arguments. */
     template<class RR, class FF, class AA, class = decltype(std::declval<RR>() = std::declval<FF>()(std::declval<AA>()))>
     static std::true_type test(int);
+    /** @brief Evaluate the compile-time or runtime predicate for the supplied arguments. */
     template<class RR, class FF, class AA>
     static std::false_type test(...);
     static const bool value = decltype(test<R, F, A>(1))::value;
@@ -285,20 +315,24 @@ concept HasCharacteristics = HasMemberCharacteristics<T> or HasNonMemberCharacte
 
 template<class T>
 concept HasGenericType = requires { typename T::GenericType; };
+/** @brief Compile-time trait for generic. */
 template<class T>
 struct GenericTrait;
 template<class T>
 using GenericType = typename GenericTrait<T>::Type;
+/** @brief Compile-time trait for generic. */
 template<class T>
     requires HasGenericType<T>
 struct GenericTrait<T> {
     typedef typename T::GenericType Type;
 };
 
+/** @brief Compile-time trait for characteristics. */
 template<class T>
 struct CharacteristicsTrait;
 template<class T>
 using CharacteristicsType = typename CharacteristicsTrait<T>::Type;
+/** @brief Compile-time trait for characteristics. */
 template<class T>
     requires HasCharacteristicsType<T>
 struct CharacteristicsTrait<T> {

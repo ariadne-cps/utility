@@ -43,12 +43,16 @@ using std::size_t;
 template<class T>
 using InitializerList = std::initializer_list<T>;
 
+/** @brief Tag requesting storage without element initialization. */
 struct Uninitialised {};
 
+/** @brief Contiguous owning array with explicit element lifetime management. */
 template<class T>
 class Array {
   private:
+    /** @brief Allocate raw storage without constructing elements. */
     static T* uninitialized_new(size_t n) { return static_cast<T*>(::operator new(n * sizeof(T))); }
+    /** @brief Release raw storage allocated for uninitialized elements. */
     static void uninitialized_delete(T* p) { ::operator delete(p); }
 
   public:
@@ -315,19 +319,23 @@ class Array {
     }
 
   private:
+    /** @brief Destroy the constructed elements in the iterator range. */
     static void _destroy_range(pointer first, pointer last) {
         while (last != first) {
             --last;
             last->~T();
         }
     }
+    /** @brief Destroy the constructed array elements. */
     void _destroy_elements() { _destroy_range(_ptr, _ptr + _size); }
+    /** @brief Destroy partially constructed elements and release their storage. */
     void _rollback_uninitialized(pointer curr) {
         _destroy_range(_ptr, curr);
         uninitialized_delete(_ptr);
         _ptr = nullptr;
         _size = 0u;
     }
+    /** @brief Default-construct elements in uninitialized storage. */
     void _uninitialized_default_fill() {
         pointer curr = _ptr;
         pointer end = _ptr + _size;
@@ -341,6 +349,7 @@ class Array {
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage from the supplied value or range. */
     void _uninitialized_fill(const ValueType& x) {
         pointer curr = _ptr;
         pointer end = _ptr + _size;
@@ -354,6 +363,7 @@ class Array {
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage from the supplied value or range. */
     template<class InputIterator>
     void _uninitialized_fill(InputIterator first) {
         pointer curr = _ptr;
@@ -369,6 +379,7 @@ class Array {
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage from the supplied value or range. */
     template<class InputIterator, class Parameters>
     void _uninitialized_fill(InputIterator first, Parameters parameters) {
         pointer curr = _ptr;
@@ -384,6 +395,7 @@ class Array {
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage using the generator. */
     template<class G>
     void _uninitialized_generate(G g) {
         pointer curr = _ptr;
@@ -402,6 +414,7 @@ class Array {
     pointer _ptr;
 };
 
+/** @brief Contiguous array whose backing storage has shared ownership. */
 template<class T>
 class SharedArray {
   public:
@@ -414,18 +427,22 @@ class SharedArray {
     T* _ptr;
 
   public:
+    /** @brief Destroy the object and release its owned resources. */
     ~SharedArray() {
         --_count;
         if (*_count == 0) {
             delete[] _ptr;
         }
     }
+    /** @brief Construct a \c SharedArray from n. */
     SharedArray(size_t n) : _count(new size_t(1u)), _size(n), _ptr(new T[n]) {}
+    /** @brief Construct a \c SharedArray from n, x. */
     SharedArray(size_t n, const T& x) : SharedArray(n) {
         for (size_t i = 0; i != n; ++i) {
             _ptr[i] = x;
         }
     }
+    /** @brief Construct a \c SharedArray from lst. */
     SharedArray(const InitializerList<T>& lst) : SharedArray(lst.size()) {
         auto from = lst.begin();
         auto end = lst.end();
@@ -436,7 +453,9 @@ class SharedArray {
             ++to;
         }
     }
+    /** @brief Copy-construct the object from the supplied instance. */
     SharedArray(const SharedArray<T>& ary) : _count(ary._count), _size(ary._size), _ptr(ary._ptr) { ++*_count; }
+    /** @brief Assign the supplied value and return this object. */
     SharedArray<T>& operator=(const SharedArray<T>& ary) {
         if (this->_ptr != ary._ptr) {
             --*_count;
@@ -453,15 +472,23 @@ class SharedArray {
         }
         return *this;
     }
+    /** @brief Return the number of elements. */
     size_t size() const { return _size; }
+    /** @brief Return the selected element or component. */
     T& operator[](size_t i) { return _ptr[i]; }
+    /** @brief Return the selected element or component. */
     const T& operator[](size_t i) const { return _ptr[i]; }
+    /** @brief Return an iterator to the first element. */
     Iterator begin() { return _ptr; }
+    /** @brief Return an iterator to the first element. */
     ConstIterator begin() const { return _ptr; }
+    /** @brief Return the past-the-end iterator. */
     Iterator end() { return _ptr + _size; }
+    /** @brief Return the past-the-end iterator. */
     ConstIterator end() const { return _ptr + _size; }
 };
 
+/** @brief Return the complement of the word or set. */
 inline Array<size_t> complement(size_t nmax, Array<size_t> vars) {
     Array<size_t> cmpl(nmax - vars.size());
     size_t kr = 0;

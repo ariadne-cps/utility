@@ -33,12 +33,16 @@ namespace Ariadne {
 
 /************ ClonableInterface **********************************************/
 
+/** @brief Polymorphic interface for clonable. */
 class ClonableInterface {
   public:
+    /** @brief Destroy the object and release its owned resources. */
     virtual ~ClonableInterface() = default;
 
   protected:
+    /** @brief Return a copy of the object. */
     virtual ClonableInterface* _copy() const = 0;
+    /** @brief Return a dynamically allocated object by moving the stored value. */
     virtual ClonableInterface* _move() = 0;
 };
 

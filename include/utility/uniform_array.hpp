@@ -63,14 +63,17 @@ template<class T>
 struct CharacteristicsTrait<T> {
     typedef std::tuple<> Type;
 };
+/** @brief Return the characteristics required to construct compatible values. */
 template<class T>
     requires HasMemberCharacteristics<T>
 decltype(auto) characteristics(const T& t) { return t.characteristics(); }
 
+/** @brief Compile-time check of assignment compatibility. */
 template<class T>
 class CheckedAssignable : public T {
   public:
     using T::operator=;
+    /** @brief Assign the supplied value and return this object. */
     const CheckedAssignable<T>& operator=(const T& t) {
         assert(get_characteristics(*this) == get_characteristics(t));
         this->T::operator=(t);
@@ -78,10 +81,12 @@ class CheckedAssignable : public T {
     }
 };
 
+/** @brief Compile-time trait for element reference. */
 template<class T>
 struct ElementReferenceTrait {
     typedef CheckedAssignable<T>& Type;
 };
+/** @brief Compile-time trait for element reference. */
 template<class T>
     requires BuiltinIntegral<T>
 struct ElementReferenceTrait<T> {
@@ -91,6 +96,7 @@ template<class T>
 using ElementReference = typename ElementReferenceTrait<T>::Type;
 
 // FIXME: Workaround since Apple Clang 14 fails when using std::make_from_tuple directly.
+/** @brief Construct the value by expanding the supplied tuple. */
 template<class T, class TUP>
 T make_from_a_tuple(TUP const& tup) { return std::make_from_tuple<T>(tup); }
 
@@ -99,61 +105,73 @@ concept MakeableFromATuple = requires(TUP const& tup) {
     { make_from_a_tuple<T>(tup) };
 };
 
+/** @brief Construct the element characteristics from the supplied arguments. */
 template<class T, class... PRS>
     requires Constructible<CharacteristicsType<T>, PRS...>
 CharacteristicsType<T> make_characteristics(PRS... prs) {
     return CharacteristicsType<T>(prs...);
 }
+/** @brief Construct the element characteristics from the supplied arguments. */
 template<class T, class... PRS>
     requires MakeableFromATuple<CharacteristicsType<T>, Tuple<PRS...>>
 CharacteristicsType<T> make_characteristics(const Tuple<PRS...>& tup) {
     return make_from_a_tuple<CharacteristicsType<T>>(tup);
 }
 
+/** @brief Construct a value with the supplied characteristics. */
 template<class T, class... PRS>
     requires Constructible<T, PRS...>
 T make_from_characteristics(PRS... prs) {
     return T(prs...);
 }
+/** @brief Construct a value with the supplied characteristics. */
 template<class T, class... PRS>
     requires MakeableFromATuple<T, Tuple<PRS...>>
 T make_from_characteristics(const Tuple<PRS...>& tup) {
     return make_from_a_tuple<T>(tup);
 }
 
+/** @brief Construct a zero value with the supplied characteristics. */
 template<class T, class... PRS>
     requires Constructible<T, int, PRS...>
 T make_zero_from_characteristics(PRS... prs) {
     return T(0, prs...);
 }
+/** @brief Construct a zero value with the supplied characteristics. */
 template<class T, class... PRS>
     requires MakeableFromATuple<T, Tuple<PRS...>>
 T make_zero_from_characteristics(const Tuple<PRS...>& tup) {
     return nul(make_from_a_tuple<T>(tup));
 }
 
+/** @brief Return the characteristics. */
 template<class T>
     requires HasMemberCharacteristics<T>
 decltype(auto) get_characteristics(const T& t) {
     return t.characteristics();
 }
+/** @brief Return the characteristics. */
 template<class T>
     requires(not HasMemberCharacteristics<T>) and HasNonMemberCharacteristics<T>
 decltype(auto) get_characteristics(const T& t) {
     return characteristics(t);
 }
+/** @brief Return the characteristics. */
 template<class T>
     requires(not HasCharacteristics<T>) and DefaultConstructible<T>
 decltype(auto) get_characteristics(const T&) {
     return Tuple<>();
 }
 
+/** @brief Contiguous array whose elements share construction characteristics. */
 template<class T, class PR>
 class UniformArray
     : private PR {
   private:
     using _pr = PR;
+    /** @brief Allocate raw storage without constructing elements. */
     static T* uninitialized_new(std::size_t n) { return static_cast<T*>(::operator new(n * sizeof(T))); }
+    /** @brief Release raw storage allocated for uninitialized elements. */
     static void uninitialized_delete(T* p) { ::operator delete(p); }
 
   public:
@@ -176,6 +194,7 @@ class UniformArray
     typedef std::ptrdiff_t difference_type;
 
   private:
+    /** @brief Return the default characteristics for the element type. */
     static CharacteristicsType _default_characteristics() {
         ARIADNE_PRECONDITION(DefaultConstructible<PR>);
         if constexpr (DefaultConstructible<PR>) {
@@ -184,14 +203,17 @@ class UniformArray
             std::abort();
         }
     }
+    /** @brief Determine common characteristics from the initializer list. */
     static CharacteristicsType _get_initializer_list_characteristics(const InitializerList<T>& lst) {
         ARIADNE_PRECONDITION(lst.size() != 0);
         return get_characteristics(*lst.begin());
     }
+    /** @brief Determine common characteristics from the array. */
     static CharacteristicsType _get_array_characteristics(const Array<T>& ary) {
         ARIADNE_PRECONDITION(ary.size() != 0);
         return get_characteristics(*ary.begin());
     }
+    /** @brief Determine common characteristics from generated elements. */
     template<class G>
         requires InvocableReturning<ValueType, G, std::size_t>
     static CharacteristicsType _get_generator_characteristics(std::size_t n, const G& g) {
@@ -204,51 +226,65 @@ class UniformArray
         }
         return get_characteristics(g(0));
     }
+    /** @brief Determine common characteristics from the iterator range. */
     template<class ForwardIterator>
     static CharacteristicsType _get_iterator_range_characteristics(ForwardIterator begin_iterator, ForwardIterator end_iterator) {
         ARIADNE_PRECONDITION(begin_iterator != end_iterator);
         return get_characteristics(*begin_iterator);
     }
+    /** @brief Set the characteristics. */
     void _set_characteristics(CharacteristicsType pr) {
         static_cast<PR&>(*this) = pr;
     }
 
+    /** @brief Tuple-expansion helper for element construction. */
     template<typename F, typename TUP, bool DONE, int N, int... IS>
     struct call_impl;
+    /** @brief Tuple-expansion helper for element construction. */
     template<typename F, typename TUP, int N, int... IS>
     struct call_impl<F, TUP, false, N, IS...> {
+        /** @brief Evaluate with the supplied arguments. */
         static decltype(auto) call(F f, TUP&& t) { return call_impl<F, TUP, N == 1 + sizeof...(IS), N, IS..., sizeof...(IS)>::call(f, std::forward<TUP>(t)); }
     };
+    /** @brief Tuple-expansion helper for element construction. */
     template<typename F, typename TUP, int N, int... IS>
     struct call_impl<F, TUP, true, N, IS...> {
+        /** @brief Evaluate with the supplied arguments. */
         static decltype(auto) call(F f, TUP&& t) { return f(std::get<IS>(std::forward<TUP>(t))...); }
     };
+    /** @brief Evaluate with the supplied arguments. */
     template<typename F, typename TUP>
     static decltype(auto) call(F f, TUP&& t) {
         constexpr std::size_t N = std::tuple_size<std::decay_t<TUP>>::value;
         return call_impl<F, TUP, N == 0, N>::call(f, std::forward<TUP>(t));
     }
 
+    /** @brief Construct a default element using the supplied characteristic arguments. */
     template<class... CNFGS>
         requires Constructible<T, CNFGS...>
     static ValueType _make_default_from_args(CNFGS... cnfgs) {
         return T(cnfgs...);
     }
+    /** @brief Construct a default element by expanding the characteristic tuple. */
     template<class... CNFGS>
         requires Constructible<T, CNFGS...>
     static ValueType _make_default_from_tuple(const Tuple<CNFGS...>& cnfgs) {
         return call(&UniformArray<T, PR>::_make_default_from_args<CNFGS...>, cnfgs);
     }
 
+    /** @brief Construct a default element with compatible characteristics. */
     template<class CNFG>
         requires Constructible<T, CNFG>
     static ValueType _make_default(CNFG const& cnfg) { return T(cnfg); }
+    /** @brief Construct a default element with compatible characteristics. */
     template<class... CNFGS>
         requires Constructible<T, CNFGS...>
     static ValueType _make_default(const Tuple<CNFGS...>& cnfgs) { return _make_default_from_tuple(cnfgs); }
+    /** @brief Construct a default element with compatible characteristics. */
     template<class CNFG>
         requires Same<Tuple<>, CNFG>
     static ValueType _make_default(CNFG const&) { return T(); }
+    /** @brief Construct a default element with compatible characteristics. */
     ValueType _make_default() const { return _make_default(this->element_characteristics()); }
 
   public:
@@ -558,19 +594,23 @@ class UniformArray
     }
 
   private:
+    /** @brief Destroy the constructed elements in the iterator range. */
     static void _destroy_range(pointer first, pointer last) {
         while (last != first) {
             --last;
             last->~T();
         }
     }
+    /** @brief Destroy the constructed array elements. */
     void _destroy_elements() { _destroy_range(_ptr, _ptr + _size); }
+    /** @brief Destroy partially constructed elements and release their storage. */
     void _rollback_uninitialized(pointer curr) {
         _destroy_range(_ptr, curr);
         uninitialized_delete(_ptr);
         _ptr = nullptr;
         _size = 0u;
     }
+    /** @brief Default-construct elements in uninitialized storage. */
     void _uninitialized_default_fill() {
         pointer curr = _ptr;
         pointer end = _ptr + _size;
@@ -584,6 +624,7 @@ class UniformArray
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage from the supplied value or range. */
     void _uninitialized_fill(const ValueType& x) {
         pointer curr = _ptr;
         pointer end = _ptr + _size;
@@ -597,6 +638,7 @@ class UniformArray
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage from the supplied value or range. */
     template<class InputIterator>
     void _uninitialized_fill(InputIterator fst) {
         pointer curr = _ptr;
@@ -612,6 +654,7 @@ class UniformArray
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage from the supplied value or range. */
     template<class InputIterator, class Parameters>
     void _uninitialized_fill(InputIterator fst, Parameters parameters) {
         pointer curr = _ptr;
@@ -627,6 +670,7 @@ class UniformArray
             throw;
         }
     }
+    /** @brief Construct elements in uninitialized storage using the generator. */
     template<class G>
     void _uninitialized_generate(G g) {
         pointer curr = _ptr;
@@ -646,6 +690,7 @@ class UniformArray
     pointer _ptr;
 };
 
+/** @brief Write the value to the output stream. */
 template<class T, class PR>
 std::ostream& operator<<(std::ostream& os, const UniformArray<T, PR>& a) {
     os << "<" << a.element_characteristics() << ">";

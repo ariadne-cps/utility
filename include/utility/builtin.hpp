@@ -33,49 +33,68 @@
 
 namespace Ariadne {
 
+/** @brief Wrapper for a built-in unsigned integer. */
 class builtin_uint {
     long unsigned int _m;
 
   public:
+    /** @brief Convert to the built-in unsigned integer wrapper. */
     template<BuiltinUnsigned M>
     builtin_uint(M m) : _m(m) {}
+    /** @brief Convert to long unsigned int. */
     explicit operator long unsigned int() const { return _m; }
+    /** @brief Convert to a built-in unsigned long integer. */
     long unsigned int get_ui() const { return _m; }
 };
 
+/** @brief Wrapper for a built-in signed integer. */
 class builtin_int {
     long int _n;
 
   public:
+    /** @brief Convert to the built-in signed integer wrapper. */
     template<BuiltinIntegral N>
     builtin_int(N n) : _n(n) {}
+    /** @brief Convert to long int. */
     explicit operator long int() const { return _n; }
+    /** @brief Convert to a built-in signed long integer. */
     long int get_si() const { return _n; }
 };
 
+/** @brief Wrapper for a built-in double-precision value. */
 class builtin_double {
     double _x;
 
   public:
+    /** @brief Convert to the built-in double wrapper. */
     template<BuiltinFloatingPoint X>
     builtin_double(X x) : _x(x) {}
+    /** @brief Convert to double. */
     explicit operator double() const { return _x; }
+    /** @brief Convert to a built-in double. */
     double get_d() const { return _x; }
 };
 
+/** @brief Double-precision value treated as an exact binary number. */
 class exact_double {
     double _x;
 
   private:
+    /** @brief Convert to the exact double wrapper. */
     exact_double(double x) : _x(x) {}
 
   public:
+    /** @brief Convert to the exact representation. */
     friend exact_double cast_exact(double);
+    /** @brief Convert to the exact double wrapper. */
     exact_double() : _x(0.0) {}
+    /** @brief Convert to double. */
     explicit operator double() const { return _x; }
+    /** @brief Convert to a built-in double. */
     double get_d() const { return _x; }
 };
 
+/** @brief Convert to the exact representation. */
 exact_double cast_exact(double x) { return exact_double(x); }
 
 } // namespace Ariadne

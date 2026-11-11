@@ -33,15 +33,19 @@
 
 namespace Ariadne {
 
+/** @brief Representative value used to construct objects with matching characteristics. */
 template<class T>
 class Prototype {
     T _prototype;
 
   public:
+    /** @brief Construct a \c Prototype from t. */
     Prototype(T t) : _prototype(t) {}
+    /** @brief Convert the supplied value to the requested representation. */
     template<class X>
     X convert(const X& x) { return _prototype.convert(x); }
 };
+/** @brief Create a prototype preserving the supplied value characteristics. */
 template<class T>
 inline Prototype<T> make_prototype(const T& t) {
     return Prototype<T>(t);

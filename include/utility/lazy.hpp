@@ -37,14 +37,17 @@ namespace Ariadne {
 using std::function;
 using std::shared_ptr;
 
+/** @brief Shared lazily constructed object initialized on first access. */
 template<class O>
 class Lazy {
   public:
+    /** @brief Return the cached object, constructing it on first access. */
     const O& operator()() const {
         if (_obj == nullptr)
             _obj.reset(_func());
         return *_obj;
     };
+    /** @brief Construct a \c Lazy from func. */
     Lazy(function<O*()> func) : _func(func) {}
 
   private:

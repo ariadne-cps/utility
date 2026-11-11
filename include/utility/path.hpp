@@ -106,14 +106,19 @@ enum class LeftOrRight : bool { LEFT = false,
 enum class LeftOrMiddleOrRight : signed char { LEFT = -1,
                                                MIDDLE = 0,
                                                RIGHT = +1 };
+/** @brief Write the value to the output stream. */
 std::ostream& operator<<(std::ostream& os, const LeftOrRight& s);
+/** @brief Write the value to the output stream. */
 std::ostream& operator<<(std::ostream& os, const LeftOrMiddleOrRight& s);
 
+/** @brief Sequence of binary branch choices identifying a tree node. */
 class BinaryTreePath : public Path<bool> {
   public:
     using Path<bool>::Path;
+    /** @brief Construct a \c BinaryTreePath from pth. */
     BinaryTreePath(const Path<bool>& pth) : Path<bool>(pth) {}
 };
+/** @brief Sequence of ternary branch choices identifying a DAG path. */
 class TernaryDagPath : public Path<LeftOrMiddleOrRight> {
   public:
     using Path<LeftOrMiddleOrRight>::Path;

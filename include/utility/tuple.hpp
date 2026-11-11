@@ -37,23 +37,30 @@ namespace Ariadne {
 template<class T1, class T2>
 using Pair = std::pair<T1, T2>;
 using std::make_pair;
+/** @brief Construct a pair preserving lvalue references. */
 template<class T1, class T2>
 constexpr Pair<T1&, T2&> make_lpair(T1& t1, T2& t2) { return Pair<T1&, T2&>(t1, t2); }
 
 template<class... TS>
 using Tuple = std::tuple<TS...>;
 using std::make_tuple;
+/** @brief Construct a tuple preserving lvalue references. */
 template<class... TS>
 constexpr Tuple<TS&...> make_ltuple(TS&... ts) { return Tuple<TS&...>(std::tie(ts...)); }
 
+/** @brief Return the first tuple element. */
 template<class T>
 inline decltype(auto) get_first(T&& t) { return std::get<0>(std::forward<T>(t)); }
+/** @brief Return the second tuple element. */
 template<class T>
 inline decltype(auto) get_second(T&& t) { return std::get<1>(std::forward<T>(t)); }
+/** @brief Return the third tuple element. */
 template<class T>
 inline decltype(auto) get_third(T&& t) { return std::get<2>(std::forward<T>(t)); }
+/** @brief Return the fourth tuple element. */
 template<class T>
 inline decltype(auto) get_fourth(T&& t) { return std::get<3>(std::forward<T>(t)); }
+/** @brief Return the fifth tuple element. */
 template<class T>
 inline decltype(auto) get_fifth(T&& t) { return std::get<4>(std::forward<T>(t)); }
 
