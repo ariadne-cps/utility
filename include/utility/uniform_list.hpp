@@ -22,7 +22,7 @@
  *  along with Ariadne Utility.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/** @brief @file utility/uniform_list.hpp
+/** @file utility/uniform_list.hpp
  *  @brief Lists of values sharing common characteristics.
  */
 
