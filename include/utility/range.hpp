@@ -43,14 +43,14 @@ class Range {
     /** @brief Construct a \c Range from start, stop. */
     Range(size_t start, size_t stop) : _start(start), _stop(stop) {} //!< .
     /** @brief Return the selected element or component. */
-    size_t operator[](size_t i) const { return _start + i; }         //!< .
+    size_t operator[](size_t i) const { return _start + i; } //!< .
     /** @brief Return the number of elements. */
-    size_t size() const { return this->_stop - this->_start; }       //!< .
+    size_t size() const { return this->_stop - this->_start; } //!< .
     /** @brief Return the first index of the range. */
-    size_t start() const { return this->_start; }                    //!< .
+    size_t start() const { return this->_start; } //!< .
     /** @brief Return the exclusive upper index of the range. */
-    size_t stop() const { return this->_stop; }                      //!< .
-    size_t stride() const { return 1u; }                             //!< Always equal to \a 1.
+    size_t stop() const { return this->_stop; } //!< .
+    size_t stride() const { return 1u; }        //!< Always equal to \a 1.
 };
 inline Range range(size_t stop) { return Range(0u, stop); }                  //!< \relates Range
 inline Range range(size_t start, size_t stop) { return Range(start, stop); } //!< \relates Range
