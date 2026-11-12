@@ -77,6 +77,7 @@
 
 #include "utility/macros.hpp"
 #include "utility/stlio.hpp"
+#include "utility/typedefs.hpp"
 
 namespace Ariadne {
 
